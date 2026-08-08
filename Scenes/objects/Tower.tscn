@@ -1,0 +1,20 @@
+[gd_scene format=3 uid="uid://dyyr737u14vgl"]
+
+[ext_resource type="Texture2D" uid="uid://dngj6i2cqwi5l" path="res://Assets/Tiny Swords (Free Pack)/Buildings/Black Buildings/Tower.png" id="1_wqnh4"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_tnw6b"]
+radius = 42.0
+height = 172.0
+
+[node name="Tower" type="StaticBody2D" unique_id=1003230107]
+y_sort_enabled = true
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1975205399]
+texture_filter = 1
+scale = Vector2(2, 2)
+texture = ExtResource("1_wqnh4")
+offset = Vector2(0, -70)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=2090288004]
+rotation = 1.5707964
+shape = SubResource("CapsuleShape2D_tnw6b")

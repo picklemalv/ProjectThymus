@@ -1,0 +1,86 @@
+[gd_scene format=3 uid="uid://d4aio4cr46bve"]
+
+[ext_resource type="Texture2D" uid="uid://twj7ycng7kur" path="res://Assets/Tiny Swords (Free Pack)/Terrain/Resources/Wood/Trees/Tree4.png" id="1_d0pv0"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qt18j"]
+atlas = ExtResource("1_d0pv0")
+region = Rect2(0, 0, 192, 192)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_nff7r"]
+atlas = ExtResource("1_d0pv0")
+region = Rect2(192, 0, 192, 192)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hb7ku"]
+atlas = ExtResource("1_d0pv0")
+region = Rect2(384, 0, 192, 192)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qgo0c"]
+atlas = ExtResource("1_d0pv0")
+region = Rect2(576, 0, 192, 192)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hbc4p"]
+atlas = ExtResource("1_d0pv0")
+region = Rect2(768, 0, 192, 192)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_v50k6"]
+atlas = ExtResource("1_d0pv0")
+region = Rect2(960, 0, 192, 192)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8dnu6"]
+atlas = ExtResource("1_d0pv0")
+region = Rect2(1152, 0, 192, 192)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7rl0n"]
+atlas = ExtResource("1_d0pv0")
+region = Rect2(1344, 0, 192, 192)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_b4ovn"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_qt18j")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_nff7r")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_hb7ku")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_qgo0c")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_hbc4p")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_v50k6")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_8dnu6")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_7rl0n")
+}],
+"loop": 1,
+"name": &"default",
+"speed": 10.0
+}]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_dqo5h"]
+radius = 9.0
+height = 34.0
+
+[node name="Tree1" type="StaticBody2D" unique_id=776093189]
+y_sort_enabled = true
+
+[node name="Sprite2D" type="AnimatedSprite2D" parent="." unique_id=1481540462]
+texture_filter = 1
+scale = Vector2(2, 2)
+sprite_frames = SubResource("SpriteFrames_b4ovn")
+autoplay = "default"
+frame_progress = 0.4000059
+offset = Vector2(-2, -64)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=960512772]
+rotation = 1.5707964
+shape = SubResource("CapsuleShape2D_dqo5h")

@@ -1,0 +1,20 @@
+[gd_scene format=3 uid="uid://b8hytbpj3bu67"]
+
+[ext_resource type="Texture2D" uid="uid://c12ornx8fruin" path="res://Assets/Tiny Swords (Free Pack)/Terrain/Decorations/Rocks/Rock3.png" id="1_gmwt7"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_dqo5h"]
+radius = 12.0
+height = 70.0
+
+[node name="Rock3" type="StaticBody2D" unique_id=776093189]
+y_sort_enabled = true
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1098109253]
+texture_filter = 1
+scale = Vector2(2, 2)
+texture = ExtResource("1_gmwt7")
+offset = Vector2(0, -10)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=960512772]
+rotation = 1.5707964
+shape = SubResource("CapsuleShape2D_dqo5h")
