@@ -12,7 +12,7 @@ config_version=5
 
 config/name="Thymus01"
 run/main_scene="uid://e5ipo0b2e0se"
-config/features=PackedStringArray("4.7", "GL Compatibility")
+config/features=PackedStringArray("4.7", "C#", "GL Compatibility")
 config/icon="res://icon.svg"
 
 [display]

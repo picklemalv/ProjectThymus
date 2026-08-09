@@ -2,6 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://br0qsmxhqytcy" path="res://Assets/Tiny Swords (Free Pack)/Terrain/Tileset/Tilemap_color1.png" id="1_ynf5e"]
 [ext_resource type="Texture2D" uid="uid://djqhjhvrhys2" path="res://Assets/Tiny Swords (Free Pack)/Terrain/Tileset/Shadow.png" id="2_hptm8"]
+[ext_resource type="PackedScene" uid="uid://baofd8uqreav4" path="res://Scenes/characters/NPC1.tscn" id="4_hptm8"]
 [ext_resource type="PackedScene" uid="uid://dyyr737u14vgl" path="res://Scenes/objects/Tower.tscn" id="4_jjvhh"]
 [ext_resource type="PackedScene" uid="uid://cvlobkt48udkt" path="res://Scenes/objects/Rock1.tscn" id="5_344ge"]
 [ext_resource type="PackedScene" uid="uid://53b5uhp0vbto" path="res://Scenes/objects/Rock2.tscn" id="6_ynf5e"]
@@ -1721,7 +1722,10 @@ tile_set = SubResource("TileSet_x8vb0")
 y_sort_enabled = true
 
 [node name="Player" parent="Objects" unique_id=2068987577 instance=ExtResource("9_ynf5e")]
-position = Vector2(295, 389)
+position = Vector2(454, 310)
+
+[node name="NPC" parent="Objects" unique_id=1286714938 instance=ExtResource("4_hptm8")]
+position = Vector2(164, 522)
 
 [node name="Buildings" type="Node2D" parent="Objects" unique_id=1325240047]
 y_sort_enabled = true
