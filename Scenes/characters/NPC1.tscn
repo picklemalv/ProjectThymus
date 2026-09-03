@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://baofd8uqreav4"]
 
 [ext_resource type="Texture2D" uid="uid://bc1inec6tto3s" path="res://Assets/Tiny Swords (Free Pack)/Units/Black Units/Monk/Idle.png" id="1_u641k"]
+[ext_resource type="Script" uid="uid://cfj1otbjy0s52" path="res://Scenes/characters/DetectionArea2d.cs" id="3_42w2j"]
 [ext_resource type="Texture2D" uid="uid://bo1gp2inyd7qh" path="res://Assets/Tiny Swords (Free Pack)/Units/Black Units/Warrior/Warrior_Run.png" id="3_tt4cq"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_42w2j"]
@@ -104,6 +105,9 @@ animations = [{
 radius = 12.0
 height = 48.0
 
+[sub_resource type="CircleShape2D" id="CircleShape2D_b4ovn"]
+radius = 53.338543
+
 [node name="NPC" type="CharacterBody2D" unique_id=2068987577]
 y_sort_enabled = true
 
@@ -117,3 +121,9 @@ offset = Vector2(0, -27)
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=900307293]
 rotation = 1.5707964
 shape = SubResource("CapsuleShape2D_b4ovn")
+
+[node name="DetectionArea2D" type="Area2D" parent="." unique_id=1586939541]
+script = ExtResource("3_42w2j")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="DetectionArea2D" unique_id=401035578]
+shape = SubResource("CircleShape2D_b4ovn")
