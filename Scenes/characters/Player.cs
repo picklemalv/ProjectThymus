@@ -10,6 +10,12 @@ public partial class Player : CharacterBody2D
 	public override void _Ready()
 	{
 		sprite = GetNode<AnimatedSprite2D>("AnimatedSprite2D");
+
+		if (GameState.Instance.HasReturnPosition)
+		{
+			GlobalPosition = GameState.Instance.ReturnPosition;
+			GameState.Instance.HasReturnPosition = false;
+		}
 	}
 
 	public override void _PhysicsProcess(double delta)

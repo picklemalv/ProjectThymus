@@ -1,5 +1,6 @@
 [gd_scene format=3 uid="uid://baofd8uqreav4"]
 
+[ext_resource type="Script" uid="uid://dedwhrmi4tuni" path="res://Scenes/characters/NPC.cs" id="1_u3kao"]
 [ext_resource type="Texture2D" uid="uid://bc1inec6tto3s" path="res://Assets/Tiny Swords (Free Pack)/Units/Black Units/Monk/Idle.png" id="1_u641k"]
 [ext_resource type="Script" uid="uid://cfj1otbjy0s52" path="res://Scenes/characters/DetectionArea2d.cs" id="3_42w2j"]
 [ext_resource type="Texture2D" uid="uid://bo1gp2inyd7qh" path="res://Assets/Tiny Swords (Free Pack)/Units/Black Units/Warrior/Warrior_Run.png" id="3_tt4cq"]
@@ -110,6 +111,7 @@ radius = 53.338543
 
 [node name="NPC" type="CharacterBody2D" unique_id=2068987577]
 y_sort_enabled = true
+script = ExtResource("1_u3kao")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=2122052175]
 texture_filter = 1

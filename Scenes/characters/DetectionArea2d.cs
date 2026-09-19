@@ -19,6 +19,9 @@ public partial class DetectionArea2d : Area2D
 		{
 			battleStarted = true;
 
+			GameState.Instance.HasReturnPosition = true;
+			GameState.Instance.ReturnPosition = body.GlobalPosition;
+
 			StartBattle();
 		}
 	}
@@ -26,5 +29,6 @@ public partial class DetectionArea2d : Area2D
 	private void StartBattle()
 	{
 		GD.Print("Battle started!");
+		GetTree().CallDeferred(SceneTree.MethodName.ChangeSceneToFile, "res://Scenes/BattleScene/battle_scene.tscn");
 	}
 }

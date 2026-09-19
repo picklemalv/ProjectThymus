@@ -15,6 +15,10 @@ run/main_scene="uid://e5ipo0b2e0se"
 config/features=PackedStringArray("4.7", "C#", "GL Compatibility")
 config/icon="res://icon.svg"
 
+[autoload]
+
+GameState="*uid://dbt8vtttm81li"
+
 [display]
 
 window/stretch/mode="canvas_items"
