@@ -16,6 +16,7 @@ public partial class CombatManager : Node2D
 	private Label statusLabel;
 	private Button attackButton;
 	private ColorRect fadeRect;
+	private AnimatedSprite2D playerSprite;
 
 	public override void _Ready()
 	{
@@ -24,6 +25,8 @@ public partial class CombatManager : Node2D
 		statusLabel = GetNode<Label>("UI/VBoxContainer/StatusLabel");
 		attackButton = GetNode<Button>("UI/VBoxContainer/AttackButton");
 		fadeRect = GetNode<ColorRect>("FadeLayer/FadeRect");
+		playerSprite = GetNode<AnimatedSprite2D>("Player/AnimatedSprite2D");
+		playerSprite.AnimationFinished += OnAnimationFinished;
 
 		attackButton.Pressed += OnAttackPressed;
 
@@ -45,6 +48,9 @@ public partial class CombatManager : Node2D
 	{
 		if (battleOver)
 			return;
+		
+		playerSprite.Play("attack");
+		
 
 		enemyHP -= playerAttack;
 		enemyHP = Mathf.Max(enemyHP, 0);
@@ -68,6 +74,14 @@ public partial class CombatManager : Node2D
 
 		statusLabel.Text = "You attacked! Enemy attacked back!";
 	}
+	
+	private void OnAnimationFinished()
+{
+	if (playerSprite.Animation == "attack")
+	{
+		playerSprite.Play("default");
+	}
+}
 
 	private void UpdateLabels()
 	{
@@ -84,14 +98,32 @@ public partial class CombatManager : Node2D
 
 	if (playerWon)
 	{
-		await ToSignal(GetTree().CreateTimer(1.5), Timer.SignalName.Timeout);
+		await ToSignal(
+			GetTree().CreateTimer(1.5),
+			Timer.SignalName.Timeout
+		);
 
 		Tween tween = CreateTween();
-		tween.TweenProperty(fadeRect, "modulate:a", 1.0f, 0.6f);
-		await ToSignal(tween, Tween.SignalName.Finished);
 
-		GameState.Instance.NpcDefeated = true;
-		GetTree().ChangeSceneToFile("res://Scenes/main.tscn");
+		tween.TweenProperty(
+			fadeRect,
+			"modulate:a",
+			1.0f,
+			0.6f
+		);
+
+		await ToSignal(
+			tween,
+			Tween.SignalName.Finished
+		);
+
+		GameState.Instance.DefeatNpc(
+			GameState.Instance.CurrentNpcID
+		);
+
+		GetTree().ChangeSceneToFile(
+	        "res://Scenes/main.tscn"
+		);
 	}
 }
 }

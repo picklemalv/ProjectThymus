@@ -1,5 +1,4 @@
 using Godot;
-using System;
 
 public partial class DetectionArea2d : Area2D
 {
@@ -17,10 +16,20 @@ public partial class DetectionArea2d : Area2D
 
 		if (body is Player)
 		{
+			NPC npc = GetParent<NPC>();
+
+			if (npc == null)
+				return;
+
+			if (GameState.Instance.IsNpcDefeated(npc.NpcID))
+				return;
+
 			battleStarted = true;
 
 			GameState.Instance.HasReturnPosition = true;
 			GameState.Instance.ReturnPosition = body.GlobalPosition;
+
+			GameState.Instance.CurrentNpcID = npc.NpcID;
 
 			StartBattle();
 		}
@@ -29,6 +38,10 @@ public partial class DetectionArea2d : Area2D
 	private void StartBattle()
 	{
 		GD.Print("Battle started!");
-		GetTree().CallDeferred(SceneTree.MethodName.ChangeSceneToFile, "res://Scenes/BattleScene/battle_scene.tscn");
+
+		GetTree().CallDeferred(
+			SceneTree.MethodName.ChangeSceneToFile,
+			"res://Scenes/BattleScene/battle_scene.tscn"
+		);
 	}
 }

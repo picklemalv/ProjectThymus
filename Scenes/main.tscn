@@ -1902,6 +1902,15 @@ position = Vector2(454, 310)
 
 [node name="NPC" parent="Objects" unique_id=1286714938 instance=ExtResource("4_hptm8")]
 position = Vector2(164, 522)
+NpcID = "enemy01"
+
+[node name="NPC2" parent="Objects" unique_id=1330419418 instance=ExtResource("4_hptm8")]
+position = Vector2(584, 523)
+NpcID = "enemy02"
+
+[node name="NPC3" parent="Objects" unique_id=516451328 instance=ExtResource("4_hptm8")]
+position = Vector2(605, 357)
+NpcID = "enemy03"
 
 [node name="Buildings" type="Node2D" parent="Objects" unique_id=1325240047]
 y_sort_enabled = true
