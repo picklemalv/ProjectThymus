@@ -3,16 +3,16 @@ using System;
 
 public partial class CombatManager : Node2D
 {
-	private int playerHP = 100;
-	private int playerAttack = 15;
+	private const float InfectionGainPerTurn = 2f;
 
-	private int enemyHP = 60;
-	private int enemyAttack = 10;
+	private Stats playerStats;
+	private Stats enemyStats;
 
 	private bool battleOver = false;
 
 	private Label playerHPLabel;
 	private Label enemyHPLabel;
+	private Label infectionLabel;
 	private Label statusLabel;
 	private Button attackButton;
 	private ColorRect fadeRect;
@@ -22,6 +22,7 @@ public partial class CombatManager : Node2D
 	{
 		playerHPLabel = GetNode<Label>("UI/VBoxContainer/PlayerHPLabel");
 		enemyHPLabel = GetNode<Label>("UI/VBoxContainer/EnemyHPLabel");
+		infectionLabel = GetNode<Label>("UI/VBoxContainer/InfectionLabel");
 		statusLabel = GetNode<Label>("UI/VBoxContainer/StatusLabel");
 		attackButton = GetNode<Button>("UI/VBoxContainer/AttackButton");
 		fadeRect = GetNode<ColorRect>("FadeLayer/FadeRect");
@@ -30,10 +31,66 @@ public partial class CombatManager : Node2D
 
 		attackButton.Pressed += OnAttackPressed;
 
+		playerStats = GameState.Instance.PlayerStats;
+
+		EnemyData data = GameState.Instance.CurrentEnemyData;
+
+		enemyStats = new Stats();
+		if (data != null)
+		{
+			enemyStats.BaseHP = data.BaseHP;
+			enemyStats.BaseAttack = data.BaseAttack;
+			enemyStats.BaseDefense = data.BaseDefense;
+			enemyStats.BaseSpeed = data.BaseSpeed;
+		}
+		else
+		{
+			GD.PushWarning("No EnemyData set, using fallback stats.");
+			enemyStats.BaseHP = 60;
+			enemyStats.BaseAttack = 10;
+			enemyStats.BaseDefense = 3;
+			enemyStats.BaseSpeed = 6;
+		}
+		AddChild(enemyStats);
+
 		UpdateLabels();
-		statusLabel.Text = "A wild enemy appears!";
+		statusLabel.Text = data != null ? $"A wild {data.EnemyName} appears!" : "A wild enemy appears!";
 
 		FadeIn();
+
+		if (enemyStats.Speed > playerStats.Speed)
+		{
+			attackButton.Disabled = true;
+			CallDeferred(nameof(EnemyOpeningAttack));
+		}
+	}
+
+	private async void EnemyOpeningAttack()
+	{
+		await ToSignal(GetTree().CreateTimer(1.0), Timer.SignalName.Timeout);
+
+		if (battleOver)
+			return;
+
+		statusLabel.Text = "Enemy is faster! It strikes first!";
+
+		int dmg = CalculateDamage(enemyStats.Attack, playerStats.Defense);
+		playerStats.CurrentHP -= dmg;
+		playerStats.CurrentHP = Mathf.Max(playerStats.CurrentHP, 0);
+		UpdateLabels();
+
+		if (playerStats.CurrentHP <= 0)
+		{
+			TriggerTimeLoop("You were overwhelmed...");
+			return;
+		}
+
+		attackButton.Disabled = false;
+	}
+
+	private int CalculateDamage(int attack, int defense)
+	{
+		return Mathf.Max(attack - defense, 1);
 	}
 
 	private void FadeIn()
@@ -48,56 +105,103 @@ public partial class CombatManager : Node2D
 	{
 		if (battleOver)
 			return;
-		
+
 		playerSprite.Play("attack");
-		
 
-		enemyHP -= playerAttack;
-		enemyHP = Mathf.Max(enemyHP, 0);
+		playerStats.AddInfection(InfectionGainPerTurn);
 
-		if (enemyHP <= 0)
+		int dmgToEnemy = CalculateDamage(playerStats.Attack, enemyStats.Defense);
+		enemyStats.CurrentHP -= dmgToEnemy;
+		enemyStats.CurrentHP = Mathf.Max(enemyStats.CurrentHP, 0);
+
+		if (enemyStats.CurrentHP <= 0)
 		{
-			EndBattle(true);
+			EndBattle();
 			return;
 		}
 
-		playerHP -= enemyAttack;
-		playerHP = Mathf.Max(playerHP, 0);
+		int dmgToPlayer = CalculateDamage(enemyStats.Attack, playerStats.Defense);
+		playerStats.CurrentHP -= dmgToPlayer;
+		playerStats.CurrentHP = Mathf.Max(playerStats.CurrentHP, 0);
 
 		UpdateLabels();
 
-		if (playerHP <= 0)
+		if (playerStats.CurrentHP <= 0)
 		{
-			EndBattle(false);
+			TriggerTimeLoop("You were overwhelmed...");
+			return;
+		}
+
+		if (playerStats.IsInfectionMaxed())
+		{
+			TriggerTimeLoop("Infection reached 100%!");
 			return;
 		}
 
 		statusLabel.Text = "You attacked! Enemy attacked back!";
 	}
-	
+
 	private void OnAnimationFinished()
-{
-	if (playerSprite.Animation == "attack")
 	{
-		playerSprite.Play("default");
+		if (playerSprite.Animation == "attack")
+		{
+			playerSprite.Play("default");
+		}
 	}
-}
 
 	private void UpdateLabels()
 	{
-		playerHPLabel.Text = "Player HP: " + playerHP;
-		enemyHPLabel.Text = "Enemy HP: " + enemyHP;
+		playerHPLabel.Text = "Player HP: " + playerStats.CurrentHP;
+		enemyHPLabel.Text = "Enemy HP: " + enemyStats.CurrentHP;
+		infectionLabel.Text = $"Infection: {playerStats.CurrentInfection:0}%";
 	}
 
-	private async void EndBattle(bool playerWon)
-{
-	battleOver = true;
-	attackButton.Disabled = true;
-	UpdateLabels();
-	statusLabel.Text = playerWon ? "You won the battle!" : "You were defeated...";
-
-	if (playerWon)
+	// Dipanggil kalau HP habis ATAU Infection 100% — keduanya sama-sama Time Loop per GDD
+	private async void TriggerTimeLoop(string reason)
 	{
+		battleOver = true;
+		attackButton.Disabled = true;
+		statusLabel.Text = $"{reason} Time Loop activated...";
+		UpdateLabels();
+
+		await ToSignal(
+			GetTree().CreateTimer(1.5),
+			Timer.SignalName.Timeout
+		);
+
+		Tween tween = CreateTween();
+		tween.TweenProperty(fadeRect, "modulate:a", 1.0f, 0.6f);
+		await ToSignal(tween, Tween.SignalName.Finished);
+
+		// Run Data reset (HP, Infection)
+		playerStats.ResetInfection();
+		playerStats.CurrentHP = playerStats.MaxHP;
+
+		// Dunia reset: semua NPC yang udah dikalahin "hidup" lagi
+		GameState.Instance.ClearDefeatedNPCs();
+
+		// Jangan pake posisi pre-battle — biar Player spawn di titik default main.tscn (shelter)
+		GameState.Instance.HasReturnPosition = false;
+
+		GetTree().ChangeSceneToFile(
+			"res://Scenes/main.tscn"
+		);
+	}
+
+	private async void EndBattle()
+	{
+		battleOver = true;
+		attackButton.Disabled = true;
+
+		float healPercent = (float)GD.RandRange(10, 15) / 100f;
+		int healAmount = Mathf.CeilToInt(playerStats.MaxHP * healPercent);
+
+		playerStats.CurrentHP += healAmount;
+		playerStats.CurrentHP = Mathf.Min(playerStats.CurrentHP, playerStats.MaxHP);
+
+		statusLabel.Text = $"You won the battle! Recovered {healAmount} HP.";
+		UpdateLabels();
+
 		await ToSignal(
 			GetTree().CreateTimer(1.5),
 			Timer.SignalName.Timeout
@@ -122,8 +226,7 @@ public partial class CombatManager : Node2D
 		);
 
 		GetTree().ChangeSceneToFile(
-	        "res://Scenes/main.tscn"
+			"res://Scenes/main.tscn"
 		);
 	}
-}
 }

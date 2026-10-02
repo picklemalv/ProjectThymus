@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://baofd8uqreav4" path="res://Scenes/characters/NPC1.tscn" id="4_hptm8"]
 [ext_resource type="PackedScene" uid="uid://dyyr737u14vgl" path="res://Scenes/objects/Tower.tscn" id="4_jjvhh"]
 [ext_resource type="PackedScene" uid="uid://cvlobkt48udkt" path="res://Scenes/objects/Rock1.tscn" id="5_344ge"]
+[ext_resource type="Script" uid="uid://dcloqoier2nsx" path="res://Scenes/BattleScene/EnemyData.cs" id="6_6iyac"]
 [ext_resource type="PackedScene" uid="uid://53b5uhp0vbto" path="res://Scenes/objects/Rock2.tscn" id="6_ynf5e"]
 [ext_resource type="PackedScene" uid="uid://b8hytbpj3bu67" path="res://Scenes/objects/Rock3.tscn" id="7_hptm8"]
 [ext_resource type="PackedScene" uid="uid://cvp3lyp22scoa" path="res://Scenes/objects/Tree1.tscn" id="8_d1ilt"]
@@ -1858,6 +1859,21 @@ texture = ExtResource("1_ynf5e")
 physics_layer_0/collision_layer = 1
 sources/0 = SubResource("TileSetAtlasSource_cegan")
 
+[sub_resource type="Resource" id="Resource_d1ilt"]
+script = ExtResource("6_6iyac")
+BaseAttack = 30
+metadata/_custom_type_script = "uid://dcloqoier2nsx"
+
+[sub_resource type="Resource" id="Resource_6iyac"]
+script = ExtResource("6_6iyac")
+BaseAttack = 11
+metadata/_custom_type_script = "uid://dcloqoier2nsx"
+
+[sub_resource type="Resource" id="Resource_jkdf5"]
+script = ExtResource("6_6iyac")
+BaseAttack = 20
+metadata/_custom_type_script = "uid://dcloqoier2nsx"
+
 [node name="Main" type="Node2D" unique_id=1445840066]
 
 [node name="World" type="Node2D" parent="." unique_id=151248357]
@@ -1902,15 +1918,18 @@ position = Vector2(454, 310)
 
 [node name="NPC" parent="Objects" unique_id=1286714938 instance=ExtResource("4_hptm8")]
 position = Vector2(164, 522)
-NpcID = "enemy01"
+NpcID = "1"
+EnemyData = SubResource("Resource_d1ilt")
 
 [node name="NPC2" parent="Objects" unique_id=1330419418 instance=ExtResource("4_hptm8")]
 position = Vector2(584, 523)
-NpcID = "enemy02"
+NpcID = "2"
+EnemyData = SubResource("Resource_6iyac")
 
 [node name="NPC3" parent="Objects" unique_id=516451328 instance=ExtResource("4_hptm8")]
 position = Vector2(605, 357)
-NpcID = "enemy03"
+NpcID = "3"
+EnemyData = SubResource("Resource_jkdf5")
 
 [node name="Buildings" type="Node2D" parent="Objects" unique_id=1325240047]
 y_sort_enabled = true

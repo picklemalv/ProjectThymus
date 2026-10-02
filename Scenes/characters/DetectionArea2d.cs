@@ -30,6 +30,7 @@ public partial class DetectionArea2d : Area2D
 			GameState.Instance.ReturnPosition = body.GlobalPosition;
 
 			GameState.Instance.CurrentNpcID = npc.NpcID;
+			GameState.Instance.CurrentEnemyData = npc.EnemyData;
 
 			StartBattle();
 		}

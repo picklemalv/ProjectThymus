@@ -47,7 +47,6 @@ public partial class Player : CharacterBody2D
 		}
 
 
-		// Mirror sprite when moving left/right
 		if (direction.X != 0)
 		{
 			sprite.FlipH = direction.X < 0;

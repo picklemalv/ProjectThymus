@@ -11,10 +11,16 @@ public partial class GameState : Node
 	private HashSet<string> defeatedNPCs = new HashSet<string>();
 
 	public string CurrentNpcID = "";
+	public EnemyData CurrentEnemyData;
+
+	public Stats PlayerStats;
 
 	public override void _Ready()
 	{
 		Instance = this;
+
+		PlayerStats = new Stats();
+		AddChild(PlayerStats);
 	}
 
 	public void DefeatNpc(string npcID)
@@ -25,5 +31,10 @@ public partial class GameState : Node
 	public bool IsNpcDefeated(string npcID)
 	{
 		return defeatedNPCs.Contains(npcID);
+	}
+
+	public void ClearDefeatedNPCs()
+	{
+		defeatedNPCs.Clear();
 	}
 }
