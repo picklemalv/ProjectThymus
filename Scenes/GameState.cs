@@ -13,6 +13,9 @@ public partial class GameState : Node
 	public string CurrentNpcID = "";
 	public EnemyData CurrentEnemyData;
 
+	// SpriteFrames of the enemy currently being fought
+	public SpriteFrames CurrentEnemySpriteFrames;
+
 	public Stats PlayerStats;
 
 	public override void _Ready()

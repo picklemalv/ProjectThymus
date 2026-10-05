@@ -3,7 +3,6 @@
 [ext_resource type="Script" uid="uid://b3si8t50nkbvo" path="res://Scenes/BattleScene/CombatManager.cs" id="1_w4hjr"]
 [ext_resource type="Texture2D" uid="uid://br0qsmxhqytcy" path="res://Assets/Tiny Swords (Free Pack)/Terrain/Tileset/Tilemap_color1.png" id="2_xikhp"]
 [ext_resource type="Texture2D" uid="uid://dqlpqkrkk7h7d" path="res://Assets/Tiny Swords (Free Pack)/Terrain/Tileset/Water Background color.png" id="3_re031"]
-[ext_resource type="Texture2D" uid="uid://b80tl4i5qt5i1" path="res://Assets/Tiny Swords (Free Pack)/Units/Black Units/Warrior/Warrior_Guard.png" id="4_rgnyu"]
 [ext_resource type="Texture2D" uid="uid://bc1inec6tto3s" path="res://Assets/Tiny Swords (Free Pack)/Units/Black Units/Monk/Idle.png" id="5_0c8r6"]
 [ext_resource type="Texture2D" uid="uid://cjdpsibmg4apo" path="res://Assets/Tiny Swords (Free Pack)/Units/Black Units/Warrior/Warrior_Idle.png" id="6_0c8r6"]
 [ext_resource type="Texture2D" uid="uid://pf7jsnobqj6l" path="res://Assets/Tiny Swords (Free Pack)/Units/Black Units/Warrior/Warrior_Attack2.png" id="6_l5m2j"]
@@ -872,106 +871,6 @@ physics_layer_0/collision_layer = 1
 sources/0 = SubResource("TileSetAtlasSource_e5vbs")
 sources/1 = SubResource("TileSetAtlasSource_3gnqe")
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_e5vbs"]
-atlas = ExtResource("4_rgnyu")
-region = Rect2(0, 0, 192, 192)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_3gnqe"]
-atlas = ExtResource("4_rgnyu")
-region = Rect2(192, 0, 192, 192)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_gt16y"]
-atlas = ExtResource("4_rgnyu")
-region = Rect2(384, 0, 192, 192)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_20f6w"]
-atlas = ExtResource("4_rgnyu")
-region = Rect2(576, 0, 192, 192)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_w4764"]
-atlas = ExtResource("4_rgnyu")
-region = Rect2(768, 0, 192, 192)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_ed262"]
-atlas = ExtResource("4_rgnyu")
-region = Rect2(960, 0, 192, 192)
-
-[sub_resource type="SpriteFrames" id="SpriteFrames_v3fdb"]
-animations = [{
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_e5vbs")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_3gnqe")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_gt16y")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_20f6w")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_w4764")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_ed262")
-}],
-"loop": 1,
-"name": &"Idle",
-"speed": 6.0
-}]
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_ms847"]
-atlas = ExtResource("5_0c8r6")
-region = Rect2(0, 0, 192, 192)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_f4ggb"]
-atlas = ExtResource("5_0c8r6")
-region = Rect2(192, 0, 192, 192)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_wb0gu"]
-atlas = ExtResource("5_0c8r6")
-region = Rect2(384, 0, 192, 192)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_84vmf"]
-atlas = ExtResource("5_0c8r6")
-region = Rect2(576, 0, 192, 192)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_xdap8"]
-atlas = ExtResource("5_0c8r6")
-region = Rect2(768, 0, 192, 192)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_f856b"]
-atlas = ExtResource("5_0c8r6")
-region = Rect2(960, 0, 192, 192)
-
-[sub_resource type="SpriteFrames" id="SpriteFrames_4u6g3"]
-animations = [{
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_ms847")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_f4ggb")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_wb0gu")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_84vmf")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_xdap8")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_f856b")
-}],
-"loop": 1,
-"name": &"Idle",
-"speed": 6.0
-}]
-
 [sub_resource type="AtlasTexture" id="AtlasTexture_r0dwk"]
 atlas = ExtResource("6_l5m2j")
 region = Rect2(0, 0, 192, 192)
@@ -1256,26 +1155,9 @@ text = "Attack"
 [node name="InfectionLabel" type="Label" parent="UI/VBoxContainer" unique_id=461955716]
 layout_mode = 2
 
-[node name="PlayerSprite" type="AnimatedSprite2D" parent="." unique_id=293846795]
-visible = false
-texture_filter = 1
-position = Vector2(313, 291)
-scale = Vector2(1.8125, 1.8125)
-sprite_frames = SubResource("SpriteFrames_v3fdb")
-animation = &"Idle"
-autoplay = "Idle"
-
-[node name="EnemySprite" type="AnimatedSprite2D" parent="." unique_id=1693588149]
-visible = false
-position = Vector2(822, 292)
-scale = Vector2(1.765625, 1.765625)
-sprite_frames = SubResource("SpriteFrames_4u6g3")
-animation = &"Idle"
-autoplay = "Idle"
-flip_h = true
-
 [node name="FadeLayer" type="CanvasLayer" parent="." unique_id=2825734]
 layer = 10
+visible = false
 
 [node name="FadeRect" type="ColorRect" parent="FadeLayer" unique_id=551422987]
 anchors_preset = 15

@@ -16,7 +16,9 @@ public partial class CombatManager : Node2D
 	private Label statusLabel;
 	private Button attackButton;
 	private ColorRect fadeRect;
+
 	private AnimatedSprite2D playerSprite;
+	private AnimatedSprite2D enemySprite;
 
 	public override void _Ready()
 	{
@@ -28,6 +30,9 @@ public partial class CombatManager : Node2D
 		fadeRect = GetNode<ColorRect>("FadeLayer/FadeRect");
 		playerSprite = GetNode<AnimatedSprite2D>("Player/AnimatedSprite2D");
 		playerSprite.AnimationFinished += OnAnimationFinished;
+		
+		enemySprite = GetNode<AnimatedSprite2D>("NPC/AnimatedSprite2D");
+		LoadEncounteredEnemy();
 
 		attackButton.Pressed += OnAttackPressed;
 
@@ -57,6 +62,18 @@ public partial class CombatManager : Node2D
 		statusLabel.Text = data != null ? $"A wild {data.EnemyName} appears!" : "A wild enemy appears!";
 
 		FadeIn();
+		GD.Print("==============================");
+		GD.Print("BATTLE SCENE LOADED");
+		GD.Print(
+			$"CurrentNpcID: {GameState.Instance.CurrentNpcID}"
+		);
+		GD.Print(
+			$"CurrentEnemyData: {GameState.Instance.CurrentEnemyData}"
+		);
+		GD.Print(
+			$"CurrentEnemySpriteFrames: {GameState.Instance.CurrentEnemySpriteFrames}"
+		);
+		GD.Print("==============================");
 
 		if (enemyStats.Speed > playerStats.Speed)
 		{
@@ -186,6 +203,56 @@ public partial class CombatManager : Node2D
 		GetTree().ChangeSceneToFile(
 			"res://Scenes/main.tscn"
 		);
+	}
+	
+	private void LoadEncounteredEnemy()
+	{
+		SpriteFrames enemyFrames =
+			GameState.Instance.CurrentEnemySpriteFrames;
+
+		if (enemyFrames == null)
+		{
+			GD.PushError("CurrentEnemySpriteFrames is NULL!");
+			return;
+		}
+
+		GD.Print("==============================");
+		GD.Print("LOADING ENEMY SPRITE");
+		GD.Print($"Enemy SpriteFrames: {enemyFrames}");
+		GD.Print($"Animation count: {enemyFrames.GetAnimationNames().Length}");
+
+		string[] animations = enemyFrames.GetAnimationNames();
+
+		foreach (string animationName in animations)
+		{
+			GD.Print(
+				$"Animation: {animationName} | " +
+				$"Frames: {enemyFrames.GetFrameCount(animationName)}"
+			);
+		}
+
+		if (animations.Length == 0)
+		{
+			GD.PushError("Enemy SpriteFrames contains NO animations!");
+			return;
+		}
+
+		// Replace the battle scene's empty SpriteFrames
+		enemySprite.SpriteFrames = enemyFrames;
+
+		// Use the first animation available
+		string selectedAnimation = animations[0];
+
+		enemySprite.Animation = selectedAnimation;
+		enemySprite.Frame = 0;
+		enemySprite.Visible = true;
+		enemySprite.Play();
+
+		GD.Print($"Playing animation: {selectedAnimation}");
+		GD.Print($"Enemy visible: {enemySprite.Visible}");
+		GD.Print($"Enemy position: {enemySprite.Position}");
+		GD.Print($"Enemy scale: {enemySprite.Scale}");
+		GD.Print("==============================");
 	}
 
 	private async void EndBattle()

@@ -8,7 +8,6 @@ public partial class NPC : CharacterBody2D
 	[Export]
 	public EnemyData EnemyData;
 
-	private bool battleStarted = false;
 
 	public override void _Ready()
 	{
