@@ -8,6 +8,8 @@
 [ext_resource type="Texture2D" uid="uid://pf7jsnobqj6l" path="res://Assets/Tiny Swords (Free Pack)/Units/Black Units/Warrior/Warrior_Attack2.png" id="6_l5m2j"]
 [ext_resource type="Texture2D" uid="uid://bo1gp2inyd7qh" path="res://Assets/Tiny Swords (Free Pack)/Units/Black Units/Warrior/Warrior_Run.png" id="7_l5m2j"]
 [ext_resource type="Script" uid="uid://diufc3r3pr5kf" path="res://Scenes/characters/FlipChar.cs" id="8_rgnyu"]
+[ext_resource type="Texture2D" uid="uid://bp1yho1mp876i" path="res://Assets/ThymusAssets/pixel_ui/icons/pause.png" id="9_l5m2j"]
+[ext_resource type="FontFile" uid="uid://db3kmltwkjphx" path="res://Assets/ThymusAssets/pixel_ui/font/pixel_ui_font.fnt" id="10_gomgp"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_e5vbs"]
 texture = ExtResource("2_xikhp")
@@ -1154,6 +1156,63 @@ text = "Attack"
 
 [node name="InfectionLabel" type="Label" parent="UI/VBoxContainer" unique_id=461955716]
 layout_mode = 2
+
+[node name="PauseButton" type="Button" parent="UI" unique_id=764796986]
+texture_filter = 1
+offset_left = 1058.0
+offset_top = 25.0
+offset_right = 1082.0
+offset_bottom = 49.0
+scale = Vector2(3, 3)
+icon = ExtResource("9_l5m2j")
+
+[node name="PausePanel" type="Panel" parent="UI" unique_id=1955406358]
+offset_left = 757.0
+offset_top = 114.0
+offset_right = 1132.0
+offset_bottom = 581.0
+
+[node name="RichTextLabel" type="RichTextLabel" parent="UI/PausePanel" unique_id=1235435796]
+texture_filter = 1
+layout_mode = 0
+offset_left = 60.0
+offset_top = 35.0
+offset_right = 184.0
+offset_bottom = 70.5
+scale = Vector2(2, 2)
+theme_override_fonts/normal_font = ExtResource("10_gomgp")
+text = "Paused"
+horizontal_alignment = 1
+
+[node name="ContinueButton" type="Button" parent="UI/PausePanel" unique_id=1867940713]
+texture_filter = 1
+layout_mode = 0
+offset_left = 95.0
+offset_top = 150.0
+offset_right = 273.0
+offset_bottom = 198.0
+theme_override_fonts/font = ExtResource("10_gomgp")
+text = "Continue"
+
+[node name="MenuButton" type="Button" parent="UI/PausePanel" unique_id=43991009]
+texture_filter = 1
+layout_mode = 0
+offset_left = 95.0
+offset_top = 250.0
+offset_right = 273.0
+offset_bottom = 298.0
+theme_override_fonts/font = ExtResource("10_gomgp")
+text = "Main Menu"
+
+[node name="QuitButton" type="Button" parent="UI/PausePanel" unique_id=419182365]
+texture_filter = 1
+layout_mode = 0
+offset_left = 95.0
+offset_top = 350.0
+offset_right = 273.0
+offset_bottom = 398.0
+theme_override_fonts/font = ExtResource("10_gomgp")
+text = "QuitGame"
 
 [node name="FadeLayer" type="CanvasLayer" parent="." unique_id=2825734]
 layer = 10
