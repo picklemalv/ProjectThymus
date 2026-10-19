@@ -1993,22 +1993,22 @@ position = Vector2(43, 329)
 [node name="Tree11" parent="Objects/Trees" unique_id=1479107239 instance=ExtResource("8_d1ilt")]
 position = Vector2(24, 173)
 
-[node name="UI" type="Node2D" parent="." unique_id=1804179296]
+[node name="UI" type="CanvasLayer" parent="." unique_id=1442604166]
 
 [node name="PauseButton" type="Button" parent="UI" unique_id=1591769153]
 texture_filter = 1
-offset_left = 856.0
-offset_top = 44.0
-offset_right = 880.0
-offset_bottom = 68.0
+offset_left = 1058.0
+offset_top = 25.0
+offset_right = 1082.0
+offset_bottom = 49.0
 scale = Vector2(3, 3)
 icon = ExtResource("14_wsu2k")
 
 [node name="PausePanel" type="Panel" parent="UI" unique_id=618739794]
-offset_left = 300.0
-offset_top = 80.0
-offset_right = 675.0
-offset_bottom = 547.0
+offset_left = 757.0
+offset_top = 114.0
+offset_right = 1132.0
+offset_bottom = 581.0
 
 [node name="RichTextLabel" type="RichTextLabel" parent="UI/PausePanel" unique_id=1461913723]
 texture_filter = 1
