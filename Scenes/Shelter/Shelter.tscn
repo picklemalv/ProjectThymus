@@ -1,0 +1,36 @@
+[gd_scene format=3 uid="uid://cg0qoi0dehxiq"]
+
+[ext_resource type="Texture2D" uid="uid://iv58q3orexgu" path="res://Assets/ThymusAssets/Map/Shelter.jpg" id="1_ypdlj"]
+[ext_resource type="PackedScene" uid="uid://b31lhlfo8g7s0" path="res://Scenes/characters/Player.tscn" id="2_jy1iy"]
+[ext_resource type="Script" uid="uid://cc06u864wq0t4" path="res://Scenes/Shelter/ExpeditionGate.cs" id="3_d5vf0"]
+[ext_resource type="Script" uid="uid://cnyyv2efwqsct" path="res://Scenes/Shelter/ShelterHud.cs" id="4_ef8dn"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_v3fdb"]
+size = Vector2(95, 115)
+
+[node name="Shelter" type="Node2D" unique_id=529997760]
+
+[node name="Background" type="Sprite2D" parent="." unique_id=1530170496]
+position = Vector2(834.18726, 463.37506)
+scale = Vector2(0.6076109, 0.6088867)
+texture = ExtResource("1_ypdlj")
+
+[node name="Player" parent="." unique_id=2068987577 instance=ExtResource("2_jy1iy")]
+position = Vector2(836, 472)
+scale = Vector2(0.99999994, 1)
+
+[node name="ExpeditionGate" type="Area2D" parent="." unique_id=1535359084]
+script = ExtResource("3_d5vf0")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ExpeditionGate" unique_id=840986991]
+position = Vector2(1061.5, 630.5)
+shape = SubResource("RectangleShape2D_v3fdb")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=462364925]
+
+[node name="Label" type="Label" parent="CanvasLayer" unique_id=595059549]
+offset_left = 16.0
+offset_top = 12.0
+offset_right = 56.0
+offset_bottom = 35.0
+script = ExtResource("4_ef8dn")

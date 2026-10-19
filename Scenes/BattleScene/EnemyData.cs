@@ -8,4 +8,5 @@ public partial class EnemyData : Resource
 	[Export] public int BaseAttack = 10;
 	[Export] public int BaseDefense = 3;
 	[Export] public int BaseSpeed = 6;
+	[Export] public int ScrapDrop = 15;
 }

@@ -30,7 +30,7 @@ public partial class CombatManager : Node2D
 		fadeRect = GetNode<ColorRect>("FadeLayer/FadeRect");
 		playerSprite = GetNode<AnimatedSprite2D>("Player/AnimatedSprite2D");
 		playerSprite.AnimationFinished += OnAnimationFinished;
-		
+
 		enemySprite = GetNode<AnimatedSprite2D>("NPC/AnimatedSprite2D");
 		LoadEncounteredEnemy();
 
@@ -64,15 +64,9 @@ public partial class CombatManager : Node2D
 		FadeIn();
 		GD.Print("==============================");
 		GD.Print("BATTLE SCENE LOADED");
-		GD.Print(
-			$"CurrentNpcID: {GameState.Instance.CurrentNpcID}"
-		);
-		GD.Print(
-			$"CurrentEnemyData: {GameState.Instance.CurrentEnemyData}"
-		);
-		GD.Print(
-			$"CurrentEnemySpriteFrames: {GameState.Instance.CurrentEnemySpriteFrames}"
-		);
+		GD.Print($"CurrentNpcID: {GameState.Instance.CurrentNpcID}");
+		GD.Print($"CurrentEnemyData: {GameState.Instance.CurrentEnemyData}");
+		GD.Print($"CurrentEnemySpriteFrames: {GameState.Instance.CurrentEnemySpriteFrames}");
 		GD.Print("==============================");
 
 		if (enemyStats.Speed > playerStats.Speed)
@@ -173,7 +167,6 @@ public partial class CombatManager : Node2D
 		infectionLabel.Text = $"Infection: {playerStats.CurrentInfection:0}%";
 	}
 
-	// Dipanggil kalau HP habis ATAU Infection 100% — keduanya sama-sama Time Loop per GDD
 	private async void TriggerTimeLoop(string reason)
 	{
 		battleOver = true;
@@ -181,34 +174,20 @@ public partial class CombatManager : Node2D
 		statusLabel.Text = $"{reason} Time Loop activated...";
 		UpdateLabels();
 
-		await ToSignal(
-			GetTree().CreateTimer(1.5),
-			Timer.SignalName.Timeout
-		);
+		await ToSignal(GetTree().CreateTimer(1.5), Timer.SignalName.Timeout);
 
 		Tween tween = CreateTween();
 		tween.TweenProperty(fadeRect, "modulate:a", 1.0f, 0.6f);
 		await ToSignal(tween, Tween.SignalName.Finished);
 
-		// Run Data reset (HP, Infection)
-		playerStats.ResetInfection();
-		playerStats.CurrentHP = playerStats.MaxHP;
+		GameState.Instance.EndExpedition(false);
 
-		// Dunia reset: semua NPC yang udah dikalahin "hidup" lagi
-		GameState.Instance.ClearDefeatedNPCs();
-
-		// Jangan pake posisi pre-battle — biar Player spawn di titik default main.tscn (shelter)
-		GameState.Instance.HasReturnPosition = false;
-
-		GetTree().ChangeSceneToFile(
-			"res://Scenes/main.tscn"
-		);
+		GetTree().ChangeSceneToFile("res://Scenes/Shelter/Shelter.tscn");
 	}
-	
+
 	private void LoadEncounteredEnemy()
 	{
-		SpriteFrames enemyFrames =
-			GameState.Instance.CurrentEnemySpriteFrames;
+		SpriteFrames enemyFrames = GameState.Instance.CurrentEnemySpriteFrames;
 
 		if (enemyFrames == null)
 		{
@@ -237,10 +216,8 @@ public partial class CombatManager : Node2D
 			return;
 		}
 
-		// Replace the battle scene's empty SpriteFrames
 		enemySprite.SpriteFrames = enemyFrames;
 
-		// Use the first animation available
 		string selectedAnimation = animations[0];
 
 		enemySprite.Animation = selectedAnimation;
@@ -260,40 +237,28 @@ public partial class CombatManager : Node2D
 		battleOver = true;
 		attackButton.Disabled = true;
 
+		EnemyData data = GameState.Instance.CurrentEnemyData;
+		int scrapGained = data != null ? data.ScrapDrop : 10;
+		GameState.Instance.RunScrap += scrapGained;
+
 		float healPercent = (float)GD.RandRange(10, 15) / 100f;
 		int healAmount = Mathf.CeilToInt(playerStats.MaxHP * healPercent);
 
 		playerStats.CurrentHP += healAmount;
 		playerStats.CurrentHP = Mathf.Min(playerStats.CurrentHP, playerStats.MaxHP);
 
-		statusLabel.Text = $"You won the battle! Recovered {healAmount} HP.";
+		statusLabel.Text = $"You won! +{scrapGained} Scrap. Recovered {healAmount} HP.";
 		UpdateLabels();
+		GameState.Instance.PrintData();
 
-		await ToSignal(
-			GetTree().CreateTimer(1.5),
-			Timer.SignalName.Timeout
-		);
+		await ToSignal(GetTree().CreateTimer(1.5), Timer.SignalName.Timeout);
 
 		Tween tween = CreateTween();
+		tween.TweenProperty(fadeRect, "modulate:a", 1.0f, 0.6f);
+		await ToSignal(tween, Tween.SignalName.Finished);
 
-		tween.TweenProperty(
-			fadeRect,
-			"modulate:a",
-			1.0f,
-			0.6f
-		);
+		GameState.Instance.DefeatNpc(GameState.Instance.CurrentNpcID);
 
-		await ToSignal(
-			tween,
-			Tween.SignalName.Finished
-		);
-
-		GameState.Instance.DefeatNpc(
-			GameState.Instance.CurrentNpcID
-		);
-
-		GetTree().ChangeSceneToFile(
-			"res://Scenes/main.tscn"
-		);
+		GetTree().ChangeSceneToFile("res://Scenes/main.tscn");
 	}
 }
