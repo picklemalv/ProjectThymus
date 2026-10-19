@@ -11,13 +11,14 @@ config_version=5
 [application]
 
 config/name="Thymus01"
-run/main_scene="uid://e5ipo0b2e0se"
+run/main_scene="uid://cbvgjbvw06b56"
 config/features=PackedStringArray("4.7", "C#", "GL Compatibility")
 config/icon="res://icon.svg"
 
 [autoload]
 
 GameState="*uid://dbt8vtttm81li"
+PauseMenu="*res://Scenes/UI/PauseMenu.cs"
 
 [display]
 
