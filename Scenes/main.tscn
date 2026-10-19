@@ -13,6 +13,8 @@
 [ext_resource type="PackedScene" uid="uid://cvp3lyp22scoa" path="res://Scenes/objects/Tree1.tscn" id="8_d1ilt"]
 [ext_resource type="PackedScene" uid="uid://d4aio4cr46bve" path="res://Scenes/objects/Tree2.tscn" id="9_hptm8"]
 [ext_resource type="PackedScene" uid="uid://b31lhlfo8g7s0" path="res://Scenes/characters/Player.tscn" id="9_ynf5e"]
+[ext_resource type="Texture2D" uid="uid://bp1yho1mp876i" path="res://Assets/ThymusAssets/pixel_ui/icons/pause.png" id="14_wsu2k"]
+[ext_resource type="FontFile" uid="uid://db3kmltwkjphx" path="res://Assets/ThymusAssets/pixel_ui/font/pixel_ui_font.fnt" id="15_k12tt"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_6iyac"]
 texture = ExtResource("1_d1ilt")
@@ -1962,7 +1964,7 @@ y_sort_enabled = true
 position = Vector2(776, 492)
 
 [node name="Tree2" parent="Objects/Trees" unique_id=766819681 instance=ExtResource("9_hptm8")]
-position = Vector2(819, 503)
+position = Vector2(789, 507)
 
 [node name="Tree3" parent="Objects/Trees" unique_id=1530160304 instance=ExtResource("8_d1ilt")]
 position = Vector2(1260, 552)
@@ -1990,3 +1992,62 @@ position = Vector2(43, 329)
 
 [node name="Tree11" parent="Objects/Trees" unique_id=1479107239 instance=ExtResource("8_d1ilt")]
 position = Vector2(24, 173)
+
+[node name="UI" type="Node2D" parent="." unique_id=1804179296]
+
+[node name="PauseButton" type="Button" parent="UI" unique_id=1591769153]
+texture_filter = 1
+offset_left = 856.0
+offset_top = 44.0
+offset_right = 880.0
+offset_bottom = 68.0
+scale = Vector2(3, 3)
+icon = ExtResource("14_wsu2k")
+
+[node name="PausePanel" type="Panel" parent="UI" unique_id=618739794]
+offset_left = 300.0
+offset_top = 80.0
+offset_right = 675.0
+offset_bottom = 547.0
+
+[node name="RichTextLabel" type="RichTextLabel" parent="UI/PausePanel" unique_id=1461913723]
+texture_filter = 1
+layout_mode = 0
+offset_left = 60.0
+offset_top = 35.0
+offset_right = 184.0
+offset_bottom = 70.5
+scale = Vector2(2, 2)
+theme_override_fonts/normal_font = ExtResource("15_k12tt")
+text = "Paused"
+horizontal_alignment = 1
+
+[node name="ContinueButton" type="Button" parent="UI/PausePanel" unique_id=1102414201]
+texture_filter = 1
+layout_mode = 0
+offset_left = 95.0
+offset_top = 150.0
+offset_right = 273.0
+offset_bottom = 198.0
+theme_override_fonts/font = ExtResource("15_k12tt")
+text = "Continue"
+
+[node name="MenuButton" type="Button" parent="UI/PausePanel" unique_id=989058786]
+texture_filter = 1
+layout_mode = 0
+offset_left = 95.0
+offset_top = 250.0
+offset_right = 273.0
+offset_bottom = 298.0
+theme_override_fonts/font = ExtResource("15_k12tt")
+text = "Main Menu"
+
+[node name="QuitButton" type="Button" parent="UI/PausePanel" unique_id=272311892]
+texture_filter = 1
+layout_mode = 0
+offset_left = 95.0
+offset_top = 350.0
+offset_right = 273.0
+offset_bottom = 398.0
+theme_override_fonts/font = ExtResource("15_k12tt")
+text = "QuitGame"

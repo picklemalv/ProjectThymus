@@ -1,0 +1,17 @@
+[remap]
+
+importer="font_data_bmfont"
+type="FontFile"
+uid="uid://db3kmltwkjphx"
+path="res://.godot/imported/pixel_ui_font.fnt-8a09ff93c51e4f2fcb8782bd3b552240.fontdata"
+
+[deps]
+
+source_file="res://Assets/ThymusAssets/pixel_ui/font/pixel_ui_font.fnt"
+dest_files=["res://.godot/imported/pixel_ui_font.fnt-8a09ff93c51e4f2fcb8782bd3b552240.fontdata"]
+
+[params]
+
+fallbacks=[]
+compress=true
+scaling_mode=2
