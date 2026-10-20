@@ -4,16 +4,245 @@
 [ext_resource type="PackedScene" uid="uid://b31lhlfo8g7s0" path="res://Scenes/characters/Player.tscn" id="2_jy1iy"]
 [ext_resource type="Script" uid="uid://cc06u864wq0t4" path="res://Scenes/Shelter/ExpeditionGate.cs" id="3_d5vf0"]
 [ext_resource type="Script" uid="uid://cnyyv2efwqsct" path="res://Scenes/Shelter/ShelterHud.cs" id="4_ef8dn"]
+[ext_resource type="Texture2D" uid="uid://bp1yho1mp876i" path="res://Assets/ThymusAssets/pixel_ui/icons/pause.png" id="5_qq8da"]
+[ext_resource type="FontFile" uid="uid://db3kmltwkjphx" path="res://Assets/ThymusAssets/pixel_ui/font/pixel_ui_font.fnt" id="6_32ypq"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_qq8da"]
+size = Vector2(82.28937, 481.20605)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_b4ovn"]
+size = Vector2(778, 62)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_vekco"]
+size = Vector2(579.5, 20)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_x8vb0"]
+size = Vector2(403, 88)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_3ki5o"]
+size = Vector2(314.5, 52.875)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_2he3u"]
+size = Vector2(54, 255)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_8pedu"]
+size = Vector2(307, 41)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_lomx2"]
+size = Vector2(142.5, 35.5)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_tnw6b"]
+size = Vector2(71, 143.5)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_52h1m"]
+size = Vector2(447, 126)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_igkwu"]
+size = Vector2(107, 188)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_k5diw"]
+size = Vector2(119, 56)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_v3fdb"]
 size = Vector2(95, 115)
 
 [node name="Shelter" type="Node2D" unique_id=529997760]
 
-[node name="Background" type="Sprite2D" parent="." unique_id=1530170496]
+[node name="Map" type="StaticBody2D" parent="." unique_id=1745798848]
+
+[node name="Map" type="Sprite2D" parent="Map" unique_id=1530170496]
 position = Vector2(834.18726, 463.37506)
 scale = Vector2(0.6076109, 0.6088867)
 texture = ExtResource("1_ypdlj")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Map" unique_id=645526310]
+position = Vector2(750.99994, 628.5)
+scale = Vector2(0.6076109, 0.6088867)
+shape = SubResource("RectangleShape2D_qq8da")
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="Map" unique_id=1714484529]
+position = Vector2(917, 630.00006)
+scale = Vector2(0.6076109, 0.6088867)
+shape = SubResource("RectangleShape2D_qq8da")
+
+[node name="CollisionShape2D3" type="CollisionShape2D" parent="Map" unique_id=139798889]
+position = Vector2(1281, 512)
+shape = SubResource("RectangleShape2D_b4ovn")
+
+[node name="CollisionShape2D16" type="CollisionShape2D" parent="Map" unique_id=1780093400]
+position = Vector2(265, 500)
+shape = SubResource("RectangleShape2D_b4ovn")
+
+[node name="CollisionShape2D34" type="CollisionShape2D" parent="Map" unique_id=1088941284]
+position = Vector2(346, 918)
+shape = SubResource("RectangleShape2D_b4ovn")
+
+[node name="CollisionShape2D4" type="CollisionShape2D" parent="Map" unique_id=2065644026]
+position = Vector2(1379.25, 480)
+shape = SubResource("RectangleShape2D_vekco")
+
+[node name="CollisionShape2D5" type="CollisionShape2D" parent="Map" unique_id=853055884]
+position = Vector2(1471.5, 470)
+shape = SubResource("RectangleShape2D_x8vb0")
+
+[node name="CollisionShape2D6" type="CollisionShape2D" parent="Map" unique_id=1487152760]
+position = Vector2(1458.75, 398.4375)
+shape = SubResource("RectangleShape2D_3ki5o")
+
+[node name="CollisionShape2D31" type="CollisionShape2D" parent="Map" unique_id=1339609620]
+position = Vector2(1011, 907)
+shape = SubResource("RectangleShape2D_3ki5o")
+
+[node name="CollisionShape2D7" type="CollisionShape2D" parent="Map" unique_id=1949170117]
+position = Vector2(1593, 299)
+shape = SubResource("RectangleShape2D_2he3u")
+
+[node name="CollisionShape2D8" type="CollisionShape2D" parent="Map" unique_id=995798873]
+position = Vector2(1429.5, 321.5)
+shape = SubResource("RectangleShape2D_8pedu")
+
+[node name="CollisionShape2D9" type="CollisionShape2D" parent="Map" unique_id=1343481127]
+position = Vector2(1227, 298)
+shape = SubResource("RectangleShape2D_lomx2")
+
+[node name="CollisionShape2D10" type="CollisionShape2D" parent="Map" unique_id=1533316285]
+position = Vector2(1120.5, 340.75)
+shape = SubResource("RectangleShape2D_tnw6b")
+
+[node name="CollisionShape2D11" type="CollisionShape2D" parent="Map" unique_id=978422261]
+position = Vector2(874.5, 328)
+shape = SubResource("RectangleShape2D_52h1m")
+
+[node name="CollisionShape2D13" type="CollisionShape2D" parent="Map" unique_id=322436947]
+position = Vector2(328, 319)
+shape = SubResource("RectangleShape2D_52h1m")
+
+[node name="CollisionShape2D37" type="CollisionShape2D" parent="Map" unique_id=1009138562]
+position = Vector2(304, 679)
+shape = SubResource("RectangleShape2D_52h1m")
+
+[node name="CollisionShape2D12" type="CollisionShape2D" parent="Map" unique_id=973346856]
+position = Vector2(600.5, 318)
+shape = SubResource("RectangleShape2D_igkwu")
+
+[node name="CollisionShape2D38" type="CollisionShape2D" parent="Map" unique_id=563747836]
+position = Vector2(189.00003, 745.00006)
+rotation = 0.15184365
+shape = SubResource("RectangleShape2D_igkwu")
+
+[node name="CollisionShape2D39" type="CollisionShape2D" parent="Map" unique_id=110131305]
+position = Vector2(113, 730.00006)
+rotation = 0.15184365
+shape = SubResource("RectangleShape2D_igkwu")
+
+[node name="CollisionShape2D35" type="CollisionShape2D" parent="Map" unique_id=1700315398]
+position = Vector2(434, 851)
+rotation = 1.5707964
+shape = SubResource("RectangleShape2D_igkwu")
+
+[node name="CollisionShape2D14" type="CollisionShape2D" parent="Map" unique_id=677332127]
+position = Vector2(82, 322)
+shape = SubResource("RectangleShape2D_igkwu")
+
+[node name="CollisionShape2D40" type="CollisionShape2D" parent="Map" unique_id=1355034296]
+position = Vector2(2, 827)
+shape = SubResource("RectangleShape2D_igkwu")
+
+[node name="CollisionShape2D15" type="CollisionShape2D" parent="Map" unique_id=354130103]
+position = Vector2(104.5, 443)
+shape = SubResource("RectangleShape2D_k5diw")
+
+[node name="CollisionShape2D32" type="CollisionShape2D" parent="Map" unique_id=956842744]
+position = Vector2(784, 885)
+shape = SubResource("RectangleShape2D_k5diw")
+
+[node name="CollisionShape2D44" type="CollisionShape2D" parent="Map" unique_id=1760991553]
+position = Vector2(559, 667)
+shape = SubResource("RectangleShape2D_k5diw")
+
+[node name="CollisionShape2D45" type="CollisionShape2D" parent="Map" unique_id=1971557129]
+position = Vector2(676, 666)
+shape = SubResource("RectangleShape2D_k5diw")
+
+[node name="CollisionShape2D33" type="CollisionShape2D" parent="Map" unique_id=595362353]
+position = Vector2(887, 886)
+shape = SubResource("RectangleShape2D_k5diw")
+
+[node name="CollisionShape2D17" type="CollisionShape2D" parent="Map" unique_id=206352307]
+position = Vector2(674, 510)
+shape = SubResource("RectangleShape2D_k5diw")
+
+[node name="CollisionShape2D18" type="CollisionShape2D" parent="Map" unique_id=1958115190]
+position = Vector2(963, 704.99994)
+rotation = -0.9075712
+shape = SubResource("RectangleShape2D_k5diw")
+
+[node name="CollisionShape2D26" type="CollisionShape2D" parent="Map" unique_id=744628069]
+position = Vector2(1395.0001, 697.00006)
+rotation = 0.60562927
+shape = SubResource("RectangleShape2D_k5diw")
+
+[node name="CollisionShape2D27" type="CollisionShape2D" parent="Map" unique_id=2011857912]
+position = Vector2(1471, 781.00006)
+rotation = 1.0594149
+shape = SubResource("RectangleShape2D_k5diw")
+
+[node name="CollisionShape2D19" type="CollisionShape2D" parent="Map" unique_id=620772555]
+position = Vector2(1169, 660)
+shape = SubResource("RectangleShape2D_k5diw")
+
+[node name="CollisionShape2D20" type="CollisionShape2D" parent="Map" unique_id=2078148592]
+position = Vector2(1188, 692)
+shape = SubResource("RectangleShape2D_k5diw")
+
+[node name="CollisionShape2D21" type="CollisionShape2D" parent="Map" unique_id=1468150444]
+position = Vector2(1247, 740)
+shape = SubResource("RectangleShape2D_k5diw")
+
+[node name="CollisionShape2D29" type="CollisionShape2D" parent="Map" unique_id=605651418]
+position = Vector2(1377, 914)
+shape = SubResource("RectangleShape2D_k5diw")
+
+[node name="CollisionShape2D30" type="CollisionShape2D" parent="Map" unique_id=24181531]
+position = Vector2(1423, 914)
+shape = SubResource("RectangleShape2D_k5diw")
+
+[node name="CollisionShape2D22" type="CollisionShape2D" parent="Map" unique_id=1208827149]
+position = Vector2(1185, 854)
+shape = SubResource("RectangleShape2D_k5diw")
+
+[node name="CollisionShape2D42" type="CollisionShape2D" parent="Map" unique_id=43488013]
+position = Vector2(208, 809)
+shape = SubResource("RectangleShape2D_k5diw")
+
+[node name="CollisionShape2D23" type="CollisionShape2D" parent="Map" unique_id=44169184]
+position = Vector2(1250, 841)
+shape = SubResource("RectangleShape2D_k5diw")
+
+[node name="CollisionShape2D24" type="CollisionShape2D" parent="Map" unique_id=2188545]
+position = Vector2(1299, 874)
+rotation = 1.5707964
+shape = SubResource("RectangleShape2D_k5diw")
+
+[node name="CollisionShape2D41" type="CollisionShape2D" parent="Map" unique_id=1159113961]
+position = Vector2(1299, 874)
+rotation = 1.5707964
+shape = SubResource("RectangleShape2D_k5diw")
+
+[node name="CollisionShape2D36" type="CollisionShape2D" parent="Map" unique_id=1014165208]
+position = Vector2(342, 858)
+rotation = 1.5707964
+shape = SubResource("RectangleShape2D_k5diw")
+
+[node name="CollisionShape2D28" type="CollisionShape2D" parent="Map" unique_id=703360796]
+position = Vector2(1487, 867)
+rotation = 1.5707964
+shape = SubResource("RectangleShape2D_k5diw")
+
+[node name="CollisionShape2D25" type="CollisionShape2D" parent="Map" unique_id=1949063233]
+position = Vector2(1306, 706)
+rotation = 1.5707964
+shape = SubResource("RectangleShape2D_k5diw")
 
 [node name="Player" parent="." unique_id=2068987577 instance=ExtResource("2_jy1iy")]
 position = Vector2(836, 472)
@@ -26,11 +255,68 @@ script = ExtResource("3_d5vf0")
 position = Vector2(1061.5, 630.5)
 shape = SubResource("RectangleShape2D_v3fdb")
 
-[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=462364925]
+[node name="UI" type="CanvasLayer" parent="." unique_id=462364925]
 
-[node name="Label" type="Label" parent="CanvasLayer" unique_id=595059549]
+[node name="Label" type="Label" parent="UI" unique_id=595059549]
 offset_left = 16.0
 offset_top = 12.0
 offset_right = 56.0
 offset_bottom = 35.0
 script = ExtResource("4_ef8dn")
+
+[node name="PauseButton" type="Button" parent="UI" unique_id=1529449716]
+texture_filter = 1
+offset_left = 1058.0
+offset_top = 25.0
+offset_right = 1082.0
+offset_bottom = 49.0
+scale = Vector2(3, 3)
+icon = ExtResource("5_qq8da")
+
+[node name="PausePanel" type="Panel" parent="UI" unique_id=1711694223]
+offset_left = 757.0
+offset_top = 114.0
+offset_right = 1132.0
+offset_bottom = 581.0
+
+[node name="RichTextLabel" type="RichTextLabel" parent="UI/PausePanel" unique_id=906896038]
+texture_filter = 1
+layout_mode = 0
+offset_left = 60.0
+offset_top = 35.0
+offset_right = 184.0
+offset_bottom = 70.5
+scale = Vector2(2, 2)
+theme_override_fonts/normal_font = ExtResource("6_32ypq")
+text = "Paused"
+horizontal_alignment = 1
+
+[node name="ContinueButton" type="Button" parent="UI/PausePanel" unique_id=1037083088]
+texture_filter = 1
+layout_mode = 0
+offset_left = 95.0
+offset_top = 150.0
+offset_right = 273.0
+offset_bottom = 198.0
+theme_override_fonts/font = ExtResource("6_32ypq")
+text = "Continue"
+
+[node name="MenuButton" type="Button" parent="UI/PausePanel" unique_id=277433029]
+texture_filter = 1
+layout_mode = 0
+offset_left = 95.0
+offset_top = 250.0
+offset_right = 273.0
+offset_bottom = 298.0
+theme_override_fonts/font = ExtResource("6_32ypq")
+text = "Main Menu"
+
+[node name="QuitButton" type="Button" parent="UI/PausePanel" unique_id=1142193490]
+texture_filter = 1
+layout_mode = 0
+offset_left = 95.0
+offset_top = 350.0
+offset_right = 273.0
+offset_bottom = 398.0
+theme_override_fonts/font = ExtResource("6_32ypq")
+text = "QuitGame"

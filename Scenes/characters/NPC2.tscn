@@ -1,104 +1,18 @@
 [gd_scene format=3 uid="uid://bhratawhumkv4"]
 
 [ext_resource type="Script" uid="uid://dedwhrmi4tuni" path="res://Scenes/characters/NPC.cs" id="1_u2bun"]
-[ext_resource type="Texture2D" uid="uid://vbumg6hxkrm6" path="res://Assets/Tiny Swords (Free Pack)/Units/Black Units/Archer/Archer_Idle.png" id="2_u2bun"]
-[ext_resource type="Texture2D" uid="uid://bo1gp2inyd7qh" path="res://Assets/Tiny Swords (Free Pack)/Units/Black Units/Warrior/Warrior_Run.png" id="3_c62cv"]
+[ext_resource type="Texture2D" uid="uid://dslyvpoprqlkt" path="res://Assets/ThymusAssets/Sprites/FogEntity/Idle Right (3).png" id="2_ysnli"]
+[ext_resource type="Texture2D" uid="uid://djqhjhvrhys2" path="res://Assets/Tiny Swords (Free Pack)/Terrain/Tileset/Shadow.png" id="4_u2bun"]
 [ext_resource type="Script" uid="uid://cfj1otbjy0s52" path="res://Scenes/characters/DetectionArea2d.cs" id="4_uk1qk"]
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_k4un0"]
-atlas = ExtResource("2_u2bun")
-region = Rect2(0, 0, 192, 192)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_c62cv"]
-atlas = ExtResource("2_u2bun")
-region = Rect2(192, 0, 192, 192)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_uk1qk"]
-atlas = ExtResource("2_u2bun")
-region = Rect2(384, 0, 192, 192)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_qu2hg"]
-atlas = ExtResource("2_u2bun")
-region = Rect2(576, 0, 192, 192)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_muecs"]
-atlas = ExtResource("2_u2bun")
-region = Rect2(768, 0, 192, 192)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_6b4ea"]
-atlas = ExtResource("2_u2bun")
-region = Rect2(960, 0, 192, 192)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_5xar8"]
-atlas = ExtResource("3_c62cv")
-region = Rect2(0, 0, 192, 192)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_0titu"]
-atlas = ExtResource("3_c62cv")
-region = Rect2(192, 0, 192, 192)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_64acq"]
-atlas = ExtResource("3_c62cv")
-region = Rect2(384, 0, 192, 192)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_oj275"]
-atlas = ExtResource("3_c62cv")
-region = Rect2(576, 0, 192, 192)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_kct7a"]
-atlas = ExtResource("3_c62cv")
-region = Rect2(768, 0, 192, 192)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_ir6uv"]
-atlas = ExtResource("3_c62cv")
-region = Rect2(960, 0, 192, 192)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_b4ovn"]
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_k4un0")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_c62cv")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_uk1qk")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_qu2hg")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_muecs")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_6b4ea")
+"texture": ExtResource("2_ysnli")
 }],
 "loop": 1,
 "name": &"default",
-"speed": 7.5
-}, {
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_5xar8")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_0titu")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_64acq")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_oj275")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_kct7a")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_ir6uv")
-}],
-"loop": 1,
-"name": &"running",
 "speed": 7.5
 }]
 
@@ -115,6 +29,8 @@ script = ExtResource("1_u2bun")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=2122052175]
 texture_filter = 1
+position = Vector2(0, -25)
+scale = Vector2(0.4, 0.4)
 sprite_frames = SubResource("SpriteFrames_b4ovn")
 autoplay = "default"
 offset = Vector2(0, -27)
@@ -128,3 +44,8 @@ script = ExtResource("4_uk1qk")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="DetectionArea2D" unique_id=401035578]
 shape = SubResource("CircleShape2D_b4ovn")
+
+[node name="Shadow" type="Sprite2D" parent="." unique_id=195009575]
+position = Vector2(-1.9073486e-06, -5.5)
+scale = Vector2(1.375, 0.3385417)
+texture = ExtResource("4_u2bun")
