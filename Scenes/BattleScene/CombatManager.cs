@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using System.Collections.Generic;
 
 public partial class CombatManager : Node2D
 {
@@ -9,6 +10,10 @@ public partial class CombatManager : Node2D
 	private Stats enemyStats;
 
 	private bool battleOver = false;
+	private bool actionsEnabled = true;
+
+	private int attackBuffBonus = 0;
+	private int attackBuffTurns = 0;
 
 	private Label playerHPLabel;
 	private Label enemyHPLabel;
@@ -19,6 +24,8 @@ public partial class CombatManager : Node2D
 
 	private AnimatedSprite2D playerSprite;
 	private AnimatedSprite2D enemySprite;
+
+	private readonly Dictionary<string, Button> itemButtons = new Dictionary<string, Button>();
 
 	public override void _Ready()
 	{
@@ -37,6 +44,8 @@ public partial class CombatManager : Node2D
 		attackButton.Pressed += OnAttackPressed;
 
 		playerStats = GameState.Instance.PlayerStats;
+
+		BuildItemButtons();
 
 		EnemyData data = GameState.Instance.CurrentEnemyData;
 
@@ -67,13 +76,60 @@ public partial class CombatManager : Node2D
 		GD.Print($"CurrentNpcID: {GameState.Instance.CurrentNpcID}");
 		GD.Print($"CurrentEnemyData: {GameState.Instance.CurrentEnemyData}");
 		GD.Print($"CurrentEnemySpriteFrames: {GameState.Instance.CurrentEnemySpriteFrames}");
+		playerStats.PrintStats();
 		GD.Print("==============================");
 
 		if (enemyStats.Speed > playerStats.Speed)
 		{
-			attackButton.Disabled = true;
+			SetActionsEnabled(false);
 			CallDeferred(nameof(EnemyOpeningAttack));
 		}
+		else
+		{
+			SetActionsEnabled(true);
+		}
+	}
+
+	private void BuildItemButtons()
+	{
+		VBoxContainer box = GetNode<VBoxContainer>("UI/VBoxContainer");
+
+		HBoxContainer row = new HBoxContainer();
+		row.AddThemeConstantOverride("separation", 8);
+		box.AddChild(row);
+
+		foreach (ConsumableDef def in GameDatabase.Consumables)
+		{
+			string id = def.Id;
+
+			Button button = new Button();
+			button.Pressed += () => OnItemPressed(id);
+			row.AddChild(button);
+
+			itemButtons[id] = button;
+		}
+
+		RefreshItemButtons();
+	}
+
+	private void RefreshItemButtons()
+	{
+		foreach (ConsumableDef def in GameDatabase.Consumables)
+		{
+			int count = GameState.Instance.GetRunItemCount(def.Id);
+			Button button = itemButtons[def.Id];
+
+			button.Text = $"{def.Name} x{count}";
+			button.TooltipText = def.Description;
+			button.Disabled = !actionsEnabled || battleOver || count <= 0;
+		}
+	}
+
+	private void SetActionsEnabled(bool enabled)
+	{
+		actionsEnabled = enabled;
+		attackButton.Disabled = !enabled;
+		RefreshItemButtons();
 	}
 
 	private async void EnemyOpeningAttack()
@@ -96,7 +152,7 @@ public partial class CombatManager : Node2D
 			return;
 		}
 
-		attackButton.Disabled = false;
+		SetActionsEnabled(true);
 	}
 
 	private int CalculateDamage(int attack, int defense)
@@ -114,16 +170,19 @@ public partial class CombatManager : Node2D
 
 	private void OnAttackPressed()
 	{
-		if (battleOver)
+		if (battleOver || !actionsEnabled)
 			return;
 
 		playerSprite.Play("attack");
 
 		playerStats.AddInfection(InfectionGainPerTurn);
 
-		int dmgToEnemy = CalculateDamage(playerStats.Attack, enemyStats.Defense);
+		int attackValue = playerStats.Attack + playerStats.WeaponDamage + attackBuffBonus;
+		int dmgToEnemy = CalculateDamage(attackValue, enemyStats.Defense);
 		enemyStats.CurrentHP -= dmgToEnemy;
 		enemyStats.CurrentHP = Mathf.Max(enemyStats.CurrentHP, 0);
+
+		TickBuff();
 
 		if (enemyStats.CurrentHP <= 0)
 		{
@@ -131,11 +190,66 @@ public partial class CombatManager : Node2D
 			return;
 		}
 
+		FinishPlayerTurn($"You hit for {dmgToEnemy}!");
+	}
+
+	private void OnItemPressed(string id)
+	{
+		if (battleOver || !actionsEnabled)
+			return;
+
+		ConsumableDef def = GameDatabase.GetConsumable(id);
+
+		if (def == null || !GameState.Instance.UseRunItem(id))
+			return;
+
+		List<string> effects = new List<string>();
+
+		if (def.Heal > 0)
+		{
+			int hpBefore = playerStats.CurrentHP;
+			playerStats.CurrentHP = Mathf.Min(playerStats.CurrentHP + def.Heal, playerStats.MaxHP);
+			effects.Add($"+{playerStats.CurrentHP - hpBefore} HP");
+		}
+
+		if (def.InfectionReduction > 0)
+		{
+			float infectionBefore = playerStats.CurrentInfection;
+			playerStats.AddInfection(-def.InfectionReduction);
+			effects.Add($"-{infectionBefore - playerStats.CurrentInfection:0}% infection");
+		}
+
+		if (def.AttackBuff > 0)
+		{
+			attackBuffBonus = def.AttackBuff;
+			attackBuffTurns = def.BuffTurns;
+			effects.Add($"+{def.AttackBuff} ATK for {def.BuffTurns} attacks");
+		}
+
+		playerStats.AddInfection(InfectionGainPerTurn);
+
+		FinishPlayerTurn($"Used {def.Name} ({string.Join(", ", effects)}).");
+	}
+
+	private void TickBuff()
+	{
+		if (attackBuffTurns <= 0)
+			return;
+
+		attackBuffTurns--;
+
+		if (attackBuffTurns == 0)
+			attackBuffBonus = 0;
+	}
+
+	private void FinishPlayerTurn(string playerText)
+	{
 		int dmgToPlayer = CalculateDamage(enemyStats.Attack, playerStats.Defense);
 		playerStats.CurrentHP -= dmgToPlayer;
 		playerStats.CurrentHP = Mathf.Max(playerStats.CurrentHP, 0);
 
 		UpdateLabels();
+		RefreshItemButtons();
 
 		if (playerStats.CurrentHP <= 0)
 		{
@@ -149,7 +263,7 @@ public partial class CombatManager : Node2D
 			return;
 		}
 
-		statusLabel.Text = "You attacked! Enemy attacked back!";
+		statusLabel.Text = $"{playerText} Enemy hit you for {dmgToPlayer}!";
 	}
 
 	private void OnAnimationFinished()
@@ -162,7 +276,9 @@ public partial class CombatManager : Node2D
 
 	private void UpdateLabels()
 	{
-		playerHPLabel.Text = "Player HP: " + playerStats.CurrentHP;
+		string buffText = attackBuffTurns > 0 ? $"  (ATK +{attackBuffBonus}, {attackBuffTurns} left)" : "";
+
+		playerHPLabel.Text = $"Player HP: {playerStats.CurrentHP}/{playerStats.MaxHP}{buffText}";
 		enemyHPLabel.Text = "Enemy HP: " + enemyStats.CurrentHP;
 		infectionLabel.Text = $"Infection: {playerStats.CurrentInfection:0}%";
 	}
@@ -170,7 +286,7 @@ public partial class CombatManager : Node2D
 	private async void TriggerTimeLoop(string reason)
 	{
 		battleOver = true;
-		attackButton.Disabled = true;
+		SetActionsEnabled(false);
 		statusLabel.Text = $"{reason} Time Loop activated...";
 		UpdateLabels();
 
@@ -232,15 +348,45 @@ public partial class CombatManager : Node2D
 		GD.Print("==============================");
 	}
 
+	private string TryLoot(ResourceType type, int amount, ref bool bagFull)
+	{
+		if (amount <= 0)
+			return "";
+
+		int added = GameState.Instance.AddRun(type, amount);
+
+		if (added < amount)
+			bagFull = true;
+
+		return added > 0 ? $" +{added} {type}" : "";
+	}
+
 	private async void EndBattle()
 	{
 		battleOver = true;
-		attackButton.Disabled = true;
+		SetActionsEnabled(false);
 
 		EnemyData data = GameState.Instance.CurrentEnemyData;
-		int scrapDropped = data != null ? data.ScrapDrop : 10;
-		int scrapAdded = GameState.Instance.AddRunScrap(scrapDropped);
-		string fullNote = scrapAdded < scrapDropped ? " (inventory full)" : "";
+
+		int scrapDrop = data != null ? data.ScrapDrop : 10;
+		int materialDrop = data != null ? data.MaterialDrop : 2;
+		int energyDrop = data != null ? data.EnergyDrop : 1;
+		int essenceDrop = 0;
+
+		if (data != null && GD.Randf() < data.EssenceDropChance)
+			essenceDrop = data.EssenceDrop;
+
+		bool bagFull = false;
+		string loot =
+			TryLoot(ResourceType.Scrap, scrapDrop, ref bagFull) +
+			TryLoot(ResourceType.Material, materialDrop, ref bagFull) +
+			TryLoot(ResourceType.Energy, energyDrop, ref bagFull) +
+			TryLoot(ResourceType.Essence, essenceDrop, ref bagFull);
+
+		if (loot == "")
+			loot = " nothing";
+
+		string fullNote = bagFull ? " (bag full)" : "";
 
 		float healPercent = (float)GD.RandRange(10, 15) / 100f;
 		int healAmount = Mathf.CeilToInt(playerStats.MaxHP * healPercent);
@@ -248,7 +394,7 @@ public partial class CombatManager : Node2D
 		playerStats.CurrentHP += healAmount;
 		playerStats.CurrentHP = Mathf.Min(playerStats.CurrentHP, playerStats.MaxHP);
 
-		statusLabel.Text = $"You won! +{scrapAdded} Scrap{fullNote}. Recovered {healAmount} HP.";
+		statusLabel.Text = $"You won!{loot}{fullNote}. Recovered {healAmount} HP.";
 		UpdateLabels();
 		GameState.Instance.PrintData();
 

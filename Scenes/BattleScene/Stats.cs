@@ -12,6 +12,8 @@ public partial class Stats : Node
 	public const float MaxInfection = 100f;
 	public float CurrentInfection = 0f;
 
+	public int WeaponDamage = 0;
+
 	public int EquipmentAttackBonus = 0;
 	public int EquipmentDefenseBonus = 0;
 	public int EquipmentSpeedBonus = 0;
@@ -45,6 +47,6 @@ public partial class Stats : Node
 
 	public void PrintStats()
 	{
-		GD.Print($"Runner Stats -> HP: {CurrentHP}/{MaxHP}, ATK: {Attack}, DEF: {Defense}, SPD: {Speed}, Infection: {CurrentInfection}%");
+		GD.Print($"Runner Stats -> HP: {CurrentHP}/{MaxHP}, ATK: {Attack}, Weapon DMG: {WeaponDamage}, DEF: {Defense}, SPD: {Speed}, Infection: {CurrentInfection}%");
 	}
 }
