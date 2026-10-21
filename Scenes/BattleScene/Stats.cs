@@ -14,6 +14,8 @@ public partial class Stats : Node
 
 	public int WeaponDamage = 0;
 
+	public float InfectionGainMultiplier = 1f;
+
 	public int EquipmentAttackBonus = 0;
 	public int EquipmentDefenseBonus = 0;
 	public int EquipmentSpeedBonus = 0;
@@ -31,6 +33,9 @@ public partial class Stats : Node
 
 	public void AddInfection(float amount)
 	{
+		if (amount > 0f)
+			amount *= InfectionGainMultiplier;
+
 		CurrentInfection += amount;
 		CurrentInfection = Mathf.Clamp(CurrentInfection, 0f, MaxInfection);
 	}

@@ -309,7 +309,12 @@ public partial class ShelterStation : Area2D
 	{
 		GameState state = GameState.Instance;
 
-		AddHeader("INFIRMARY");
+		AddHeader($"INFIRMARY  -  Level {state.InfirmaryLevel}/{GameDatabase.MaxStationLevel}");
+
+		AddRow(
+			$"Infection gain reduced by {Math.Round(GameDatabase.InfectionResistance(state.InfirmaryLevel) * 100)}%",
+			null, false, null
+		);
 
 		AddRow(
 			$"Stock: Scrap {state.PermanentScrap}, Material {state.PermanentMaterial}, " +
@@ -334,6 +339,9 @@ public partial class ShelterStation : Area2D
 				}
 			);
 		}
+
+		AddHeader("Station");
+		AddUpgradeRow();
 	}
 
 	private void AddEquipmentRow(EquipmentDef def)

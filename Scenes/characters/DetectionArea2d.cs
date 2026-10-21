@@ -14,6 +14,9 @@ public partial class DetectionArea2d : Area2D
 		if (battleStarted)
 			return;
 
+		if (GameState.Instance.IsEscapeGraceActive())
+			return;
+
 		if (body is Player)
 		{
 			NPC npc = GetParent<NPC>();
@@ -27,83 +30,38 @@ public partial class DetectionArea2d : Area2D
 			if (GameState.Instance.IsNpcDefeated(npc.NpcID))
 				return;
 
-			// Make sure the NPC actually has EnemyData
 			if (npc.EnemyData == null)
 			{
-				GD.PushError(
-					$"NPC {npc.NpcID} has NO EnemyData assigned!"
-				);
-
+				GD.PushError($"NPC {npc.NpcID} has NO EnemyData assigned!");
 				return;
 			}
 
-			// Get the NPC's AnimatedSprite2D
-			AnimatedSprite2D npcSprite =
-				npc.GetNode<AnimatedSprite2D>("AnimatedSprite2D");
+			AnimatedSprite2D npcSprite = npc.GetNode<AnimatedSprite2D>("AnimatedSprite2D");
 
 			if (npcSprite == null)
 			{
-				GD.PushError(
-					$"NPC {npc.NpcID} has no AnimatedSprite2D!"
-				);
-
+				GD.PushError($"NPC {npc.NpcID} has no AnimatedSprite2D!");
 				return;
 			}
 
 			battleStarted = true;
 
-			// Save player position
 			GameState.Instance.HasReturnPosition = true;
-			GameState.Instance.ReturnPosition =
-				body.GlobalPosition;
+			GameState.Instance.ReturnPosition = body.GlobalPosition;
 
-			// Save NPC identity
-			GameState.Instance.CurrentNpcID =
-				npc.NpcID;
+			GameState.Instance.CurrentNpcID = npc.NpcID;
+			GameState.Instance.CurrentEnemyData = npc.EnemyData;
+			GameState.Instance.CurrentEnemySpriteFrames = npcSprite.SpriteFrames;
 
-			// Save enemy combat data
-			GameState.Instance.CurrentEnemyData =
-				npc.EnemyData;
-
-			// Save enemy appearance
-			GameState.Instance.CurrentEnemySpriteFrames =
-				npcSprite.SpriteFrames;
-
-			GD.Print(
-				"=============================="
-			);
-
-			GD.Print(
-				$"Starting battle against NPC {npc.NpcID}"
-			);
-
-			GD.Print(
-				$"Enemy Name: {npc.EnemyData.EnemyName}"
-			);
-
-			GD.Print(
-				$"Enemy HP: {npc.EnemyData.BaseHP}"
-			);
-
-			GD.Print(
-				$"Enemy Attack: {npc.EnemyData.BaseAttack}"
-			);
-
-			GD.Print(
-				$"Enemy Defense: {npc.EnemyData.BaseDefense}"
-			);
-
-			GD.Print(
-				$"Enemy Speed: {npc.EnemyData.BaseSpeed}"
-			);
-
-			GD.Print(
-				$"SpriteFrames: {npcSprite.SpriteFrames}"
-			);
-
-			GD.Print(
-				"=============================="
-			);
+			GD.Print("==============================");
+			GD.Print($"Starting battle against NPC {npc.NpcID}");
+			GD.Print($"Enemy Name: {npc.EnemyData.EnemyName}");
+			GD.Print($"Enemy HP: {npc.EnemyData.BaseHP}");
+			GD.Print($"Enemy Attack: {npc.EnemyData.BaseAttack}");
+			GD.Print($"Enemy Defense: {npc.EnemyData.BaseDefense}");
+			GD.Print($"Enemy Speed: {npc.EnemyData.BaseSpeed}");
+			GD.Print($"SpriteFrames: {npcSprite.SpriteFrames}");
+			GD.Print("==============================");
 
 			StartBattle();
 		}

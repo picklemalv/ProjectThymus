@@ -223,8 +223,11 @@ public static class GameDatabase
 
 	public static ResourceCost UpgradeCost(StationType station, int currentLevel)
 	{
-		if (station == StationType.Infirmary || currentLevel >= MaxStationLevel)
+		if (currentLevel >= MaxStationLevel)
 			return null;
+
+		if (station == StationType.Infirmary)
+			return currentLevel == 1 ? new ResourceCost(100, 30, 0, 3) : new ResourceCost(250, 70, 0, 8);
 
 		if (station == StationType.Storage)
 			return currentLevel == 1 ? new ResourceCost(100, 25) : new ResourceCost(300, 80, 0, 8);
@@ -234,8 +237,11 @@ public static class GameDatabase
 
 	public static string UpgradeBenefitText(StationType station, int currentLevel)
 	{
-		if (station == StationType.Infirmary || currentLevel >= MaxStationLevel)
+		if (currentLevel >= MaxStationLevel)
 			return "";
+
+		if (station == StationType.Infirmary)
+			return $"Infection gain {Math.Round(InfectionResistance(currentLevel + 1) * 100)}% lower.";
 
 		if (station == StationType.Storage)
 		{
@@ -248,6 +254,19 @@ public static class GameDatabase
 		}
 
 		return $"Unlocks tier {currentLevel + 1} weapons and armor.";
+	}
+
+	public static float InfectionResistance(int infirmaryLevel)
+	{
+		switch (Math.Clamp(infirmaryLevel, 1, MaxStationLevel))
+		{
+			case 2:
+				return 0.15f;
+			case 3:
+				return 0.30f;
+			default:
+				return 0f;
+		}
 	}
 
 	public static EquipmentDef GetEquipment(string id)

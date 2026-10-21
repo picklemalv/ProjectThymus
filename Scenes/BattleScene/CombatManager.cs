@@ -5,12 +5,15 @@ using System.Collections.Generic;
 public partial class CombatManager : Node2D
 {
 	private const float InfectionGainPerTurn = 2f;
+	private const float EscapeChance = 0.5f;
+	private const float EscapeGraceSeconds = 4f;
 
 	private Stats playerStats;
 	private Stats enemyStats;
 
 	private bool battleOver = false;
 	private bool actionsEnabled = true;
+	private bool defending = false;
 
 	private int attackBuffBonus = 0;
 	private int attackBuffTurns = 0;
@@ -20,6 +23,8 @@ public partial class CombatManager : Node2D
 	private Label infectionLabel;
 	private Label statusLabel;
 	private Button attackButton;
+	private Button defendButton;
+	private Button escapeButton;
 	private ColorRect fadeRect;
 
 	private AnimatedSprite2D playerSprite;
@@ -45,7 +50,7 @@ public partial class CombatManager : Node2D
 
 		playerStats = GameState.Instance.PlayerStats;
 
-		BuildItemButtons();
+		BuildActionButtons();
 
 		EnemyData data = GameState.Instance.CurrentEnemyData;
 
@@ -90,13 +95,29 @@ public partial class CombatManager : Node2D
 		}
 	}
 
-	private void BuildItemButtons()
+	private void BuildActionButtons()
 	{
 		VBoxContainer box = GetNode<VBoxContainer>("UI/VBoxContainer");
 
-		HBoxContainer row = new HBoxContainer();
-		row.AddThemeConstantOverride("separation", 8);
-		box.AddChild(row);
+		HBoxContainer actionRow = new HBoxContainer();
+		actionRow.AddThemeConstantOverride("separation", 8);
+		box.AddChild(actionRow);
+
+		defendButton = new Button();
+		defendButton.Text = "Defend";
+		defendButton.TooltipText = "Take half damage from the next enemy attack.";
+		defendButton.Pressed += OnDefendPressed;
+		actionRow.AddChild(defendButton);
+
+		escapeButton = new Button();
+		escapeButton.Text = "Escape (50%)";
+		escapeButton.TooltipText = "50% chance to flee the battle.";
+		escapeButton.Pressed += OnEscapePressed;
+		actionRow.AddChild(escapeButton);
+
+		HBoxContainer itemRow = new HBoxContainer();
+		itemRow.AddThemeConstantOverride("separation", 8);
+		box.AddChild(itemRow);
 
 		foreach (ConsumableDef def in GameDatabase.Consumables)
 		{
@@ -104,16 +125,22 @@ public partial class CombatManager : Node2D
 
 			Button button = new Button();
 			button.Pressed += () => OnItemPressed(id);
-			row.AddChild(button);
+			itemRow.AddChild(button);
 
 			itemButtons[id] = button;
 		}
 
-		RefreshItemButtons();
+		RefreshActionButtons();
 	}
 
-	private void RefreshItemButtons()
+	private void RefreshActionButtons()
 	{
+		bool canAct = actionsEnabled && !battleOver;
+
+		attackButton.Disabled = !canAct;
+		defendButton.Disabled = !canAct;
+		escapeButton.Disabled = !canAct;
+
 		foreach (ConsumableDef def in GameDatabase.Consumables)
 		{
 			int count = GameState.Instance.GetRunItemCount(def.Id);
@@ -121,15 +148,14 @@ public partial class CombatManager : Node2D
 
 			button.Text = $"{def.Name} x{count}";
 			button.TooltipText = def.Description;
-			button.Disabled = !actionsEnabled || battleOver || count <= 0;
+			button.Disabled = !canAct || count <= 0;
 		}
 	}
 
 	private void SetActionsEnabled(bool enabled)
 	{
 		actionsEnabled = enabled;
-		attackButton.Disabled = !enabled;
-		RefreshItemButtons();
+		RefreshActionButtons();
 	}
 
 	private async void EnemyOpeningAttack()
@@ -139,11 +165,31 @@ public partial class CombatManager : Node2D
 		if (battleOver)
 			return;
 
-		statusLabel.Text = "Enemy is faster! It strikes first!";
+		RunEnemyTurn("Enemy is faster! It strikes first!", 0.4f);
+	}
+
+	private async void RunEnemyTurn(string playerText, float delay)
+	{
+		SetActionsEnabled(false);
+		statusLabel.Text = playerText;
+		UpdateLabels();
+
+		await ToSignal(GetTree().CreateTimer(delay), Timer.SignalName.Timeout);
+
+		if (battleOver)
+			return;
 
 		int dmg = CalculateDamage(enemyStats.Attack, playerStats.Defense);
-		playerStats.CurrentHP -= dmg;
-		playerStats.CurrentHP = Mathf.Max(playerStats.CurrentHP, 0);
+		string guardText = "";
+
+		if (defending)
+		{
+			dmg = Mathf.Max(dmg / 2, 1);
+			defending = false;
+			guardText = " (guarded)";
+		}
+
+		playerStats.CurrentHP = Mathf.Max(playerStats.CurrentHP - dmg, 0);
 		UpdateLabels();
 
 		if (playerStats.CurrentHP <= 0)
@@ -152,6 +198,7 @@ public partial class CombatManager : Node2D
 			return;
 		}
 
+		statusLabel.Text = $"{playerText} Enemy hit you for {dmg}{guardText}!";
 		SetActionsEnabled(true);
 	}
 
@@ -168,21 +215,39 @@ public partial class CombatManager : Node2D
 		tween.TweenProperty(fadeRect, "modulate:a", 0.0f, 1.5f);
 	}
 
+	private bool CheckInfectionLoop()
+	{
+		if (!playerStats.IsInfectionMaxed())
+			return false;
+
+		UpdateLabels();
+		TriggerTimeLoop("Infection reached 100%!");
+		return true;
+	}
+
 	private void OnAttackPressed()
 	{
 		if (battleOver || !actionsEnabled)
 			return;
 
+		PerformAttack();
+	}
+
+	private void PerformAttack()
+	{
 		playerSprite.Play("attack");
 
 		playerStats.AddInfection(InfectionGainPerTurn);
 
 		int attackValue = playerStats.Attack + playerStats.WeaponDamage + attackBuffBonus;
 		int dmgToEnemy = CalculateDamage(attackValue, enemyStats.Defense);
-		enemyStats.CurrentHP -= dmgToEnemy;
-		enemyStats.CurrentHP = Mathf.Max(enemyStats.CurrentHP, 0);
+		enemyStats.CurrentHP = Mathf.Max(enemyStats.CurrentHP - dmgToEnemy, 0);
 
 		TickBuff();
+		UpdateLabels();
+
+		if (CheckInfectionLoop())
+			return;
 
 		if (enemyStats.CurrentHP <= 0)
 		{
@@ -190,7 +255,53 @@ public partial class CombatManager : Node2D
 			return;
 		}
 
-		FinishPlayerTurn($"You hit for {dmgToEnemy}!");
+		RunEnemyTurn($"You hit for {dmgToEnemy}!", 0.7f);
+	}
+
+	private void OnDefendPressed()
+	{
+		if (battleOver || !actionsEnabled)
+			return;
+
+		defending = true;
+		playerStats.AddInfection(InfectionGainPerTurn);
+
+		if (CheckInfectionLoop())
+			return;
+
+		RunEnemyTurn("You brace yourself.", 0.7f);
+	}
+
+	private async void OnEscapePressed()
+	{
+		if (battleOver || !actionsEnabled)
+			return;
+
+		playerStats.AddInfection(InfectionGainPerTurn);
+
+		if (CheckInfectionLoop())
+			return;
+
+		if (GD.Randf() >= EscapeChance)
+		{
+			RunEnemyTurn("You failed to escape!", 0.7f);
+			return;
+		}
+
+		battleOver = true;
+		SetActionsEnabled(false);
+		statusLabel.Text = "You escaped!";
+		UpdateLabels();
+
+		GameState.Instance.StartEscapeGrace(EscapeGraceSeconds);
+
+		await ToSignal(GetTree().CreateTimer(1.0), Timer.SignalName.Timeout);
+
+		Tween tween = CreateTween();
+		tween.TweenProperty(fadeRect, "modulate:a", 1.0f, 0.6f);
+		await ToSignal(tween, Tween.SignalName.Finished);
+
+		GetTree().ChangeSceneToFile("res://Scenes/main.tscn");
 	}
 
 	private void OnItemPressed(string id)
@@ -228,7 +339,10 @@ public partial class CombatManager : Node2D
 
 		playerStats.AddInfection(InfectionGainPerTurn);
 
-		FinishPlayerTurn($"Used {def.Name} ({string.Join(", ", effects)}).");
+		if (CheckInfectionLoop())
+			return;
+
+		RunEnemyTurn($"Used {def.Name} ({string.Join(", ", effects)}).", 0.7f);
 	}
 
 	private void TickBuff()
@@ -240,30 +354,6 @@ public partial class CombatManager : Node2D
 
 		if (attackBuffTurns == 0)
 			attackBuffBonus = 0;
-	}
-
-	private void FinishPlayerTurn(string playerText)
-	{
-		int dmgToPlayer = CalculateDamage(enemyStats.Attack, playerStats.Defense);
-		playerStats.CurrentHP -= dmgToPlayer;
-		playerStats.CurrentHP = Mathf.Max(playerStats.CurrentHP, 0);
-
-		UpdateLabels();
-		RefreshItemButtons();
-
-		if (playerStats.CurrentHP <= 0)
-		{
-			TriggerTimeLoop("You were overwhelmed...");
-			return;
-		}
-
-		if (playerStats.IsInfectionMaxed())
-		{
-			TriggerTimeLoop("Infection reached 100%!");
-			return;
-		}
-
-		statusLabel.Text = $"{playerText} Enemy hit you for {dmgToPlayer}!";
 	}
 
 	private void OnAnimationFinished()
@@ -285,6 +375,9 @@ public partial class CombatManager : Node2D
 
 	private async void TriggerTimeLoop(string reason)
 	{
+		if (battleOver)
+			return;
+
 		battleOver = true;
 		SetActionsEnabled(false);
 		statusLabel.Text = $"{reason} Time Loop activated...";

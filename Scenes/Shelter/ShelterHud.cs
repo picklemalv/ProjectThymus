@@ -21,6 +21,6 @@ public partial class ShelterHud : Label
 			$"Core Fragments: {state.PermanentCoreFragments}\n\n" +
 			$"Weapon: {weaponName}\n" +
 			$"Armor: {armorName}\n" +
-			$"Storage Lv.{state.StorageLevel}  Armory Lv.{state.ArmoryLevel}";
+			$"Storage Lv.{state.StorageLevel}  Armory Lv.{state.ArmoryLevel}  Infirmary Lv.{state.InfirmaryLevel}";
 	}
 }

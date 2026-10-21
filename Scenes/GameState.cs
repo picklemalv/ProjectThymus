@@ -19,6 +19,7 @@ public class SaveData
 	public int CoreFragments { get; set; }
 	public int StorageLevel { get; set; } = 1;
 	public int ArmoryLevel { get; set; } = 1;
+	public int InfirmaryLevel { get; set; } = 1;
 	public List<string> OwnedEquipment { get; set; } = new List<string>();
 	public string EquippedWeaponId { get; set; } = "rusty_blade";
 	public string EquippedArmorId { get; set; } = "cloth_wraps";
@@ -62,6 +63,9 @@ public partial class GameState : Node
 
 	public int StorageLevel = 1;
 	public int ArmoryLevel = 1;
+	public int InfirmaryLevel = 1;
+
+	public ulong EscapeGraceUntilMs = 0;
 
 	public string EquippedWeaponId = "rusty_blade";
 	public string EquippedArmorId = "cloth_wraps";
@@ -103,6 +107,7 @@ public partial class GameState : Node
 
 		LoadGame();
 		ApplyEquipment();
+		ApplyStationBonuses();
 		ResetRunState();
 	}
 
@@ -153,6 +158,21 @@ public partial class GameState : Node
 		int before = RunCoreFragments;
 		RunCoreFragments = Mathf.Min(RunCoreFragments + amount, MaxRunCoreFragments);
 		return RunCoreFragments - before;
+	}
+
+	public void StartEscapeGrace(float seconds)
+	{
+		EscapeGraceUntilMs = Time.GetTicksMsec() + (ulong)(seconds * 1000f);
+	}
+
+	public bool IsEscapeGraceActive()
+	{
+		return Time.GetTicksMsec() < EscapeGraceUntilMs;
+	}
+
+	public void ApplyStationBonuses()
+	{
+		PlayerStats.InfectionGainMultiplier = 1f - GameDatabase.InfectionResistance(InfirmaryLevel);
 	}
 
 	public bool CanAfford(ResourceCost cost)
@@ -207,7 +227,7 @@ public partial class GameState : Node
 			return StorageLevel;
 		if (station == StationType.Armory)
 			return ArmoryLevel;
-		return 1;
+		return InfirmaryLevel;
 	}
 
 	public void ApplyEquipment()
@@ -292,9 +312,12 @@ public partial class GameState : Node
 
 		if (station == StationType.Storage)
 			StorageLevel++;
-		else
+		else if (station == StationType.Armory)
 			ArmoryLevel++;
+		else
+			InfirmaryLevel++;
 
+		ApplyStationBonuses();
 		SaveGame();
 		return $"{station} upgraded to Level {GetStationLevel(station)}.";
 	}
@@ -395,7 +418,7 @@ public partial class GameState : Node
 			$"PERMANENT -> Scrap: {PermanentScrap}, Material: {PermanentMaterial}, " +
 			$"Energy: {PermanentEnergy}, Essence: {PermanentEssence}, Core: {PermanentCoreFragments}"
 		);
-		GD.Print($"Storage Lv {StorageLevel}, Armory Lv {ArmoryLevel}, Weapon: {EquippedWeaponId}, Armor: {EquippedArmorId}");
+		GD.Print($"Storage Lv {StorageLevel}, Armory Lv {ArmoryLevel}, Infirmary Lv {InfirmaryLevel}, Weapon: {EquippedWeaponId}, Armor: {EquippedArmorId}");
 	}
 
 	public void SaveGame()
@@ -409,6 +432,7 @@ public partial class GameState : Node
 			CoreFragments = PermanentCoreFragments,
 			StorageLevel = StorageLevel,
 			ArmoryLevel = ArmoryLevel,
+			InfirmaryLevel = InfirmaryLevel,
 			OwnedEquipment = new List<string>(ownedEquipment),
 			EquippedWeaponId = EquippedWeaponId,
 			EquippedArmorId = EquippedArmorId,
@@ -455,6 +479,7 @@ public partial class GameState : Node
 
 		StorageLevel = Mathf.Clamp(data.StorageLevel, 1, GameDatabase.MaxStationLevel);
 		ArmoryLevel = Mathf.Clamp(data.ArmoryLevel, 1, GameDatabase.MaxStationLevel);
+		InfirmaryLevel = Mathf.Clamp(data.InfirmaryLevel, 1, GameDatabase.MaxStationLevel);
 
 		permanent[ResourceType.Scrap] = Mathf.Max(0, data.Scrap);
 		permanent[ResourceType.Material] = Mathf.Max(0, data.Material);
@@ -559,7 +584,7 @@ public partial class GameState : Node
 			{
 				PrintData();
 			}
-						else if (key.Keycode == Key.F4)
+			else if (key.Keycode == Key.F4)
 			{
 				if (CurrentExpeditionStatus != ExpeditionStatus.Active)
 					return;
