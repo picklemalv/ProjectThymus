@@ -7,6 +7,7 @@
 [ext_resource type="PackedScene" uid="uid://b31lhlfo8g7s0" path="res://Scenes/characters/Player.tscn" id="9_ynf5e"]
 [ext_resource type="Texture2D" uid="uid://bp1yho1mp876i" path="res://Assets/ThymusAssets/pixel_ui/icons/pause.png" id="14_wsu2k"]
 [ext_resource type="FontFile" uid="uid://db3kmltwkjphx" path="res://Assets/ThymusAssets/pixel_ui/font/pixel_ui_font.fnt" id="15_k12tt"]
+[ext_resource type="Script" path="res://Scenes/FogOfWar.cs" id="16_fog"]
 
 [sub_resource type="Resource" id="Resource_wsu2k"]
 script = ExtResource("7_fdnlq")
@@ -29,7 +30,7 @@ y_sort_enabled = true
 
 [node name="StaticBody2D" type="StaticBody2D" parent="World" unique_id=999832978]
 
-[node name="Sprite2D" type="Sprite2D" parent="World/StaticBody2D" unique_id=328896921]
+[node name="Sprite2D" type="Sprite2D" parent="World" unique_id=328896921]
 texture_filter = 1
 position = Vector2(1376, 768)
 texture = ExtResource("4_k12tt")
@@ -113,3 +114,6 @@ offset_right = 273.0
 offset_bottom = 398.0
 theme_override_fonts/font = ExtResource("15_k12tt")
 text = "QuitGame"
+
+[node name="FogOfWar" type="Node2D" parent="."]
+script = ExtResource("16_fog")
