@@ -11,6 +11,8 @@ public partial class FogOfWar : Node2D
     [Export] public float VisionRadiusPixels { get; set; } = 220.0f;
     [Export] public float PixelSize { get; set; } = 8.0f;
     [Export] public float EdgeSoftnessPixels { get; set; } = 42.0f;
+    [Export] public float ScreenEdgeSolidWidthPixels { get; set; } = 32.0f;
+    [Export] public float ScreenEdgeFadePixels { get; set; } = 28.0f;
     [Export(PropertyHint.Range, "0,1,0.01")] public float FogOpacity { get; set; } = 0.88f;
     [Export] public Color FogColor { get; set; } = new Color(0.025f, 0.04f, 0.055f, 1.0f);
 
@@ -27,6 +29,8 @@ uniform float pixel_size = 8.0;
 uniform float edge_softness_px = 42.0;
 uniform float fog_opacity : hint_range(0.0, 1.0) = 0.88;
 uniform vec4 fog_color : source_color = vec4(0.025, 0.04, 0.055, 1.0);
+uniform float screen_edge_solid_width_px = 32.0;
+uniform float screen_edge_fade_px = 28.0;
 
 float cell_random(vec2 p) {
     return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453);
@@ -50,6 +54,18 @@ void fragment() {
         distance_to_player
     );
 
+    // Keep a fully opaque border at the screen edges, fading back to normal fog inward.
+    vec2 screen_size = 1.0 / SCREEN_PIXEL_SIZE;
+    float edge_distance = min(
+        min(FRAGCOORD.x, screen_size.x - FRAGCOORD.x),
+        min(FRAGCOORD.y, screen_size.y - FRAGCOORD.y)
+    );
+    float edge_fog = 1.0 - smoothstep(
+        screen_edge_solid_width_px,
+        screen_edge_solid_width_px + max(screen_edge_fade_px, 1.0),
+        edge_distance
+    );
+
     // Tiny brighter square flecks near the boundary create a subtle particle-fog look.
     float fleck_random = cell_random(cell + vec2(43.0, floor(TIME * 3.0)));
     float near_edge = smoothstep(vision_radius_px + 8.0, vision_radius_px + 24.0, distance_to_player)
@@ -57,7 +73,8 @@ void fragment() {
     float fleck = step(0.94, fleck_random) * near_edge;
 
     vec3 fog_rgb = min(fog_color.rgb + vec3(fleck * 0.10), vec3(1.0));
-    COLOR = vec4(fog_rgb, fog_opacity * darkness);
+    float normal_fog_alpha = fog_opacity * darkness;
+    COLOR = vec4(fog_rgb, mix(normal_fog_alpha, 1.0, edge_fog));
 }
 ";
 
@@ -101,6 +118,8 @@ void fragment() {
         _fogMaterial.SetShaderParameter("vision_radius_px", VisionRadiusPixels);
         _fogMaterial.SetShaderParameter("pixel_size", Mathf.Max(1.0f, PixelSize));
         _fogMaterial.SetShaderParameter("edge_softness_px", EdgeSoftnessPixels);
+        _fogMaterial.SetShaderParameter("screen_edge_solid_width_px", ScreenEdgeSolidWidthPixels);
+        _fogMaterial.SetShaderParameter("screen_edge_fade_px", ScreenEdgeFadePixels);
         _fogMaterial.SetShaderParameter("fog_opacity", FogOpacity);
         _fogMaterial.SetShaderParameter("fog_color", FogColor);
     }

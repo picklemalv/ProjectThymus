@@ -46,6 +46,7 @@ script = ExtResource("3_42w2j")
 shape = SubResource("CircleShape2D_b4ovn")
 
 [node name="Shadow" type="Sprite2D" parent="." unique_id=57344455]
+texture_filter = 1
 position = Vector2(0, 10.216)
 scale = Vector2(0.8177083, 0.20016819)
 texture = ExtResource("4_u3kao")
