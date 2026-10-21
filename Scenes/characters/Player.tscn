@@ -70,6 +70,7 @@ position_smoothing_enabled = true
 position_smoothing_speed = 6.0
 
 [node name="Shadow" type="Sprite2D" parent="." unique_id=1462330779]
+texture_filter = 1
 position = Vector2(0, 10.216)
 scale = Vector2(0.8177083, 0.20016819)
 texture = ExtResource("5_0titu")

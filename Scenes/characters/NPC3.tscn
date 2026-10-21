@@ -1,0 +1,52 @@
+[gd_scene format=3 uid="uid://wikcdw40k81"]
+
+[ext_resource type="Script" uid="uid://dedwhrmi4tuni" path="res://Scenes/characters/NPC.cs" id="1_h48ge"]
+[ext_resource type="Texture2D" uid="uid://cxb0i7pw3d6kq" path="res://Assets/ThymusAssets/Sprites/Beast/Idle Right (4).png" id="2_h48ge"]
+[ext_resource type="Script" uid="uid://cfj1otbjy0s52" path="res://Scenes/characters/DetectionArea2d.cs" id="3_t1l30"]
+[ext_resource type="Texture2D" uid="uid://djqhjhvrhys2" path="res://Assets/Tiny Swords (Free Pack)/Terrain/Tileset/Shadow.png" id="4_y86so"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_b4ovn"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_h48ge")
+}],
+"loop": 1,
+"name": &"default",
+"speed": 7.5
+}]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_b4ovn"]
+radius = 12.0
+height = 48.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_b4ovn"]
+radius = 105.00476
+
+[node name="NPC" type="CharacterBody2D" unique_id=2068987577]
+y_sort_enabled = true
+script = ExtResource("1_h48ge")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=2122052175]
+texture_filter = 1
+position = Vector2(0, -25)
+scale = Vector2(0.27, 0.27)
+sprite_frames = SubResource("SpriteFrames_b4ovn")
+autoplay = "default"
+offset = Vector2(0, -27)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=900307293]
+rotation = 1.5707964
+shape = SubResource("CapsuleShape2D_b4ovn")
+
+[node name="DetectionArea2D" type="Area2D" parent="." unique_id=1586939541]
+script = ExtResource("3_t1l30")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="DetectionArea2D" unique_id=401035578]
+shape = SubResource("CircleShape2D_b4ovn")
+
+[node name="Shadow" type="Sprite2D" parent="." unique_id=195009575]
+texture_filter = 1
+position = Vector2(0, 13.499997)
+scale = Vector2(2.0859375, 0.515625)
+texture = ExtResource("4_y86so")

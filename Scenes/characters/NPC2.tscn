@@ -21,7 +21,7 @@ radius = 12.0
 height = 48.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_b4ovn"]
-radius = 53.338543
+radius = 86.00581
 
 [node name="NPC" type="CharacterBody2D" unique_id=2068987577]
 y_sort_enabled = true
@@ -46,6 +46,7 @@ script = ExtResource("4_uk1qk")
 shape = SubResource("CircleShape2D_b4ovn")
 
 [node name="Shadow" type="Sprite2D" parent="." unique_id=195009575]
+texture_filter = 1
 position = Vector2(-1.9073486e-06, -5.5)
 scale = Vector2(1.375, 0.3385417)
 texture = ExtResource("4_u2bun")
