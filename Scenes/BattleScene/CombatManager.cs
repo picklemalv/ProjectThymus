@@ -238,8 +238,9 @@ public partial class CombatManager : Node2D
 		attackButton.Disabled = true;
 
 		EnemyData data = GameState.Instance.CurrentEnemyData;
-		int scrapGained = data != null ? data.ScrapDrop : 10;
-		GameState.Instance.RunScrap += scrapGained;
+		int scrapDropped = data != null ? data.ScrapDrop : 10;
+		int scrapAdded = GameState.Instance.AddRunScrap(scrapDropped);
+		string fullNote = scrapAdded < scrapDropped ? " (inventory full)" : "";
 
 		float healPercent = (float)GD.RandRange(10, 15) / 100f;
 		int healAmount = Mathf.CeilToInt(playerStats.MaxHP * healPercent);
@@ -247,7 +248,7 @@ public partial class CombatManager : Node2D
 		playerStats.CurrentHP += healAmount;
 		playerStats.CurrentHP = Mathf.Min(playerStats.CurrentHP, playerStats.MaxHP);
 
-		statusLabel.Text = $"You won! +{scrapGained} Scrap. Recovered {healAmount} HP.";
+		statusLabel.Text = $"You won! +{scrapAdded} Scrap{fullNote}. Recovered {healAmount} HP.";
 		UpdateLabels();
 		GameState.Instance.PrintData();
 

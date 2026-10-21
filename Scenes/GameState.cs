@@ -12,6 +12,10 @@ public partial class GameState : Node
 {
 	public static GameState Instance { get; private set; }
 
+	public const int MaxRunScrap = 100;
+	public const int MaxRunEnergy = 30;
+	public const int MaxRunCoreFragments = 1;
+
 	public bool HasReturnPosition = false;
 	public Vector2 ReturnPosition = Vector2.Zero;
 
@@ -41,6 +45,27 @@ public partial class GameState : Node
 		AddChild(PlayerStats);
 
 		StartExpedition();
+	}
+
+	public int AddRunScrap(int amount)
+	{
+		int before = RunScrap;
+		RunScrap = Mathf.Min(RunScrap + amount, MaxRunScrap);
+		return RunScrap - before;
+	}
+
+	public int AddRunEnergy(int amount)
+	{
+		int before = RunEnergy;
+		RunEnergy = Mathf.Min(RunEnergy + amount, MaxRunEnergy);
+		return RunEnergy - before;
+	}
+
+	public int AddRunCoreFragments(int amount)
+	{
+		int before = RunCoreFragments;
+		RunCoreFragments = Mathf.Min(RunCoreFragments + amount, MaxRunCoreFragments);
+		return RunCoreFragments - before;
 	}
 
 	public void StartExpedition()
@@ -82,7 +107,7 @@ public partial class GameState : Node
 
 	public void PrintData()
 	{
-		GD.Print($"RUN -> Scrap: {RunScrap}, Energy: {RunEnergy}, Core: {RunCoreFragments}");
+		GD.Print($"RUN -> Scrap: {RunScrap}/{MaxRunScrap}, Energy: {RunEnergy}/{MaxRunEnergy}, Core: {RunCoreFragments}/{MaxRunCoreFragments}");
 		GD.Print($"PERMANENT -> Scrap: {PermanentScrap}, Energy: {PermanentEnergy}, Core: {PermanentCoreFragments}");
 	}
 
@@ -107,8 +132,20 @@ public partial class GameState : Node
 		{
 			if (key.Keycode == Key.F1)
 			{
-				RunScrap += 10;
-				GD.Print("[DEBUG] +10 Run Scrap");
+				int added = AddRunScrap(10);
+				GD.Print($"[DEBUG] +{added} Run Scrap");
+				PrintData();
+			}
+			else if (key.Keycode == Key.Key4)
+			{
+				int added = AddRunEnergy(10);
+				GD.Print($"[DEBUG] +{added} Run Energy");
+				PrintData();
+			}
+			else if (key.Keycode == Key.Key5)
+			{
+				int added = AddRunCoreFragments(1);
+				GD.Print($"[DEBUG] +{added} Run Core Fragment");
 				PrintData();
 			}
 			else if (key.Keycode == Key.F2)
