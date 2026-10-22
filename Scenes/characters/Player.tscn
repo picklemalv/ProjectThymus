@@ -30,13 +30,13 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_5pne0")
-}, {
-"duration": 1.0,
 "texture": SubResource("AtlasTexture_6km32")
 }, {
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_313w8")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_5pne0")
 }],
 "loop": 1,
 "name": &"running",
@@ -56,8 +56,8 @@ texture_filter = 1
 position = Vector2(0, -30)
 scale = Vector2(0.4, 0.4)
 sprite_frames = SubResource("SpriteFrames_b4ovn")
+animation = &"running"
 autoplay = "default"
-frame_progress = 0.8806938
 offset = Vector2(0, -27)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=900307293]

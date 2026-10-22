@@ -1,12 +1,31 @@
 [gd_scene format=3 uid="uid://bhratawhumkv4"]
 
 [ext_resource type="Script" uid="uid://dedwhrmi4tuni" path="res://Scenes/characters/NPC.cs" id="1_u2bun"]
+[ext_resource type="Texture2D" uid="uid://j1v2o1d7vi3h" path="res://Assets/ThymusAssets/Sprites/FogEntity/Tail Attack 1.png" id="2_c62cv"]
 [ext_resource type="Texture2D" uid="uid://dslyvpoprqlkt" path="res://Assets/ThymusAssets/Sprites/FogEntity/Idle Right (3).png" id="2_ysnli"]
+[ext_resource type="Texture2D" uid="uid://d0gc5euslehy7" path="res://Assets/ThymusAssets/Sprites/FogEntity/Tail Attack 2.png" id="3_uk1qk"]
 [ext_resource type="Texture2D" uid="uid://djqhjhvrhys2" path="res://Assets/Tiny Swords (Free Pack)/Terrain/Tileset/Shadow.png" id="4_u2bun"]
 [ext_resource type="Script" uid="uid://cfj1otbjy0s52" path="res://Scenes/characters/DetectionArea2d.cs" id="4_uk1qk"]
+[ext_resource type="Texture2D" uid="uid://dovk3ydw7q6fr" path="res://Assets/ThymusAssets/Sprites/FogEntity/Fallig 1.png" id="5_ejvwi"]
+[ext_resource type="Texture2D" uid="uid://cgjnoj2rih1hj" path="res://Assets/ThymusAssets/Sprites/FogEntity/Falling 2 (1).png" id="6_837q4"]
+[ext_resource type="Texture2D" uid="uid://bvv7fcg4xrd" path="res://Assets/ThymusAssets/Sprites/FogEntity/Falling 3.png" id="7_i33w1"]
+[ext_resource type="Texture2D" uid="uid://c72qkg1jic0xu" path="res://Assets/ThymusAssets/Sprites/FogEntity/Falling 4.png" id="8_fqe58"]
+[ext_resource type="Texture2D" uid="uid://cuoj3jku7y7rb" path="res://Assets/ThymusAssets/Sprites/FogEntity/Falling 5.png" id="9_46uv1"]
+[ext_resource type="Texture2D" uid="uid://wkk4t07yfqht" path="res://Assets/ThymusAssets/Sprites/FogEntity/Taking Dmg (1).png" id="10_7r6to"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_b4ovn"]
 animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_c62cv")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_uk1qk")
+}],
+"loop": 0,
+"name": &"attack",
+"speed": 3.5
+}, {
 "frames": [{
 "duration": 1.0,
 "texture": ExtResource("2_ysnli")
@@ -14,6 +33,37 @@ animations = [{
 "loop": 1,
 "name": &"default",
 "speed": 7.5
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("5_ejvwi")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_837q4")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_i33w1")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_fqe58")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_46uv1")
+}],
+"loop": 0,
+"name": &"die",
+"speed": 4.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("10_7r6to")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_ejvwi")
+}],
+"loop": 0,
+"name": &"hit",
+"speed": 2.0
 }]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_b4ovn"]
@@ -47,6 +97,6 @@ shape = SubResource("CircleShape2D_b4ovn")
 
 [node name="Shadow" type="Sprite2D" parent="." unique_id=195009575]
 texture_filter = 1
-position = Vector2(-1.9073486e-06, -5.5)
+position = Vector2(0, -3.9999976)
 scale = Vector2(1.375, 0.3385417)
 texture = ExtResource("4_u2bun")

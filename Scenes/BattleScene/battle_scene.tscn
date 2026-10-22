@@ -5,12 +5,16 @@
 [ext_resource type="Texture2D" uid="uid://bc1inec6tto3s" path="res://Assets/Tiny Swords (Free Pack)/Units/Black Units/Monk/Idle.png" id="5_0c8r6"]
 [ext_resource type="Texture2D" uid="uid://d4fh05tsgo5tc" path="res://Assets/ThymusAssets/Sprites/Runner/RIfle Attack 1.png" id="6_gomgp"]
 [ext_resource type="Texture2D" uid="uid://d2sn0opb3n1ek" path="res://Assets/ThymusAssets/Sprites/Runner/Rifle Attack 2.png" id="7_52re7"]
-[ext_resource type="Texture2D" uid="uid://bo1gp2inyd7qh" path="res://Assets/Tiny Swords (Free Pack)/Units/Black Units/Warrior/Warrior_Run.png" id="7_l5m2j"]
+[ext_resource type="Texture2D" uid="uid://dn4tqt753r6jp" path="res://Assets/ThymusAssets/Sprites/Runner/Falling 1 (2).png" id="8_0i5j7"]
 [ext_resource type="Texture2D" uid="uid://vle3o2612co4" path="res://Assets/ThymusAssets/Sprites/Runner/Idle Right.png" id="8_5ewv1"]
+[ext_resource type="Texture2D" uid="uid://d8fbvjbnsekr" path="res://Assets/ThymusAssets/Sprites/Runner/Taking damage 1.png" id="8_52re7"]
 [ext_resource type="Script" uid="uid://diufc3r3pr5kf" path="res://Scenes/characters/FlipChar.cs" id="8_rgnyu"]
+[ext_resource type="Texture2D" uid="uid://cr8x8mbm5khq8" path="res://Assets/ThymusAssets/Sprites/Runner/Falling 2 (2).png" id="9_4jeya"]
+[ext_resource type="Texture2D" uid="uid://dtpecrqmse5e3" path="res://Assets/ThymusAssets/Sprites/Runner/Taking Damage 2.png" id="9_5ewv1"]
 [ext_resource type="Texture2D" uid="uid://djqhjhvrhys2" path="res://Assets/Tiny Swords (Free Pack)/Terrain/Tileset/Shadow.png" id="9_52re7"]
 [ext_resource type="Texture2D" uid="uid://bp1yho1mp876i" path="res://Assets/ThymusAssets/pixel_ui/icons/pause.png" id="9_l5m2j"]
 [ext_resource type="FontFile" uid="uid://db3kmltwkjphx" path="res://Assets/ThymusAssets/pixel_ui/font/pixel_ui_font.fnt" id="10_gomgp"]
+[ext_resource type="Texture2D" uid="uid://pjtamfpv5wqv" path="res://Assets/ThymusAssets/Sprites/Runner/Falling 3 (1).png" id="10_ujmno"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_5pne0"]
 atlas = ExtResource("8_5ewv1")
@@ -39,6 +43,31 @@ animations = [{
 "loop": 1,
 "name": &"default",
 "speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("8_0i5j7")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_4jeya")
+}, {
+"duration": 1.0,
+"texture": ExtResource("10_ujmno")
+}],
+"loop": 0,
+"name": &"die",
+"speed": 3.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("8_52re7")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_5ewv1")
+}],
+"loop": 0,
+"name": &"hit",
+"speed": 2.0
 }]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_b4ovn"]
@@ -69,30 +98,6 @@ region = Rect2(768, 0, 192, 192)
 atlas = ExtResource("5_0c8r6")
 region = Rect2(960, 0, 192, 192)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_rgnyu"]
-atlas = ExtResource("7_l5m2j")
-region = Rect2(0, 0, 192, 192)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_0c8r6"]
-atlas = ExtResource("7_l5m2j")
-region = Rect2(192, 0, 192, 192)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_l5m2j"]
-atlas = ExtResource("7_l5m2j")
-region = Rect2(384, 0, 192, 192)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_gomgp"]
-atlas = ExtResource("7_l5m2j")
-region = Rect2(576, 0, 192, 192)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_52re7"]
-atlas = ExtResource("7_l5m2j")
-region = Rect2(768, 0, 192, 192)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_5ewv1"]
-atlas = ExtResource("7_l5m2j")
-region = Rect2(960, 0, 192, 192)
-
 [sub_resource type="SpriteFrames" id="SpriteFrames_r0dwk"]
 animations = [{
 "frames": [{
@@ -116,29 +121,6 @@ animations = [{
 }],
 "loop": 1,
 "name": &"default",
-"speed": 7.5
-}, {
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_rgnyu")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_0c8r6")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_l5m2j")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_gomgp")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_52re7")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_5ewv1")
-}],
-"loop": 1,
-"name": &"running",
 "speed": 7.5
 }]
 
@@ -238,6 +220,7 @@ text = "QuitGame"
 
 [node name="FadeLayer" type="CanvasLayer" parent="." unique_id=2825734]
 layer = 10
+visible = false
 
 [node name="FadeRect" type="ColorRect" parent="FadeLayer" unique_id=551422987]
 anchors_preset = 15
@@ -258,7 +241,7 @@ texture_filter = 1
 position = Vector2(0, -30)
 scale = Vector2(0.4, 0.4)
 sprite_frames = SubResource("SpriteFrames_b4ovn")
-animation = &"attack"
+animation = &"die"
 autoplay = "default"
 frame = 2
 frame_progress = 1.0
@@ -285,7 +268,6 @@ position = Vector2(0, -30)
 scale = Vector2(0.4, 0.4)
 sprite_frames = SubResource("SpriteFrames_r0dwk")
 autoplay = "default"
-frame_progress = 0.20073715
 offset = Vector2(0, -27)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="NPC" unique_id=1329165132]
@@ -296,3 +278,7 @@ shape = SubResource("CapsuleShape2D_0i5j7")
 position = Vector2(0, 13)
 scale = Vector2(1.375, 0.3385417)
 texture = ExtResource("9_52re7")
+
+[node name="NPCMarker" type="Marker2D" parent="." unique_id=962712767]
+position = Vector2(816, 481)
+scale = Vector2(2, 2)

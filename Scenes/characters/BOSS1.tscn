@@ -1,12 +1,32 @@
 [gd_scene format=3 uid="uid://pgn2lkcesrl4"]
 
 [ext_resource type="Script" uid="uid://dedwhrmi4tuni" path="res://Scenes/characters/NPC.cs" id="1_s3lhi"]
+[ext_resource type="Texture2D" uid="uid://blyiaekaprykd" path="res://Assets/ThymusAssets/Sprites/BossLumber/Chainsaw Attack 1.png" id="2_8o5or"]
 [ext_resource type="Texture2D" uid="uid://cce3dltusv0n3" path="res://Assets/ThymusAssets/Sprites/BossLumber/Idle Right (5).png" id="2_s3lhi"]
+[ext_resource type="Texture2D" uid="uid://bc6suk6lfqadr" path="res://Assets/ThymusAssets/Sprites/BossLumber/Chainsaw Attack 2.png" id="3_atw0r"]
 [ext_resource type="Script" uid="uid://cfj1otbjy0s52" path="res://Scenes/characters/DetectionArea2d.cs" id="3_b00wb"]
 [ext_resource type="Texture2D" uid="uid://djqhjhvrhys2" path="res://Assets/Tiny Swords (Free Pack)/Terrain/Tileset/Shadow.png" id="4_8o5or"]
+[ext_resource type="Texture2D" uid="uid://yaasb3g1kdua" path="res://Assets/ThymusAssets/Sprites/BossLumber/Chainsaw Attack 3.png" id="4_o2cie"]
+[ext_resource type="Texture2D" uid="uid://cx6mv3nfdyivj" path="res://Assets/ThymusAssets/Sprites/BossLumber/Falling 1 (4).png" id="6_w6pea"]
+[ext_resource type="Texture2D" uid="uid://co7vanv2ulp0d" path="res://Assets/ThymusAssets/Sprites/BossLumber/Falling 2 (4).png" id="7_1cqi2"]
+[ext_resource type="Texture2D" uid="uid://cq6vxv3qc3otk" path="res://Assets/ThymusAssets/Sprites/BossLumber/Taking Dmg (3).png" id="8_7nx7m"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_b4ovn"]
 animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_8o5or")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_atw0r")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_o2cie")
+}],
+"loop": 0,
+"name": &"attack",
+"speed": 3.5
+}, {
 "frames": [{
 "duration": 1.0,
 "texture": ExtResource("2_s3lhi")
@@ -14,6 +34,25 @@ animations = [{
 "loop": 1,
 "name": &"default",
 "speed": 7.5
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("6_w6pea")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_1cqi2")
+}],
+"loop": 0,
+"name": &"die",
+"speed": 4.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("8_7nx7m")
+}],
+"loop": 0,
+"name": &"hit",
+"speed": 2.0
 }]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_b4ovn"]
@@ -32,6 +71,7 @@ texture_filter = 1
 position = Vector2(0, -74.335)
 scale = Vector2(0.48219335, 0.48219335)
 sprite_frames = SubResource("SpriteFrames_b4ovn")
+animation = &"hit"
 autoplay = "default"
 offset = Vector2(0, -27)
 
