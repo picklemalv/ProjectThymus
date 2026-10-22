@@ -913,6 +913,7 @@ metadata/_custom_type_script = "uid://dcloqoier2nsx"
 
 [sub_resource type="Resource" id="Resource_4amwv"]
 script = ExtResource("7_fdnlq")
+BaseHP = 300
 metadata/_custom_type_script = "uid://dcloqoier2nsx"
 
 [node name="Main" type="Node2D" unique_id=1445840066]
@@ -1718,7 +1719,7 @@ NpcID = "15"
 EnemyData = SubResource("Resource_jkdf5")
 
 [node name="NPC14" parent="Objects" unique_id=302566379 instance=ExtResource("4_hptm8")]
-position = Vector2(2065, 1059)
+position = Vector2(2221, 373)
 NpcID = "14"
 EnemyData = SubResource("Resource_jkdf5")
 
@@ -1768,7 +1769,7 @@ NpcID = "24"
 EnemyData = SubResource("Resource_fdnlq")
 
 [node name="NPC16" parent="Objects" unique_id=1195360644 instance=ExtResource("6_6iyac")]
-position = Vector2(2230, 370)
+position = Vector2(2265, 1220)
 NpcID = "16"
 EnemyData = SubResource("Resource_fdnlq")
 
@@ -1788,6 +1789,11 @@ NpcID = "19"
 EnemyData = SubResource("Resource_h48ge")
 
 [node name="NPC20" parent="Objects" unique_id=1309370168 instance=ExtResource("9_d1ilt")]
+position = Vector2(4627, 990)
+NpcID = "20"
+EnemyData = SubResource("Resource_h48ge")
+
+[node name="NPC31" parent="Objects" unique_id=1513259877 instance=ExtResource("9_d1ilt")]
 position = Vector2(4627, 990)
 NpcID = "20"
 EnemyData = SubResource("Resource_h48ge")
@@ -1813,17 +1819,17 @@ NpcID = "27"
 EnemyData = SubResource("Resource_h48ge")
 
 [node name="BOSS" parent="Objects" unique_id=50507066 instance=ExtResource("11_jkdf5")]
-position = Vector2(462, 293)
+position = Vector2(490, 314)
 NpcID = "Boss1"
 EnemyData = SubResource("Resource_6iyac")
 
 [node name="BOSS2" parent="Objects" unique_id=350355211 instance=ExtResource("14_k12tt")]
-position = Vector2(3849, 809)
+position = Vector2(3852, 737)
 NpcID = "Boss2"
 EnemyData = SubResource("Resource_xmw5u")
 
 [node name="BOSS3" parent="Objects" unique_id=1931164543 instance=ExtResource("15_wsu2k")]
-position = Vector2(7581, 1253)
+position = Vector2(7386, 1234)
 NpcID = "Boss3"
 EnemyData = SubResource("Resource_4amwv")
 

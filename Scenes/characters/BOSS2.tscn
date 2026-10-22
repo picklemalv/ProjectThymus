@@ -1,12 +1,34 @@
 [gd_scene format=3 uid="uid://c75ednorf7fix"]
 
 [ext_resource type="Script" uid="uid://dedwhrmi4tuni" path="res://Scenes/characters/NPC.cs" id="1_urqob"]
+[ext_resource type="Texture2D" uid="uid://cflvhlnth1p3e" path="res://Assets/ThymusAssets/Sprites/BossFog/Fog Attack 1.png" id="2_my4ip"]
 [ext_resource type="Texture2D" uid="uid://dykkwn866hkw4" path="res://Assets/ThymusAssets/Sprites/BossFog/Idle Right (6).png" id="2_urqob"]
 [ext_resource type="Script" uid="uid://cfj1otbjy0s52" path="res://Scenes/characters/DetectionArea2d.cs" id="3_5u2yq"]
+[ext_resource type="Texture2D" uid="uid://be8hpulpu2f0h" path="res://Assets/ThymusAssets/Sprites/BossFog/Fog Attack 2.png" id="3_xixcl"]
 [ext_resource type="Texture2D" uid="uid://djqhjhvrhys2" path="res://Assets/Tiny Swords (Free Pack)/Terrain/Tileset/Shadow.png" id="4_n7aml"]
+[ext_resource type="Texture2D" uid="uid://bt4o18qmbh7t8" path="res://Assets/ThymusAssets/Sprites/BossFog/Fog Attack 3.png" id="4_wovys"]
+[ext_resource type="Texture2D" uid="uid://b35trxa5qqxdd" path="res://Assets/ThymusAssets/Sprites/BossFog/Taking Dmg (4).png" id="6_wovys"]
+[ext_resource type="Texture2D" uid="uid://bhp5bjujos41r" path="res://Assets/ThymusAssets/Sprites/BossFog/Falling 2 (5).png" id="7_mqdgm"]
+[ext_resource type="Texture2D" uid="uid://dofngf3tksem3" path="res://Assets/ThymusAssets/Sprites/BossFog/Falling 3 (3).png" id="8_bint5"]
+[ext_resource type="Texture2D" uid="uid://bf78idy124qpu" path="res://Assets/ThymusAssets/Sprites/BossFog/Falling 4 (1).png" id="9_fshpw"]
+[ext_resource type="Texture2D" uid="uid://cv7ndbbo1hp2a" path="res://Assets/ThymusAssets/Sprites/BossFog/Falling 5 (1).png" id="10_s0by4"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_b4ovn"]
 animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_my4ip")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_xixcl")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_wovys")
+}],
+"loop": 0,
+"name": &"attack",
+"speed": 3.0
+}, {
 "frames": [{
 "duration": 1.0,
 "texture": ExtResource("2_urqob")
@@ -14,6 +36,34 @@ animations = [{
 "loop": 1,
 "name": &"default",
 "speed": 7.5
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("6_wovys")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_mqdgm")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_bint5")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_fshpw")
+}, {
+"duration": 1.0,
+"texture": ExtResource("10_s0by4")
+}],
+"loop": 0,
+"name": &"die",
+"speed": 4.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("6_wovys")
+}],
+"loop": 0,
+"name": &"hit",
+"speed": 2.0
 }]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_b4ovn"]

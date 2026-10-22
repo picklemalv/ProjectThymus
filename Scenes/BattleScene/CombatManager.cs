@@ -47,6 +47,8 @@ public partial class CombatManager : Node2D
 		playerSprite.AnimationFinished += OnAnimationFinished;
 
 		enemySprite = GetNode<AnimatedSprite2D>("NPC/AnimatedSprite2D");
+		enemySprite.AnimationFinished += OnEnemyAnimationFinished;
+
 		LoadEncounteredEnemy();
 
 		attackButton.Pressed += OnAttackPressed;
@@ -189,6 +191,8 @@ public partial class CombatManager : Node2D
 			return;
 
 		enemyAttackCount++;
+		
+		enemySprite.Play("attack");
 
 		bool special = bossSpecial != null && enemyAttackCount % bossSpecial.EveryNAttacks == 0;
 		int attackValue = special
@@ -206,6 +210,11 @@ public partial class CombatManager : Node2D
 		}
 
 		playerStats.CurrentHP = Mathf.Max(playerStats.CurrentHP - dmg, 0);
+		// Play player getting-hit animation
+		if (playerSprite.SpriteFrames.HasAnimation("hit"))
+		{
+			playerSprite.Play("hit");
+		}
 
 		if (special)
 		{
@@ -217,6 +226,11 @@ public partial class CombatManager : Node2D
 
 		if (playerStats.CurrentHP <= 0)
 		{
+			if (playerSprite.SpriteFrames.HasAnimation("die"))
+			{
+				playerSprite.Play("die");
+			}
+
 			TriggerTimeLoop("You were overwhelmed...");
 			return;
 		}
@@ -288,6 +302,12 @@ public partial class CombatManager : Node2D
 	{
 		playerSprite.Play("attack");
 
+		// Play NPC hit animation
+		if (enemySprite.SpriteFrames.HasAnimation("hit"))
+		{
+			enemySprite.Play("hit");
+		}
+
 		playerStats.AddInfection(zoneInfection);
 
 		int attackValue = playerStats.Attack + playerStats.WeaponDamage + attackBuffBonus;
@@ -302,11 +322,26 @@ public partial class CombatManager : Node2D
 
 		if (enemyStats.CurrentHP <= 0)
 		{
+			if (enemySprite.SpriteFrames.HasAnimation("die"))
+			{
+				enemySprite.Play("die");
+			}
+
 			EndBattle();
 			return;
 		}
 
 		RunEnemyTurn($"You hit for {dmgToEnemy}!", 0.7f);
+	}
+	
+	private void OnEnemyAnimationFinished()
+	{
+		if (enemySprite.Animation == "hit" ||
+			enemySprite.Animation == "attack")
+		{
+			if (enemySprite.SpriteFrames.HasAnimation("default"))
+				enemySprite.Play("default");
+		}
 	}
 
 	private void OnDefendPressed()
@@ -409,9 +444,13 @@ public partial class CombatManager : Node2D
 
 	private void OnAnimationFinished()
 	{
-		if (playerSprite.Animation == "attack")
+		if (playerSprite.Animation == "attack" ||
+			playerSprite.Animation == "hit")
 		{
-			playerSprite.Play("default");
+			if (playerSprite.SpriteFrames.HasAnimation("default"))
+			{
+				playerSprite.Play("default");
+			}
 		}
 	}
 
@@ -434,7 +473,15 @@ public partial class CombatManager : Node2D
 		statusLabel.Text = $"{reason} Time Loop activated...";
 		UpdateLabels();
 
-		await ToSignal(GetTree().CreateTimer(1.5), Timer.SignalName.Timeout);
+		if (enemySprite.SpriteFrames.HasAnimation("die"))
+		{
+			// Wait until the non-looping death animation finishes.
+			await ToSignal(enemySprite, AnimatedSprite2D.SignalName.AnimationFinished);
+		}
+		else
+		{
+			await ToSignal(GetTree().CreateTimer(1.5), Timer.SignalName.Timeout);
+		}
 
 		Tween tween = CreateTween();
 		tween.TweenProperty(fadeRect, "modulate:a", 1.0f, 0.6f);
@@ -476,14 +523,35 @@ public partial class CombatManager : Node2D
 
 		enemySprite.SpriteFrames = enemyFrames;
 
-		string selectedAnimation = animations[0];
+		// Always start with the idle animation
+		string idleAnimation = enemyFrames.HasAnimation("default")
+			? "default"
+			: animations[0];
 
-		enemySprite.Animation = selectedAnimation;
+		// Position the NPC using the ground marker
+		Marker2D marker = GetNode<Marker2D>("NPCMarker");
+
+		enemySprite.Centered = true;
+
+		Texture2D frameTexture = enemyFrames.GetFrameTexture(idleAnimation, 0);
+
+		if (frameTexture != null)
+		{
+			enemySprite.Offset = new Vector2(
+				0,
+				-frameTexture.GetSize().Y / 2.0f
+			);
+		}
+
+		enemySprite.GlobalPosition = marker.GlobalPosition;
+
+		enemySprite.Stop();
+		enemySprite.Animation = idleAnimation;
 		enemySprite.Frame = 0;
 		enemySprite.Visible = true;
-		enemySprite.Play();
+		enemySprite.Play(idleAnimation);
 
-		GD.Print($"Playing animation: {selectedAnimation}");
+		GD.Print($"Playing initial animation: {idleAnimation}");
 		GD.Print($"Enemy visible: {enemySprite.Visible}");
 		GD.Print($"Enemy position: {enemySprite.Position}");
 		GD.Print($"Enemy scale: {enemySprite.Scale}");

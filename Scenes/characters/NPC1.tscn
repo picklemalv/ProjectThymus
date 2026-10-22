@@ -1,12 +1,36 @@
 [gd_scene format=3 uid="uid://baofd8uqreav4"]
 
 [ext_resource type="Script" uid="uid://dedwhrmi4tuni" path="res://Scenes/characters/NPC.cs" id="1_u3kao"]
+[ext_resource type="Texture2D" uid="uid://brovlng6i87bv" path="res://Assets/ThymusAssets/Sprites/Mutated/Pipe Attack 1.png" id="2_4twmr"]
 [ext_resource type="Texture2D" uid="uid://cx7srlk1c25cj" path="res://Assets/ThymusAssets/Sprites/Mutated/Idle Right (2).png" id="2_42w2j"]
 [ext_resource type="Script" uid="uid://cfj1otbjy0s52" path="res://Scenes/characters/DetectionArea2d.cs" id="3_42w2j"]
+[ext_resource type="Texture2D" uid="uid://c33a5oe36ebee" path="res://Assets/ThymusAssets/Sprites/Mutated/Taking Dmg.png" id="3_bxeau"]
+[ext_resource type="Texture2D" uid="uid://du8ei0wiy0quh" path="res://Assets/ThymusAssets/Sprites/Mutated/Pipe Attack 3.png" id="3_uvl8y"]
+[ext_resource type="Texture2D" uid="uid://bdt7wm7e80x32" path="res://Assets/ThymusAssets/Sprites/Mutated/Falling 1.png" id="4_ctkdq"]
+[ext_resource type="Texture2D" uid="uid://b50arguaeo7tr" path="res://Assets/ThymusAssets/Sprites/Mutated/Pipe Attack 2.png" id="4_lfryv"]
 [ext_resource type="Texture2D" uid="uid://djqhjhvrhys2" path="res://Assets/Tiny Swords (Free Pack)/Terrain/Tileset/Shadow.png" id="4_u3kao"]
+[ext_resource type="Texture2D" uid="uid://dbwpce5qpw1ah" path="res://Assets/ThymusAssets/Sprites/Mutated/Pipe Attack 4.png" id="5_v4wbb"]
+[ext_resource type="Texture2D" uid="uid://cmky7m1rx3vej" path="res://Assets/ThymusAssets/Sprites/Mutated/Falling 2.png" id="8_uvl8y"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_b4ovn"]
 animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_4twmr")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_uvl8y")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_lfryv")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_v4wbb")
+}],
+"loop": 0,
+"name": &"attack",
+"speed": 3.5
+}, {
 "frames": [{
 "duration": 1.0,
 "texture": ExtResource("2_42w2j")
@@ -14,6 +38,28 @@ animations = [{
 "loop": 1,
 "name": &"default",
 "speed": 7.5
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("4_ctkdq")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_uvl8y")
+}],
+"loop": 0,
+"name": &"die",
+"speed": 2.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("3_bxeau")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_ctkdq")
+}],
+"loop": 0,
+"name": &"hit",
+"speed": 2.0
 }]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_b4ovn"]

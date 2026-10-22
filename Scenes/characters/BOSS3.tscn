@@ -1,12 +1,34 @@
 [gd_scene format=3 uid="uid://ckxjac765rkr1"]
 
 [ext_resource type="Script" uid="uid://dedwhrmi4tuni" path="res://Scenes/characters/NPC.cs" id="1_6emri"]
+[ext_resource type="Texture2D" uid="uid://cwg8uv7i5u7s0" path="res://Assets/ThymusAssets/Sprites/BossFinal/Crystal Attack 1.png" id="2_1s06t"]
 [ext_resource type="Texture2D" uid="uid://cmmnw4lwiuo2b" path="res://Assets/ThymusAssets/Sprites/BossFinal/Idle Right (7).png" id="2_6emri"]
+[ext_resource type="Texture2D" uid="uid://cf0uxnhjfpu17" path="res://Assets/ThymusAssets/Sprites/BossFinal/Crystal Attack 2.png" id="3_63fv6"]
 [ext_resource type="Script" uid="uid://cfj1otbjy0s52" path="res://Scenes/characters/DetectionArea2d.cs" id="3_wc273"]
 [ext_resource type="Texture2D" uid="uid://djqhjhvrhys2" path="res://Assets/Tiny Swords (Free Pack)/Terrain/Tileset/Shadow.png" id="4_cy6gk"]
+[ext_resource type="Texture2D" uid="uid://8nr5kfiwsc6y" path="res://Assets/ThymusAssets/Sprites/BossFinal/Crystal Attack 3.png" id="4_i3dnk"]
+[ext_resource type="Texture2D" uid="uid://jr8kh8exrmkh" path="res://Assets/ThymusAssets/Sprites/BossFinal/Falling 1 (5).png" id="6_n24rn"]
+[ext_resource type="Texture2D" uid="uid://di216kdo82ssc" path="res://Assets/ThymusAssets/Sprites/BossFinal/Taking Dmg (5) 1.png" id="7_wg3ej"]
+[ext_resource type="Texture2D" uid="uid://wol6cbm8r76d" path="res://Assets/ThymusAssets/Sprites/BossFinal/Rage-Berserk 1.png" id="8_6jrty"]
+[ext_resource type="Texture2D" uid="uid://dn6h5bd77iddu" path="res://Assets/ThymusAssets/Sprites/BossFinal/Falling 4 (2) 1.png" id="9_mnsr4"]
+[ext_resource type="Texture2D" uid="uid://guy5xgjgodvb" path="res://Assets/ThymusAssets/Sprites/BossFinal/Falling 5 (2) 1.png" id="10_28kxq"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_b4ovn"]
 animations = [{
+"frames": [{
+"duration": 1.3,
+"texture": ExtResource("2_1s06t")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_63fv6")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_i3dnk")
+}],
+"loop": 0,
+"name": &"attack",
+"speed": 3.5
+}, {
 "frames": [{
 "duration": 1.0,
 "texture": ExtResource("2_6emri")
@@ -14,6 +36,34 @@ animations = [{
 "loop": 1,
 "name": &"default",
 "speed": 7.5
+}, {
+"frames": [{
+"duration": 2.0,
+"texture": ExtResource("6_n24rn")
+}, {
+"duration": 1.2,
+"texture": ExtResource("7_wg3ej")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_6jrty")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_mnsr4")
+}, {
+"duration": 1.0,
+"texture": ExtResource("10_28kxq")
+}],
+"loop": 0,
+"name": &"die",
+"speed": 4.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("6_n24rn")
+}],
+"loop": 0,
+"name": &"hit",
+"speed": 2.0
 }]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_b4ovn"]
