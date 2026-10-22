@@ -238,6 +238,7 @@ text = "QuitGame"
 
 [node name="FadeLayer" type="CanvasLayer" parent="." unique_id=2825734]
 layer = 10
+visible = false
 
 [node name="FadeRect" type="ColorRect" parent="FadeLayer" unique_id=551422987]
 anchors_preset = 15

@@ -47,6 +47,6 @@ shape = SubResource("CircleShape2D_b4ovn")
 
 [node name="Shadow" type="Sprite2D" parent="." unique_id=195009575]
 texture_filter = 1
-position = Vector2(-1.9073486e-06, -5.5)
+position = Vector2(0, -3.9999976)
 scale = Vector2(1.375, 0.3385417)
 texture = ExtResource("4_u2bun")

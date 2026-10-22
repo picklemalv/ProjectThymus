@@ -943,17 +943,17 @@ script = ExtResource("2_hptm8")
 Destination = NodePath("../../Map2/Map2from1")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="World/Map1/toMap2" unique_id=1695102225]
-position = Vector2(2553.0178, 1298.1405)
-rotation = 0.60562927
+position = Vector2(300, 221)
+rotation = -0.8342674
 shape = SubResource("RectangleShape2D_tnw6b")
 
 [node name="Prompt" type="Label" parent="World/Map1/toMap2" unique_id=1005352138]
 visible = false
 texture_filter = 1
-offset_left = 2494.0
-offset_top = 1289.0
-offset_right = 2554.0
-offset_bottom = 1312.0
+offset_left = 259.0
+offset_top = 218.0
+offset_right = 319.0
+offset_bottom = 241.0
 scale = Vector2(2, 2)
 theme_override_fonts/font = ExtResource("15_k12tt")
 text = "E - Go"
@@ -1149,7 +1149,7 @@ shape = SubResource("SegmentShape2D_ovafv")
 shape = SubResource("SegmentShape2D_owhal")
 
 [node name="Map1from2" type="Marker2D" parent="World/Map1" unique_id=256478147]
-position = Vector2(2498, 1346)
+position = Vector2(344, 260)
 
 [node name="Map2" type="StaticBody2D" parent="World" unique_id=633230542]
 
@@ -1660,7 +1660,7 @@ position = Vector2(9009, 870)
 y_sort_enabled = true
 
 [node name="Player" parent="Objects" unique_id=2068987577 instance=ExtResource("9_ynf5e")]
-position = Vector2(349, 259)
+position = Vector2(2435, 1346)
 
 [node name="NPC" parent="Objects" unique_id=1286714938 instance=ExtResource("4_hptm8")]
 position = Vector2(580, 426)
@@ -1718,7 +1718,7 @@ NpcID = "15"
 EnemyData = SubResource("Resource_jkdf5")
 
 [node name="NPC14" parent="Objects" unique_id=302566379 instance=ExtResource("4_hptm8")]
-position = Vector2(2312, 1256)
+position = Vector2(2065, 1059)
 NpcID = "14"
 EnemyData = SubResource("Resource_jkdf5")
 
@@ -1813,7 +1813,7 @@ NpcID = "27"
 EnemyData = SubResource("Resource_h48ge")
 
 [node name="BOSS" parent="Objects" unique_id=50507066 instance=ExtResource("11_jkdf5")]
-position = Vector2(2463, 1326)
+position = Vector2(462, 293)
 NpcID = "Boss1"
 EnemyData = SubResource("Resource_6iyac")
 
