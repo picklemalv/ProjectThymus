@@ -911,6 +911,10 @@ BaseHP = 300
 BaseAttack = 30
 metadata/_custom_type_script = "uid://dcloqoier2nsx"
 
+[sub_resource type="Resource" id="Resource_4amwv"]
+script = ExtResource("7_fdnlq")
+metadata/_custom_type_script = "uid://dcloqoier2nsx"
+
 [node name="Main" type="Node2D" unique_id=1445840066]
 
 [node name="World" type="Node2D" parent="." unique_id=151248357]
@@ -1821,6 +1825,7 @@ EnemyData = SubResource("Resource_xmw5u")
 [node name="BOSS3" parent="Objects" unique_id=1931164543 instance=ExtResource("15_wsu2k")]
 position = Vector2(7581, 1253)
 NpcID = "Boss3"
+EnemyData = SubResource("Resource_4amwv")
 
 [node name="UI" type="CanvasLayer" parent="." unique_id=1442604166]
 

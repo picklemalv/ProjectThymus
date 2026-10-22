@@ -50,6 +50,11 @@ public partial class Stats : Node
 		CurrentInfection = 0f;
 	}
 
+	public void SetInfection(float value)
+	{
+		CurrentInfection = Mathf.Clamp(value, 0f, MaxInfection);
+	}
+
 	public void PrintStats()
 	{
 		GD.Print($"Runner Stats -> HP: {CurrentHP}/{MaxHP}, ATK: {Attack}, Weapon DMG: {WeaponDamage}, DEF: {Defense}, SPD: {Speed}, Infection: {CurrentInfection}%");

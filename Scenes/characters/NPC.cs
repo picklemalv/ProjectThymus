@@ -8,13 +8,9 @@ public partial class NPC : CharacterBody2D
 	[Export]
 	public EnemyData EnemyData;
 
-
 	public override void _Ready()
 	{
 		if (GameState.Instance.IsNpcDefeated(NpcID))
-		{
 			QueueFree();
-			return;
-		}
 	}
 }

@@ -4,12 +4,15 @@ using System.Collections.Generic;
 
 public partial class CombatManager : Node2D
 {
-	private const float InfectionGainPerTurn = 2f;
 	private const float EscapeChance = 0.5f;
 	private const float EscapeGraceSeconds = 4f;
 
 	private Stats playerStats;
 	private Stats enemyStats;
+	private ZoneRule zone;
+	private float zoneInfection = 2f;
+	private BossSpecial bossSpecial;
+	private int enemyAttackCount = 0;
 
 	private bool battleOver = false;
 	private bool actionsEnabled = true;
@@ -49,6 +52,9 @@ public partial class CombatManager : Node2D
 		attackButton.Pressed += OnAttackPressed;
 
 		playerStats = GameState.Instance.PlayerStats;
+		zone = GameState.Instance.CurrentZoneRule;
+		zoneInfection = zone.InfectionPerTurn;
+		bossSpecial = GameDatabase.GetBossSpecial(GameDatabase.BossCoreIndex(GameState.Instance.CurrentNpcID));
 
 		BuildActionButtons();
 
@@ -74,6 +80,9 @@ public partial class CombatManager : Node2D
 
 		UpdateLabels();
 		statusLabel.Text = data != null ? $"A wild {data.EnemyName} appears!" : "A wild enemy appears!";
+
+		if (bossSpecial != null)
+			statusLabel.Text += $"\nBOSS: {bossSpecial.Name} every {bossSpecial.EveryNAttacks} attacks!";
 
 		FadeIn();
 		GD.Print("==============================");
@@ -179,7 +188,14 @@ public partial class CombatManager : Node2D
 		if (battleOver)
 			return;
 
-		int dmg = CalculateDamage(enemyStats.Attack, playerStats.Defense);
+		enemyAttackCount++;
+
+		bool special = bossSpecial != null && enemyAttackCount % bossSpecial.EveryNAttacks == 0;
+		int attackValue = special
+			? Mathf.RoundToInt(enemyStats.Attack * bossSpecial.DamageMultiplier)
+			: enemyStats.Attack;
+
+		int dmg = CalculateDamage(attackValue, playerStats.Defense);
 		string guardText = "";
 
 		if (defending)
@@ -190,6 +206,13 @@ public partial class CombatManager : Node2D
 		}
 
 		playerStats.CurrentHP = Mathf.Max(playerStats.CurrentHP - dmg, 0);
+
+		if (special)
+		{
+			playerStats.AddInfection(bossSpecial.InfectionGain);
+			FlashPlayer();
+		}
+
 		UpdateLabels();
 
 		if (playerStats.CurrentHP <= 0)
@@ -198,8 +221,36 @@ public partial class CombatManager : Node2D
 			return;
 		}
 
-		statusLabel.Text = $"{playerText} Enemy hit you for {dmg}{guardText}!";
+		if (special && CheckInfectionLoop())
+			return;
+
+		string hitText;
+
+		if (special)
+		{
+			string infectionText = bossSpecial.InfectionGain > 0f ? $" and +{bossSpecial.InfectionGain:0}% infection" : "";
+			hitText = $"{bossSpecial.Name}! It hits you for {dmg}{guardText}{infectionText}!";
+		}
+		else
+		{
+			hitText = $"Enemy hit you for {dmg}{guardText}!";
+		}
+
+		string warning = "";
+
+		if (bossSpecial != null && (enemyAttackCount + 1) % bossSpecial.EveryNAttacks == 0)
+			warning = $"\n{bossSpecial.Name} is coming next turn. Defend to halve it!";
+
+		statusLabel.Text = $"{playerText} {hitText}{warning}";
 		SetActionsEnabled(true);
+	}
+
+	private void FlashPlayer()
+	{
+		playerSprite.Modulate = new Color(1f, 0.3f, 0.3f);
+
+		Tween tween = CreateTween();
+		tween.TweenProperty(playerSprite, "modulate", new Color(1f, 1f, 1f), 0.5f);
 	}
 
 	private int CalculateDamage(int attack, int defense)
@@ -237,7 +288,7 @@ public partial class CombatManager : Node2D
 	{
 		playerSprite.Play("attack");
 
-		playerStats.AddInfection(InfectionGainPerTurn);
+		playerStats.AddInfection(zoneInfection);
 
 		int attackValue = playerStats.Attack + playerStats.WeaponDamage + attackBuffBonus;
 		int dmgToEnemy = CalculateDamage(attackValue, enemyStats.Defense);
@@ -264,7 +315,7 @@ public partial class CombatManager : Node2D
 			return;
 
 		defending = true;
-		playerStats.AddInfection(InfectionGainPerTurn);
+		playerStats.AddInfection(zoneInfection);
 
 		if (CheckInfectionLoop())
 			return;
@@ -277,7 +328,7 @@ public partial class CombatManager : Node2D
 		if (battleOver || !actionsEnabled)
 			return;
 
-		playerStats.AddInfection(InfectionGainPerTurn);
+		playerStats.AddInfection(zoneInfection);
 
 		if (CheckInfectionLoop())
 			return;
@@ -337,7 +388,7 @@ public partial class CombatManager : Node2D
 			effects.Add($"+{def.AttackBuff} ATK for {def.BuffTurns} attacks");
 		}
 
-		playerStats.AddInfection(InfectionGainPerTurn);
+		playerStats.AddInfection(zoneInfection);
 
 		if (CheckInfectionLoop())
 			return;
@@ -370,7 +421,7 @@ public partial class CombatManager : Node2D
 
 		playerHPLabel.Text = $"Player HP: {playerStats.CurrentHP}/{playerStats.MaxHP}{buffText}";
 		enemyHPLabel.Text = "Enemy HP: " + enemyStats.CurrentHP;
-		infectionLabel.Text = $"Infection: {playerStats.CurrentInfection:0}%";
+		infectionLabel.Text = $"Infection: {playerStats.CurrentInfection:0}%   ({zone.Name}: +{zone.InfectionPerTurn:0}% per turn)";
 	}
 
 	private async void TriggerTimeLoop(string reason)
@@ -389,9 +440,7 @@ public partial class CombatManager : Node2D
 		tween.TweenProperty(fadeRect, "modulate:a", 1.0f, 0.6f);
 		await ToSignal(tween, Tween.SignalName.Finished);
 
-		GameState.Instance.EndExpedition(false);
-
-		GetTree().ChangeSceneToFile("res://Scenes/Shelter/Shelter.tscn");
+		GameState.Instance.FinishExpedition();
 	}
 
 	private void LoadEncounteredEnemy()
@@ -461,13 +510,24 @@ public partial class CombatManager : Node2D
 
 		EnemyData data = GameState.Instance.CurrentEnemyData;
 
-		int scrapDrop = data != null ? data.ScrapDrop : 10;
-		int materialDrop = data != null ? data.MaterialDrop : 2;
-		int energyDrop = data != null ? data.EnergyDrop : 1;
+		float rewardMultiplier = zone.RewardMultiplier;
+
+		int scrapDrop = Mathf.RoundToInt((data != null ? data.ScrapDrop : 10) * rewardMultiplier);
+		int materialDrop = Mathf.RoundToInt((data != null ? data.MaterialDrop : 2) * rewardMultiplier);
+		int energyDrop = Mathf.RoundToInt((data != null ? data.EnergyDrop : 1) * rewardMultiplier);
 		int essenceDrop = 0;
 
 		if (data != null && GD.Randf() < data.EssenceDropChance)
-			essenceDrop = data.EssenceDrop;
+			essenceDrop = Mathf.RoundToInt(data.EssenceDrop * rewardMultiplier);
+
+		string coreText = "";
+		int coreIndex = GameDatabase.BossCoreIndex(GameState.Instance.CurrentNpcID);
+
+		if (coreIndex > 0 && GameState.Instance.TryAddRunCore(coreIndex))
+			coreText = $" +Core Fragment {coreIndex}!";
+
+		if (coreIndex == GameDatabase.CoreCount && GameState.Instance.CarryingFinalCore)
+			coreText = " +FINAL CORE received! The source is destroyed!";
 
 		bool bagFull = false;
 		string loot =
@@ -476,7 +536,7 @@ public partial class CombatManager : Node2D
 			TryLoot(ResourceType.Energy, energyDrop, ref bagFull) +
 			TryLoot(ResourceType.Essence, essenceDrop, ref bagFull);
 
-		if (loot == "")
+		if (loot == "" && coreText == "")
 			loot = " nothing";
 
 		string fullNote = bagFull ? " (bag full)" : "";
@@ -487,7 +547,7 @@ public partial class CombatManager : Node2D
 		playerStats.CurrentHP += healAmount;
 		playerStats.CurrentHP = Mathf.Min(playerStats.CurrentHP, playerStats.MaxHP);
 
-		statusLabel.Text = $"You won!{loot}{fullNote}. Recovered {healAmount} HP.";
+		statusLabel.Text = $"You won!{loot}{coreText}{fullNote}. Recovered {healAmount} HP.";
 		UpdateLabels();
 		GameState.Instance.PrintData();
 

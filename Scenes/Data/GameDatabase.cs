@@ -19,7 +19,26 @@ public enum StationType
 {
 	Storage,
 	Armory,
-	Infirmary
+	Infirmary,
+	Workshop,
+	CoreChamber
+}
+
+public class BossSpecial
+{
+	public string Name;
+	public int EveryNAttacks;
+	public float DamageMultiplier;
+	public float InfectionGain;
+}
+
+public class ZoneRule
+{
+	public int Number;
+	public string Name;
+	public float InfectionPerTurn;
+	public float ExploreInfectionPerSecond;
+	public float RewardMultiplier;
 }
 
 public class ResourceCost
@@ -114,6 +133,14 @@ public class ConsumableDef
 public static class GameDatabase
 {
 	public const int MaxStationLevel = 3;
+	public const int CoreCount = 3;
+
+	public static readonly List<ZoneRule> Zones = new List<ZoneRule>
+	{
+		new ZoneRule { Number = 1, Name = "Zone 1", InfectionPerTurn = 1f, ExploreInfectionPerSecond = 0.08f, RewardMultiplier = 1.0f },
+		new ZoneRule { Number = 2, Name = "Zone 2", InfectionPerTurn = 2f, ExploreInfectionPerSecond = 0.15f, RewardMultiplier = 1.5f },
+		new ZoneRule { Number = 3, Name = "Zone 3", InfectionPerTurn = 4f, ExploreInfectionPerSecond = 0.30f, RewardMultiplier = 2.0f }
+	};
 
 	public const int RunCapScrap = 100;
 	public const int RunCapMaterial = 50;
@@ -192,6 +219,13 @@ public static class GameDatabase
 		}
 	};
 
+	public static readonly List<BossSpecial> BossSpecials = new List<BossSpecial>
+	{
+		new BossSpecial { Name = "Crushing Blow", EveryNAttacks = 4, DamageMultiplier = 1.8f, InfectionGain = 0f },
+		new BossSpecial { Name = "Contaminated Burst", EveryNAttacks = 3, DamageMultiplier = 1.6f, InfectionGain = 5f },
+		new BossSpecial { Name = "Core Collapse", EveryNAttacks = 3, DamageMultiplier = 2.0f, InfectionGain = 8f }
+	};
+
 	private static readonly int[][] storageCaps = new int[][]
 	{
 		new int[] { 300, 600, 1200 },
@@ -200,7 +234,7 @@ public static class GameDatabase
 		new int[] { 50, 100, 200 }
 	};
 
-	public static int RunCap(ResourceType type)
+	public static int RunCapBase(ResourceType type)
 	{
 		switch (type)
 		{
@@ -215,6 +249,12 @@ public static class GameDatabase
 		}
 	}
 
+	public static int RunCap(int storageLevel, ResourceType type)
+	{
+		float multiplier = 1f + 0.5f * (Math.Clamp(storageLevel, 1, MaxStationLevel) - 1);
+		return (int)Math.Round(RunCapBase(type) * multiplier);
+	}
+
 	public static int StorageCap(int level, ResourceType type)
 	{
 		int index = Math.Clamp(level, 1, MaxStationLevel) - 1;
@@ -223,11 +263,14 @@ public static class GameDatabase
 
 	public static ResourceCost UpgradeCost(StationType station, int currentLevel)
 	{
-		if (currentLevel >= MaxStationLevel)
+		if (station == StationType.CoreChamber || currentLevel >= MaxStationLevel)
 			return null;
 
 		if (station == StationType.Infirmary)
 			return currentLevel == 1 ? new ResourceCost(100, 30, 0, 3) : new ResourceCost(250, 70, 0, 8);
+
+		if (station == StationType.Workshop)
+			return currentLevel == 1 ? new ResourceCost(120, 30, 10) : new ResourceCost(280, 70, 20, 6);
 
 		if (station == StationType.Storage)
 			return currentLevel == 1 ? new ResourceCost(100, 25) : new ResourceCost(300, 80, 0, 8);
@@ -237,11 +280,16 @@ public static class GameDatabase
 
 	public static string UpgradeBenefitText(StationType station, int currentLevel)
 	{
-		if (currentLevel >= MaxStationLevel)
+		if (station == StationType.CoreChamber || currentLevel >= MaxStationLevel)
 			return "";
 
+		if (station == StationType.Workshop)
+			return $"Crafting and upgrade costs {Math.Round(WorkshopDiscount(currentLevel + 1) * 100)}% lower.";
+
 		if (station == StationType.Infirmary)
-			return $"Infection gain {Math.Round(InfectionResistance(currentLevel + 1) * 100)}% lower.";
+			return
+				$"Infection gain {Math.Round(InfectionResistance(currentLevel + 1) * 100)}% lower. " +
+				$"Death penalty {DeathInfectionPenalty(currentLevel)}% -> {DeathInfectionPenalty(currentLevel + 1)}%.";
 
 		if (station == StationType.Storage)
 		{
@@ -250,10 +298,81 @@ public static class GameDatabase
 				$"Capacity -> Scrap {StorageCap(next, ResourceType.Scrap)}, " +
 				$"Material {StorageCap(next, ResourceType.Material)}, " +
 				$"Energy {StorageCap(next, ResourceType.Energy)}, " +
-				$"Essence {StorageCap(next, ResourceType.Essence)}";
+				$"Essence {StorageCap(next, ResourceType.Essence)}. " +
+				$"Run bag -> Scrap {RunCap(next, ResourceType.Scrap)}, " +
+				$"Material {RunCap(next, ResourceType.Material)}, " +
+				$"Energy {RunCap(next, ResourceType.Energy)}, " +
+				$"Essence {RunCap(next, ResourceType.Essence)}";
 		}
 
 		return $"Unlocks tier {currentLevel + 1} weapons and armor.";
+	}
+
+	public static float WorkshopDiscount(int workshopLevel)
+	{
+		switch (Math.Clamp(workshopLevel, 1, MaxStationLevel))
+		{
+			case 2:
+				return 0.15f;
+			case 3:
+				return 0.30f;
+			default:
+				return 0f;
+		}
+	}
+
+	public static string StationDisplayName(StationType station)
+	{
+		switch (station)
+		{
+			case StationType.Storage:
+				return "Resource Storage";
+			case StationType.Armory:
+				return "Armory";
+			case StationType.Infirmary:
+				return "Infirmary";
+			case StationType.Workshop:
+				return "Workshop";
+			default:
+				return "Core Chamber";
+		}
+	}
+
+	public static BossSpecial GetBossSpecial(int bossIndex)
+	{
+		if (bossIndex < 1 || bossIndex > BossSpecials.Count)
+			return null;
+
+		return BossSpecials[bossIndex - 1];
+	}
+
+	public static ZoneRule GetZone(int number)
+	{
+		return Zones[Math.Clamp(number, 1, Zones.Count) - 1];
+	}
+
+	public static int BossCoreIndex(string npcId)
+	{
+		if (string.IsNullOrEmpty(npcId) || !npcId.StartsWith("Boss"))
+			return 0;
+
+		if (int.TryParse(npcId.Substring(4), out int index) && index >= 1 && index <= CoreCount)
+			return index;
+
+		return 0;
+	}
+
+	public static float DeathInfectionPenalty(int infirmaryLevel)
+	{
+		switch (Math.Clamp(infirmaryLevel, 1, MaxStationLevel))
+		{
+			case 2:
+				return 4f;
+			case 3:
+				return 3f;
+			default:
+				return 5f;
+		}
 	}
 
 	public static float InfectionResistance(int infirmaryLevel)

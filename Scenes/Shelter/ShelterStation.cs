@@ -13,6 +13,7 @@ public partial class ShelterStation : Area2D
 
 	private bool playerInside = false;
 	private bool panelOpen = false;
+	private bool showEnding = false;
 	private string message = "";
 
 	public override void _Ready()
@@ -28,15 +29,7 @@ public partial class ShelterStation : Area2D
 
 	private string StationName()
 	{
-		switch (Station)
-		{
-			case StationType.Storage:
-				return "Resource Storage";
-			case StationType.Armory:
-				return "Armory";
-			default:
-				return "Infirmary";
-		}
+		return GameDatabase.StationDisplayName(Station);
 	}
 
 	private void BuildPrompt()
@@ -178,8 +171,14 @@ public partial class ShelterStation : Area2D
 			case StationType.Armory:
 				BuildArmoryContent();
 				break;
-			default:
+			case StationType.Infirmary:
 				BuildInfirmaryContent();
+				break;
+			case StationType.Workshop:
+				BuildWorkshopContent();
+				break;
+			default:
+				BuildCoreChamberContent();
 				break;
 		}
 	}
@@ -220,30 +219,143 @@ public partial class ShelterStation : Area2D
 		content.AddChild(row);
 	}
 
-	private void AddUpgradeRow()
+	private void AddFacilityUpgradeRow(StationType target)
 	{
 		GameState state = GameState.Instance;
-		int level = state.GetStationLevel(Station);
-		ResourceCost cost = GameDatabase.UpgradeCost(Station, level);
+		int level = state.GetStationLevel(target);
+		string header = $"{GameDatabase.StationDisplayName(target)} - Level {level}/{GameDatabase.MaxStationLevel}";
+		ResourceCost cost = state.GetUpgradeCost(target);
 
 		if (cost == null)
 		{
-			AddRow("This station is at max level.", null, false, null);
+			AddRow($"{header}\nMax level reached.", null, false, null);
 			return;
 		}
 
-		string benefit = GameDatabase.UpgradeBenefitText(Station, level);
+		string benefit = GameDatabase.UpgradeBenefitText(target, level);
+		string blocked = state.UpgradeBlockReason(target);
+
+		if (blocked != "")
+		{
+			AddRow($"{header}\n{benefit}\n{blocked}", "Locked", false, null);
+			return;
+		}
 
 		AddRow(
-			$"Upgrade to Level {level + 1}\n{benefit}",
+			$"{header}\n{benefit}",
 			$"Upgrade: {cost.ToText()}",
 			state.CanAfford(cost),
 			() =>
 			{
-				message = state.UpgradeStation(Station);
+				message = state.UpgradeStation(target);
 				Refresh();
 			}
 		);
+	}
+
+	private void BuildWorkshopContent()
+	{
+		GameState state = GameState.Instance;
+		float discount = GameDatabase.WorkshopDiscount(state.WorkshopLevel);
+
+		AddHeader($"WORKSHOP  -  Level {state.WorkshopLevel}/{GameDatabase.MaxStationLevel}");
+
+		AddRow(
+			$"Crafting and upgrade costs are {Math.Round(discount * 100)}% lower.\n" +
+			$"Boss cores installed: {state.InstalledUpgradeCores}/{GameDatabase.CoreCount - 1}. " +
+			$"Facilities can reach Level {state.GetMaxFacilityLevel()}.",
+			null, false, null
+		);
+
+		AddRow(
+			$"Stock: Scrap {state.PermanentScrap}, Material {state.PermanentMaterial}, " +
+			$"Energy {state.PermanentEnergy}, Essence {state.PermanentEssence}",
+			null, false, null
+		);
+
+		AddHeader("Facilities");
+		AddFacilityUpgradeRow(StationType.Storage);
+		AddFacilityUpgradeRow(StationType.Armory);
+		AddFacilityUpgradeRow(StationType.Infirmary);
+
+		AddHeader("Workshop");
+		AddFacilityUpgradeRow(StationType.Workshop);
+	}
+
+	private void BuildCoreChamberContent()
+	{
+		GameState state = GameState.Instance;
+
+		if (showEnding)
+		{
+			BuildEnding();
+			return;
+		}
+
+		AddHeader("CORE CHAMBER");
+
+		AddRow(
+			"Install the cores taken from each boss. Cores 1 and 2 unlock further facility upgrades. " +
+			"Core 3 ends the time loop.",
+			null, false, null
+		);
+
+		for (int i = 1; i <= GameDatabase.CoreCount; i++)
+		{
+			int index = i;
+			string label = index == GameDatabase.CoreCount ? $"Core {index} (Final)" : $"Core {index}";
+
+			if (state.IsCoreInstalled(index))
+			{
+				AddRow($"{label}: installed", "Installed", false, null);
+			}
+			else if (state.IsCoreOwned(index))
+			{
+				AddRow($"{label}: ready to install", "Install", true, () =>
+				{
+					message = state.InstallCore(index);
+
+					if (index == GameDatabase.CoreCount && state.GameWon)
+						showEnding = true;
+
+					Refresh();
+				});
+			}
+			else
+			{
+				AddRow($"{label}: not found. Defeat Boss {index}. The core comes home when you fall.", "Missing", false, null);
+			}
+		}
+
+		if (state.GameWon)
+			AddRow("The time loop has ended.", "Replay ending", true, () =>
+			{
+				showEnding = true;
+				Refresh();
+			});
+	}
+
+	private void BuildEnding()
+	{
+		AddHeader("THE LOOP ENDS");
+
+		AddRow(
+			"The final core hums to life. The contamination fades, the anomaly collapses, " +
+			"and the shelter is saved.\n\nThank you for playing.",
+			null, false, null
+		);
+
+		AddRow("", "Back to Main Menu", true, () =>
+		{
+			GetTree().Paused = false;
+			GetTree().ChangeSceneToFile("res://Scenes/MainMenu.tscn");
+		});
+
+		AddRow("", "Keep exploring", true, () =>
+		{
+			showEnding = false;
+			Refresh();
+		});
 	}
 
 	private void BuildStorageContent()
@@ -255,7 +367,8 @@ public partial class ShelterStation : Area2D
 		foreach (ResourceType type in Enum.GetValues(typeof(ResourceType)))
 		{
 			int cap = GameDatabase.StorageCap(state.StorageLevel, type);
-			AddRow($"{type}: {state.GetPermanent(type)} / {cap}", null, false, null);
+			int bag = GameDatabase.RunCap(state.StorageLevel, type);
+			AddRow($"{type}: {state.GetPermanent(type)} / {cap}    (run bag: {bag})", null, false, null);
 		}
 
 		AddRow($"Core Fragments: {state.PermanentCoreFragments}", null, false, null);
@@ -265,8 +378,7 @@ public partial class ShelterStation : Area2D
 		foreach (ConsumableDef def in GameDatabase.Consumables)
 			AddRow($"{def.Name}: {state.GetPermanentItemCount(def.Id)}", null, false, null);
 
-		AddHeader("Station");
-		AddUpgradeRow();
+		AddRow("Upgrade this facility at the Workshop.", null, false, null);
 	}
 
 	private void BuildArmoryContent()
@@ -301,8 +413,7 @@ public partial class ShelterStation : Area2D
 				AddEquipmentRow(def);
 		}
 
-		AddHeader("Station");
-		AddUpgradeRow();
+		AddRow("Upgrade this facility at the Workshop.", null, false, null);
 	}
 
 	private void BuildInfirmaryContent()
@@ -312,7 +423,8 @@ public partial class ShelterStation : Area2D
 		AddHeader($"INFIRMARY  -  Level {state.InfirmaryLevel}/{GameDatabase.MaxStationLevel}");
 
 		AddRow(
-			$"Infection gain reduced by {Math.Round(GameDatabase.InfectionResistance(state.InfirmaryLevel) * 100)}%",
+			$"Infection gain reduced by {Math.Round(GameDatabase.InfectionResistance(state.InfirmaryLevel) * 100)}%\n" +
+			$"Base infection per death: {GameDatabase.DeathInfectionPenalty(state.InfirmaryLevel):0}%  (now {state.PermanentInfection:0}%, tries left {state.TriesLeft})",
 			null, false, null
 		);
 
@@ -330,8 +442,8 @@ public partial class ShelterStation : Area2D
 
 			AddRow(
 				$"{def.Name} - {def.Description}\nIn stock: {state.GetPermanentItemCount(id)}",
-				$"Craft: {def.Cost.ToText()}",
-				state.CanAfford(def.Cost),
+				$"Craft: {state.GetCost(def.Cost).ToText()}",
+				state.CanAfford(state.GetCost(def.Cost)),
 				() =>
 				{
 					message = state.CraftConsumable(id);
@@ -340,8 +452,7 @@ public partial class ShelterStation : Area2D
 			);
 		}
 
-		AddHeader("Station");
-		AddUpgradeRow();
+		AddRow("Upgrade this facility at the Workshop.", null, false, null);
 	}
 
 	private void AddEquipmentRow(EquipmentDef def)
@@ -368,7 +479,7 @@ public partial class ShelterStation : Area2D
 		}
 		else
 		{
-			AddRow(text, $"Craft: {def.Cost.ToText()}", state.CanAfford(def.Cost), () =>
+			AddRow(text, $"Craft: {state.GetCost(def.Cost).ToText()}", state.CanAfford(state.GetCost(def.Cost)), () =>
 			{
 				message = state.CraftEquipment(id);
 				Refresh();
