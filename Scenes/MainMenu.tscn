@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://cbvgjbvw06b56"]
 
-[ext_resource type="Texture2D" uid="uid://iv58q3orexgu" path="res://Assets/ThymusAssets/Map/Shelter.jpg" id="1_853f1"]
 [ext_resource type="Texture2D" uid="uid://djuv3r7uo731c" path="res://Assets/ThymusAssets/Title/Echoes of Contamination.png" id="2_8saeu"]
+[ext_resource type="Texture2D" uid="uid://b5jbfos0c0axt" path="res://Assets/ThymusAssets/Map/Shelter 1.png" id="2_df05h"]
 [ext_resource type="Texture2D" uid="uid://cbus7yraido6x" path="res://Assets/ThymusAssets/Title/Start button.png" id="3_ghw46"]
 [ext_resource type="Texture2D" uid="uid://inlt4ets1bfh" path="res://Assets/ThymusAssets/Title/Quit button.png" id="4_df05h"]
 [ext_resource type="Script" uid="uid://q301enedfw5i" path="res://Scenes/MainMenu.cs" id="5_main_menu_script"]
@@ -13,7 +13,7 @@ script = ExtResource("5_main_menu_script")
 texture_filter = 1
 position = Vector2(1109, 618)
 scale = Vector2(0.8022459, 0.8022462)
-texture = ExtResource("1_853f1")
+texture = ExtResource("2_df05h")
 
 [node name="EchoesOfContamination" type="Sprite2D" parent="." unique_id=1084708907]
 texture_filter = 1
