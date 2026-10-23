@@ -15,6 +15,8 @@ public partial class AudioManager : Node
 	public override void _Ready()
 	{
 		Instance = this;
+		
+		ProcessMode = Node.ProcessModeEnum.Always;
 
 		musicPlayer = GetNode<AudioStreamPlayer>("MusicPlayer");
 		globalMusicPlayer = GetNode<AudioStreamPlayer>("GlobalMusicPlayer");
