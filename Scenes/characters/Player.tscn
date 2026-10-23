@@ -11,6 +11,7 @@
 [ext_resource type="Texture2D" uid="uid://djvkreeb5vrpn" path="res://Assets/ThymusAssets/Sprites/Runner/cont50/Walk Right 2 (1) 1.png" id="8_4mc0p"]
 [ext_resource type="Texture2D" uid="uid://crox6qp0d8j3y" path="res://Assets/ThymusAssets/Sprites/Runner/cont75/Walk Right 1 (2).png" id="9_j3xg7"]
 [ext_resource type="Texture2D" uid="uid://cppyh2jx3mseu" path="res://Assets/ThymusAssets/Sprites/Runner/cont75/Walk Right 2 (2).png" id="10_uetqy"]
+[ext_resource type="AudioStream" uid="uid://bmgnr8sknjyg7" path="res://Assets/ThymusAssets/Audio/footstep.mp3" id="12_313w8"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_5pne0"]
 atlas = ExtResource("2_0titu")
@@ -106,7 +107,6 @@ texture_filter = 1
 position = Vector2(0, -30)
 scale = Vector2(0.4, 0.4)
 sprite_frames = SubResource("SpriteFrames_b4ovn")
-autoplay = "default"
 offset = Vector2(0, -27)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=900307293]
@@ -123,3 +123,7 @@ texture_filter = 1
 position = Vector2(0, 10.216)
 scale = Vector2(0.8177083, 0.20016819)
 texture = ExtResource("5_0titu")
+
+[node name="FootstepPlayer" type="AudioStreamPlayer" parent="." unique_id=1723180044]
+stream = ExtResource("12_313w8")
+volume_db = 1.0

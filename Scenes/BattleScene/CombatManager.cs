@@ -105,6 +105,34 @@ public partial class CombatManager : Node2D
 			SetActionsEnabled(true);
 		}
 	}
+	
+	private string GetPlayerAnimation(string baseName)
+	{
+		float infection = playerStats.CurrentInfection;
+
+		string suffix = "";
+
+		if (infection >= 75f)
+			suffix = "75";
+		else if (infection >= 50f)
+			suffix = "50";
+
+		string animationName = baseName + suffix;
+
+		// Fall back to the original animation if a variant is missing.
+		if (playerSprite.SpriteFrames.HasAnimation(animationName))
+			return animationName;
+
+		return baseName;
+	}
+
+	private void PlayPlayerAnimation(string baseName)
+	{
+		string animationName = GetPlayerAnimation(baseName);
+
+		if (playerSprite.SpriteFrames.HasAnimation(animationName))
+			playerSprite.Play(animationName);
+	}
 
 	private void BuildActionButtons()
 	{
@@ -254,7 +282,7 @@ public partial class CombatManager : Node2D
 		// Play player getting-hit animation
 		if (playerSprite.SpriteFrames.HasAnimation("hit"))
 		{
-			playerSprite.Play("hit");
+			PlayPlayerAnimation("hit");
 		}
 
 		if (special)
@@ -269,7 +297,7 @@ public partial class CombatManager : Node2D
 		{
 			if (playerSprite.SpriteFrames.HasAnimation("die"))
 			{
-				playerSprite.Play("die");
+				PlayPlayerAnimation("die");
 			}
 
 			TriggerTimeLoop("You were overwhelmed...");
@@ -341,7 +369,7 @@ public partial class CombatManager : Node2D
 
 	private void PerformAttack()
 	{
-		playerSprite.Play("attack");
+		PlayPlayerAnimation("attack");
 
 		// Play NPC hit animation
 		if (enemySprite.SpriteFrames.HasAnimation("hit"))
@@ -496,13 +524,12 @@ public partial class CombatManager : Node2D
 
 	private void OnAnimationFinished()
 	{
-		if (playerSprite.Animation == "attack" ||
-			playerSprite.Animation == "hit")
+		string currentAnimation = playerSprite.Animation;
+
+		if (currentAnimation.StartsWith("attack", StringComparison.Ordinal) ||
+			currentAnimation.StartsWith("hit", StringComparison.Ordinal))
 		{
-			if (playerSprite.SpriteFrames.HasAnimation("default"))
-			{
-				playerSprite.Play("default");
-			}
+			PlayPlayerAnimation("default");
 		}
 	}
 

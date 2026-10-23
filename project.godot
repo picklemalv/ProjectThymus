@@ -19,6 +19,7 @@ config/icon="res://icon.svg"
 
 GameState="*uid://dbt8vtttm81li"
 PauseMenu="*res://Scenes/UI/PauseMenu.cs"
+AudioManager="*uid://cerc44j48ryb6"
 
 [display]
 

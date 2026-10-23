@@ -7,7 +7,6 @@
 [ext_resource type="Texture2D" uid="uid://bp1yho1mp876i" path="res://Assets/ThymusAssets/pixel_ui/icons/pause.png" id="5_qq8da"]
 [ext_resource type="FontFile" uid="uid://db3kmltwkjphx" path="res://Assets/ThymusAssets/pixel_ui/font/pixel_ui_font.fnt" id="6_32ypq"]
 [ext_resource type="Script" uid="uid://cg5eygmu6cy4x" path="res://Scenes/Shelter/EquippedItemsHud.cs" id="7_sqtfb"]
-[ext_resource type="Script" uid="uid://d21f0n3eyviib" path="res://Scenes/Shelter/FacilityLevelsHud.cs" id="8_f5gy6"]
 [ext_resource type="Script" uid="uid://dw42541vx6de7" path="res://Scenes/Shelter/ShelterSpawn.cs" id="8_jagh1"]
 [ext_resource type="Script" uid="uid://b7u8uqku1ojog" path="res://Scenes/Shelter/ShelterStation.cs" id="8_station"]
 
@@ -1146,16 +1145,6 @@ offset_bottom = 546.0
 theme_override_fonts/font = ExtResource("6_32ypq")
 theme_override_font_sizes/font_size = 10
 script = ExtResource("7_sqtfb")
-
-[node name="Label3" type="Label" parent="UI" unique_id=1750151869]
-texture_filter = 1
-offset_left = 140.0
-offset_top = 523.0
-offset_right = 180.0
-offset_bottom = 546.0
-theme_override_fonts/font = ExtResource("6_32ypq")
-theme_override_font_sizes/font_size = 10
-script = ExtResource("8_f5gy6")
 
 [node name="PauseButton" type="Button" parent="UI" unique_id=1529449716]
 texture_filter = 1
