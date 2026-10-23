@@ -4,26 +4,32 @@ using Godot;
 /// Screen-space, pixelated fog of war for the main exploration scene.
 /// Attach this node under Main. The overlay is added to the existing UI CanvasLayer
 /// with a low Z index, keeping the pause menu visible above it.
+///
+/// All shader math is done in the overlay's own canvas coordinate space
+/// (UV * rect_size), which matches the space returned by GetGlobalTransformWithCanvas().
+/// This keeps the fog aligned with the player and scaling correctly at any window size
+/// when the project's stretch mode is set to canvas_items.
 /// </summary>
 public partial class FogOfWar : Node2D
 {
-    [Export] public NodePath PlayerPath { get; set; } = new NodePath("../Objects/Player");
-    [Export] public float VisionRadiusPixels { get; set; } = 220.0f;
-    [Export] public float PixelSize { get; set; } = 8.0f;
-    [Export] public float EdgeSoftnessPixels { get; set; } = 42.0f;
-    [Export] public float ScreenEdgeSolidWidthPixels { get; set; } = 32.0f;
-    [Export] public float ScreenEdgeFadePixels { get; set; } = 28.0f;
-    [Export(PropertyHint.Range, "0,1,0.01")] public float FogOpacity { get; set; } = 0.88f;
-    [Export] public Color FogColor { get; set; } = new Color(0.025f, 0.04f, 0.055f, 1.0f);
+	[Export] public NodePath PlayerPath { get; set; } = new NodePath("../Objects/Player");
+	[Export] public float VisionRadiusPixels { get; set; } = 220.0f;
+	[Export] public float PixelSize { get; set; } = 8.0f;
+	[Export] public float EdgeSoftnessPixels { get; set; } = 42.0f;
+	[Export] public float ScreenEdgeSolidWidthPixels { get; set; } = 32.0f;
+	[Export] public float ScreenEdgeFadePixels { get; set; } = 28.0f;
+	[Export(PropertyHint.Range, "0,1,0.01")] public float FogOpacity { get; set; } = 0.88f;
+	[Export] public Color FogColor { get; set; } = new Color(0.025f, 0.04f, 0.055f, 1.0f);
 
-    private Node2D _player = null!;
-    private ColorRect _overlay = null!;
-    private ShaderMaterial _fogMaterial = null!;
+	private Node2D _player = null!;
+	private ColorRect _overlay = null!;
+	private ShaderMaterial _fogMaterial = null!;
 
-    private const string FogShaderCode = @"
+	private const string FogShaderCode = @"
 shader_type canvas_item;
 
 uniform vec2 player_screen_pos = vec2(640.0, 360.0);
+uniform vec2 rect_size = vec2(1152.0, 648.0);
 uniform float vision_radius_px = 220.0;
 uniform float pixel_size = 8.0;
 uniform float edge_softness_px = 42.0;
@@ -37,8 +43,11 @@ float cell_random(vec2 p) {
 }
 
 void fragment() {
+    // Position in canvas pixels (same space as player_screen_pos).
+    vec2 pos = UV * rect_size;
+
     // Snap the fog and player positions to a coarse pixel grid.
-    vec2 cell = floor(FRAGCOORD.xy / pixel_size);
+    vec2 cell = floor(pos / pixel_size);
     vec2 snapped_pixel = (cell + vec2(0.5)) * pixel_size;
     vec2 player_cell = floor(player_screen_pos / pixel_size);
     vec2 snapped_player = (player_cell + vec2(0.5)) * pixel_size;
@@ -55,11 +64,9 @@ void fragment() {
     );
 
     // Keep a fully opaque border at the screen edges, fading back to normal fog inward.
-    vec2 screen_size = 1.0 / SCREEN_PIXEL_SIZE;
-    float edge_distance = min(
-        min(FRAGCOORD.x, screen_size.x - FRAGCOORD.x),
-        min(FRAGCOORD.y, screen_size.y - FRAGCOORD.y)
-    );
+    vec2 to_edge = min(pos, rect_size - pos);
+    float edge_distance = min(to_edge.x, to_edge.y);
+
     float edge_fog = 1.0 - smoothstep(
         screen_edge_solid_width_px,
         screen_edge_solid_width_px + max(screen_edge_fade_px, 1.0),
@@ -78,49 +85,65 @@ void fragment() {
 }
 ";
 
-    public override void _Ready()
-    {
-        _player = GetNode<Node2D>(PlayerPath);
+	public override void _Ready()
+	{
+		_player = GetNode<Node2D>(PlayerPath);
 
-        // Reuse the existing UI CanvasLayer so the fog covers the world but stays
-        // behind the pause button and pause panel.
-        CanvasLayer uiLayer = GetNode<CanvasLayer>("../UI");
+		CanvasLayer uiLayer = GetNode<CanvasLayer>("../UI");
 
-        Shader shader = new Shader { Code = FogShaderCode };
-        _fogMaterial = new ShaderMaterial { Shader = shader };
-        ApplyShaderParameters();
+		Shader shader = new Shader
+		{
+			Code = FogShaderCode
+		};
 
-        _overlay = new ColorRect
-        {
-            Name = "FogOverlay",
-            Color = Colors.White,
-            MouseFilter = Control.MouseFilterEnum.Ignore,
-            Material = _fogMaterial,
-            ZIndex = -100
-        };
-        _overlay.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.FullRect);
-        uiLayer.AddChild(_overlay);
-    }
+		_fogMaterial = new ShaderMaterial
+		{
+			Shader = shader
+		};
 
-    public override void _Process(double delta)
-    {
-        if (!GodotObject.IsInstanceValid(_player) || !GodotObject.IsInstanceValid(_overlay))
-            return;
+		_overlay = new ColorRect
+		{
+			Name = "FogOverlay",
+			Color = Colors.White,
+			MouseFilter = Control.MouseFilterEnum.Ignore,
+			Material = _fogMaterial,
+			ZIndex = -100
+		};
 
-        // Convert the player's world location to viewport pixels, accounting for the camera.
-        Vector2 playerScreenPosition = GetViewport().GetCanvasTransform() * _player.GlobalPosition;
-        _fogMaterial.SetShaderParameter("player_screen_pos", playerScreenPosition);
-        ApplyShaderParameters();
-    }
+		uiLayer.AddChild(_overlay);
+		_overlay.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.FullRect);
 
-    private void ApplyShaderParameters()
-    {
-        _fogMaterial.SetShaderParameter("vision_radius_px", VisionRadiusPixels);
-        _fogMaterial.SetShaderParameter("pixel_size", Mathf.Max(1.0f, PixelSize));
-        _fogMaterial.SetShaderParameter("edge_softness_px", EdgeSoftnessPixels);
-        _fogMaterial.SetShaderParameter("screen_edge_solid_width_px", ScreenEdgeSolidWidthPixels);
-        _fogMaterial.SetShaderParameter("screen_edge_fade_px", ScreenEdgeFadePixels);
-        _fogMaterial.SetShaderParameter("fog_opacity", FogOpacity);
-        _fogMaterial.SetShaderParameter("fog_color", FogColor);
-    }
+		ApplyShaderParameters();
+	}
+
+	public override void _Process(double delta)
+	{
+		if (!GodotObject.IsInstanceValid(_player) ||
+			!GodotObject.IsInstanceValid(_overlay))
+			return;
+
+		Vector2 playerScreenPosition =
+			_player.GetGlobalTransformWithCanvas().Origin;
+
+		_fogMaterial.SetShaderParameter(
+			"player_screen_pos",
+			playerScreenPosition
+		);
+
+		ApplyShaderParameters();
+	}
+
+	private void ApplyShaderParameters()
+	{
+		// Updated every frame so the fog follows window resizes.
+		_fogMaterial.SetShaderParameter("rect_size", _overlay.Size);
+
+		_fogMaterial.SetShaderParameter("vision_radius_px", VisionRadiusPixels);
+		_fogMaterial.SetShaderParameter("pixel_size", Mathf.Max(1.0f, PixelSize));
+		_fogMaterial.SetShaderParameter("edge_softness_px", EdgeSoftnessPixels);
+		_fogMaterial.SetShaderParameter("screen_edge_solid_width_px", ScreenEdgeSolidWidthPixels);
+		_fogMaterial.SetShaderParameter("screen_edge_fade_px", ScreenEdgeFadePixels);
+		_fogMaterial.SetShaderParameter("fog_opacity", FogOpacity);
+		_fogMaterial.SetShaderParameter("fog_color", FogColor);
+	}
 }

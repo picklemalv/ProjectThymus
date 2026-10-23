@@ -969,6 +969,10 @@ shape = SubResource("RectangleShape2D_k5diw")
 position = Vector2(1169, 660)
 shape = SubResource("RectangleShape2D_k5diw")
 
+[node name="CollisionShape2D43" type="CollisionShape2D" parent="Map" unique_id=295862410]
+position = Vector2(1057, 641)
+shape = SubResource("RectangleShape2D_k5diw")
+
 [node name="CollisionShape2D20" type="CollisionShape2D" parent="Map" unique_id=2078148592]
 position = Vector2(1188, 692)
 shape = SubResource("RectangleShape2D_k5diw")

@@ -142,24 +142,30 @@ texture = ExtResource("4_5ewv1")
 [node name="UI" type="CanvasLayer" parent="." unique_id=1085917119]
 
 [node name="VBoxContainer" type="VBoxContainer" parent="UI" unique_id=1442069677]
+texture_filter = 1
 offset_right = 40.0
 offset_bottom = 40.0
 
 [node name="PlayerHPLabel" type="Label" parent="UI/VBoxContainer" unique_id=1331755451]
 layout_mode = 2
+theme_override_fonts/font = ExtResource("10_gomgp")
 
 [node name="EnemyHPLabel" type="Label" parent="UI/VBoxContainer" unique_id=1174655925]
 layout_mode = 2
+theme_override_fonts/font = ExtResource("10_gomgp")
 
 [node name="StatusLabel" type="Label" parent="UI/VBoxContainer" unique_id=647060465]
 layout_mode = 2
+theme_override_fonts/font = ExtResource("10_gomgp")
 
 [node name="AttackButton" type="Button" parent="UI/VBoxContainer" unique_id=1364900356]
 layout_mode = 2
+theme_override_fonts/font = ExtResource("10_gomgp")
 text = "Attack"
 
 [node name="InfectionLabel" type="Label" parent="UI/VBoxContainer" unique_id=461955716]
 layout_mode = 2
+theme_override_fonts/font = ExtResource("10_gomgp")
 
 [node name="PauseButton" type="Button" parent="UI" unique_id=764796986]
 texture_filter = 1
@@ -241,10 +247,7 @@ texture_filter = 1
 position = Vector2(0, -30)
 scale = Vector2(0.4, 0.4)
 sprite_frames = SubResource("SpriteFrames_b4ovn")
-animation = &"die"
 autoplay = "default"
-frame = 2
-frame_progress = 1.0
 offset = Vector2(0, -27)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Player" unique_id=900307293]
