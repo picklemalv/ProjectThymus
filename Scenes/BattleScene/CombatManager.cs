@@ -209,7 +209,9 @@ public partial class CombatManager : Node2D
 			guardText = " (guarded)";
 		}
 
-		playerStats.CurrentHP = Mathf.Max(playerStats.CurrentHP - dmg, 0);
+		// After the final boss falls, the Runner cannot die on the way back.
+		int hpFloor = GameState.Instance.CarryingFinalCore ? 1 : 0;
+		playerStats.CurrentHP = Mathf.Max(playerStats.CurrentHP - dmg, hpFloor);
 		// Play player getting-hit animation
 		if (playerSprite.SpriteFrames.HasAnimation("hit"))
 		{
@@ -317,7 +319,11 @@ public partial class CombatManager : Node2D
 		TickBuff();
 		UpdateLabels();
 
-		if (CheckInfectionLoop())
+		// Killing the final boss always counts as a win, even if infection hit 100% on the same attack.
+		bool killedFinalBoss = enemyStats.CurrentHP <= 0
+			&& GameDatabase.BossCoreIndex(GameState.Instance.CurrentNpcID) == GameDatabase.CoreCount;
+
+		if (!killedFinalBoss && CheckInfectionLoop())
 			return;
 
 		if (enemyStats.CurrentHP <= 0)
@@ -414,6 +420,13 @@ public partial class CombatManager : Node2D
 			float infectionBefore = playerStats.CurrentInfection;
 			playerStats.AddInfection(-def.InfectionReduction);
 			effects.Add($"-{infectionBefore - playerStats.CurrentInfection:0}% infection");
+		}
+
+		if (def.PermanentInfectionReduction > 0)
+		{
+			GameState.Instance.ReduceBaseInfection(def.PermanentInfectionReduction);
+			playerStats.AddInfection(-def.PermanentInfectionReduction);
+			effects.Add($"starting infection -{def.PermanentInfectionReduction}%");
 		}
 
 		if (def.AttackBuff > 0)

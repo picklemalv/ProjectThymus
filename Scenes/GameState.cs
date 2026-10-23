@@ -26,8 +26,8 @@ public class SaveData
 	public int InfirmaryLevel { get; set; } = 1;
 	public int WorkshopLevel { get; set; } = 1;
 	public List<string> OwnedEquipment { get; set; } = new List<string>();
-	public string EquippedWeaponId { get; set; } = "rusty_blade";
-	public string EquippedArmorId { get; set; } = "cloth_wraps";
+	public Dictionary<string, string> Equipped { get; set; } = new Dictionary<string, string>();
+	public bool GearUpQuestDone { get; set; }
 	public Dictionary<string, int> Items { get; set; } = new Dictionary<string, int>();
 }
 
@@ -45,6 +45,7 @@ public partial class GameState : Node
 	private const string SavePath = "user://thymus_save.json";
 
 	public bool SpawnAtInfirmary = false;
+	public bool SpawnAtGate = false;
 
 	public bool HasReturnPosition = false;
 	public Vector2 ReturnPosition = Vector2.Zero;
@@ -103,7 +104,11 @@ public partial class GameState : Node
 
 	public bool CarryingFinalCore => runCores.Contains(GameDatabase.CoreCount);
 
-	public float MoveSpeedMultiplier => CarryingFinalCore ? 0.6f : 1f;
+	// True from the moment the final core drops until it is installed in the Core Chamber.
+	public bool HoldingFinalCore =>
+		CarryingFinalCore || (IsCoreOwned(GameDatabase.CoreCount) && !IsCoreInstalled(GameDatabase.CoreCount));
+
+	public float MoveSpeedMultiplier => HoldingFinalCore ? 0.6f : 1f;
 
 	public int TriesLeft
 	{
@@ -164,8 +169,10 @@ public partial class GameState : Node
 
 	public ulong EscapeGraceUntilMs = 0;
 
-	public string EquippedWeaponId = "rusty_blade";
-	public string EquippedArmorId = "cloth_wraps";
+	private readonly Dictionary<EquipSlot, string> equipped = new Dictionary<EquipSlot, string>();
+	private float equipmentInfectionResist = 0f;
+
+	public bool GearUpQuestDone = false;
 
 	public ExpeditionStatus CurrentExpeditionStatus = ExpeditionStatus.Active;
 	public string LastExpeditionMessage = "Ready for expedition.";
@@ -196,16 +203,20 @@ public partial class GameState : Node
 			runItems[def.Id] = 0;
 		}
 
-		ownedEquipment.Add("rusty_blade");
-		ownedEquipment.Add("cloth_wraps");
-
 		PlayerStats = new Stats();
 		AddChild(PlayerStats);
 
 		BuildExplorationHud();
 
+		bool hasSave = FileAccess.FileExists(SavePath);
+
 		LoadGame();
+
+		if (!hasSave)
+			GrantStarterKit();
+
 		ApplyEquipment();
+		UpdateQuestState();
 		ApplyStationBonuses();
 		ResetRunState();
 	}
@@ -301,6 +312,23 @@ public partial class GameState : Node
 		return Mathf.Min(GameDatabase.MaxStationLevel, 1 + InstalledUpgradeCores);
 	}
 
+	public int GetStationLevel(StationType station)
+	{
+		switch (station)
+		{
+			case StationType.Storage:
+				return StorageLevel;
+			case StationType.Armory:
+				return ArmoryLevel;
+			case StationType.Infirmary:
+				return InfirmaryLevel;
+			case StationType.Workshop:
+				return WorkshopLevel;
+			default:
+				return 1;
+		}
+	}
+
 	public ResourceCost GetCost(ResourceCost baseCost)
 	{
 		float multiplier = 1f - GameDatabase.WorkshopDiscount(WorkshopLevel);
@@ -351,7 +379,8 @@ public partial class GameState : Node
 
 	public void ApplyStationBonuses()
 	{
-		PlayerStats.InfectionGainMultiplier = 1f - GameDatabase.InfectionResistance(InfirmaryLevel);
+		PlayerStats.InfectionGainMultiplier =
+			(1f - GameDatabase.InfectionResistance(InfirmaryLevel)) * (1f - equipmentInfectionResist);
 	}
 
 	public bool CanAfford(ResourceCost cost)
@@ -397,35 +426,76 @@ public partial class GameState : Node
 
 	public bool IsEquipped(string id)
 	{
-		return id == EquippedWeaponId || id == EquippedArmorId;
+		foreach (KeyValuePair<EquipSlot, string> pair in equipped)
+		{
+			if (pair.Value == id)
+				return true;
+		}
+
+		return false;
 	}
 
-	public int GetStationLevel(StationType station)
+	public string GetEquippedId(EquipSlot slot)
 	{
-		if (station == StationType.Storage)
-			return StorageLevel;
-		if (station == StationType.Armory)
-			return ArmoryLevel;
-		if (station == StationType.Infirmary)
-			return InfirmaryLevel;
-		if (station == StationType.Workshop)
-			return WorkshopLevel;
-		return 1;
+		return equipped.TryGetValue(slot, out string id) ? id : null;
+	}
+
+	public int GetEquippedTier(EquipSlot slot)
+	{
+		EquipmentDef def = GameDatabase.GetEquipment(GetEquippedId(slot));
+		return def != null ? def.Tier : 0;
+	}
+
+	public bool AllSlotsEquipped()
+	{
+		foreach (EquipSlot slot in GameDatabase.AllSlots)
+		{
+			if (!equipped.ContainsKey(slot))
+				return false;
+		}
+
+		return true;
+	}
+
+	public void UpdateQuestState()
+	{
+		if (GearUpQuestDone || !AllSlotsEquipped())
+			return;
+
+		GearUpQuestDone = true;
+		LastExpeditionMessage = "Gear up complete. You are ready to head out.";
 	}
 
 	public void ApplyEquipment()
 	{
-		EquipmentDef weapon = GameDatabase.GetEquipment(EquippedWeaponId);
-		EquipmentDef armor = GameDatabase.GetEquipment(EquippedArmorId);
+		int weaponDamage = 0;
+		int defense = 0;
+		int hp = 0;
+		int speed = 0;
+		float resist = 0f;
 
-		PlayerStats.WeaponDamage = weapon != null ? weapon.WeaponDamage : 0;
+		foreach (KeyValuePair<EquipSlot, string> pair in equipped)
+		{
+			EquipmentDef def = GameDatabase.GetEquipment(pair.Value);
+
+			if (def == null)
+				continue;
+
+			weaponDamage += def.WeaponDamage;
+			defense += def.Defense;
+			hp += def.HP;
+			speed += def.Speed;
+			resist += def.InfectionResist;
+		}
+
+		PlayerStats.WeaponDamage = weaponDamage;
 		PlayerStats.EquipmentAttackBonus = 0;
-		PlayerStats.EquipmentDefenseBonus =
-			(weapon != null ? weapon.Defense : 0) + (armor != null ? armor.Defense : 0);
-		PlayerStats.EquipmentHPBonus =
-			(weapon != null ? weapon.HP : 0) + (armor != null ? armor.HP : 0);
-		PlayerStats.EquipmentSpeedBonus =
-			(weapon != null ? weapon.Speed : 0) + (armor != null ? armor.Speed : 0);
+		PlayerStats.EquipmentDefenseBonus = defense;
+		PlayerStats.EquipmentHPBonus = hp;
+		PlayerStats.EquipmentSpeedBonus = speed;
+
+		equipmentInfectionResist = Mathf.Min(resist, 0.5f);
+		ApplyStationBonuses();
 
 		PlayerStats.CurrentHP = Mathf.Min(PlayerStats.CurrentHP, PlayerStats.MaxHP);
 	}
@@ -437,14 +507,52 @@ public partial class GameState : Node
 		if (def == null || !ownedEquipment.Contains(id))
 			return "You don't own that.";
 
-		if (def.Slot == EquipSlot.Weapon)
-			EquippedWeaponId = id;
-		else
-			EquippedArmorId = id;
+		equipped[def.Slot] = id;
 
 		ApplyEquipment();
+		UpdateQuestState();
 		SaveGame();
 		return $"Equipped {def.Name}.";
+	}
+
+	private void GrantStarterKit()
+	{
+		AddPermanent(ResourceType.Scrap, GameDatabase.StarterScrap);
+		AddPermanent(ResourceType.Material, GameDatabase.StarterMaterial);
+		LastExpeditionMessage = "Welcome, Runner. Gear up at the Armory before heading out.";
+		SaveGame();
+	}
+
+	private Dictionary<string, string> GetEquippedMap()
+	{
+		Dictionary<string, string> map = new Dictionary<string, string>();
+
+		foreach (KeyValuePair<EquipSlot, string> pair in equipped)
+			map[pair.Key.ToString()] = pair.Value;
+
+		return map;
+	}
+
+	public void ReduceBaseInfection(float amount)
+	{
+		PermanentInfection = Mathf.Max(0f, PermanentInfection - amount);
+	}
+
+	public string UseInfectionReducerFromStock()
+	{
+		ConsumableDef def = GameDatabase.GetConsumable("infection_reducer");
+
+		if (def == null || GetPermanentItemCount(def.Id) <= 0)
+			return "You have no Infection Reducer in stock.";
+
+		if (PermanentInfection <= 0f)
+			return "Your base infection is already 0%.";
+
+		permanentItems[def.Id] = GetPermanentItemCount(def.Id) - 1;
+		ReduceBaseInfection(def.PermanentInfectionReduction);
+		SaveGame();
+
+		return $"Base infection lowered to {PermanentInfection:0}%.";
 	}
 
 	public string CraftEquipment(string id)
@@ -474,6 +582,9 @@ public partial class GameState : Node
 
 		if (def == null)
 			return "Unknown item.";
+
+		if (def.RequiredInfirmaryLevel > InfirmaryLevel)
+			return $"Requires Infirmary Level {def.RequiredInfirmaryLevel}.";
 		ResourceCost cost = GetCost(def.Cost);
 
 		if (!CanAfford(cost))
@@ -558,6 +669,7 @@ public partial class GameState : Node
 		ReturnRunItems();
 		ResetRunState();
 		SpawnAtInfirmary = false;
+		SpawnAtGate = false;
 
 		foreach (ConsumableDef def in GameDatabase.Consumables)
 		{
@@ -585,6 +697,7 @@ public partial class GameState : Node
 		DeathCount++;
 		CurrentExpeditionStatus = ExpeditionStatus.Failed;
 		SpawnAtInfirmary = true;
+		SpawnAtGate = false;
 
 		float penalty = 0f;
 
@@ -652,6 +765,7 @@ public partial class GameState : Node
 
 		CurrentExpeditionStatus = ExpeditionStatus.Completed;
 		SpawnAtInfirmary = false;
+		SpawnAtGate = true;
 		retreatBannerShown = false;
 
 		LastExpeditionMessage = "You made it back with the final core. Install it in the Core Chamber.";
@@ -767,10 +881,8 @@ public partial class GameState : Node
 		}
 
 		ownedEquipment.Clear();
-		ownedEquipment.Add("rusty_blade");
-		ownedEquipment.Add("cloth_wraps");
-		EquippedWeaponId = "rusty_blade";
-		EquippedArmorId = "cloth_wraps";
+		equipped.Clear();
+		GearUpQuestDone = false;
 
 		for (int i = 1; i <= GameDatabase.CoreCount; i++)
 		{
@@ -796,7 +908,7 @@ public partial class GameState : Node
 		ResetRunState();
 
 		SpawnAtInfirmary = false;
-		LastExpeditionMessage = "Ready for expedition.";
+		GrantStarterKit();
 	}
 
 	private void DeleteSave()
@@ -1006,7 +1118,7 @@ public partial class GameState : Node
 			$"Energy: {PermanentEnergy}, Essence: {PermanentEssence}, Core: {PermanentCoreFragments}"
 		);
 		GD.Print($"Base infection: {PermanentInfection}%, deaths: {DeathCount}");
-		GD.Print($"Storage Lv {StorageLevel}, Armory Lv {ArmoryLevel}, Infirmary Lv {InfirmaryLevel}, Weapon: {EquippedWeaponId}, Armor: {EquippedArmorId}");
+		GD.Print($"Storage Lv {StorageLevel}, Armory Lv {ArmoryLevel}, Infirmary Lv {InfirmaryLevel}, Gear slots: {equipped.Count}/{GameDatabase.AllSlots.Length}");
 	}
 
 	public void SaveGame()
@@ -1027,8 +1139,8 @@ public partial class GameState : Node
 			InfirmaryLevel = InfirmaryLevel,
 			WorkshopLevel = WorkshopLevel,
 			OwnedEquipment = new List<string>(ownedEquipment),
-			EquippedWeaponId = EquippedWeaponId,
-			EquippedArmorId = EquippedArmorId,
+			Equipped = GetEquippedMap(),
+			GearUpQuestDone = GearUpQuestDone,
 			Items = new Dictionary<string, int>(permanentItems)
 		};
 
@@ -1113,11 +1225,21 @@ public partial class GameState : Node
 			}
 		}
 
-		if (data.EquippedWeaponId != null && ownedEquipment.Contains(data.EquippedWeaponId))
-			EquippedWeaponId = data.EquippedWeaponId;
+		if (data.Equipped != null)
+		{
+			foreach (KeyValuePair<string, string> pair in data.Equipped)
+			{
+				if (!Enum.TryParse(pair.Key, out EquipSlot slot) || !ownedEquipment.Contains(pair.Value))
+					continue;
 
-		if (data.EquippedArmorId != null && ownedEquipment.Contains(data.EquippedArmorId))
-			EquippedArmorId = data.EquippedArmorId;
+				EquipmentDef def = GameDatabase.GetEquipment(pair.Value);
+
+				if (def != null && def.Slot == slot)
+					equipped[slot] = pair.Value;
+			}
+		}
+
+		GearUpQuestDone = data.GearUpQuestDone;
 
 		if (data.Items != null)
 		{
@@ -1207,7 +1329,7 @@ public partial class GameState : Node
 			}
 			else if (key.Keycode == Key.F4)
 			{
-				if (CurrentExpeditionStatus != ExpeditionStatus.Active)
+				if (CurrentExpeditionStatus != ExpeditionStatus.Active || CarryingFinalCore)
 					return;
 
 				GD.Print("[DEBUG] Simulated Death");

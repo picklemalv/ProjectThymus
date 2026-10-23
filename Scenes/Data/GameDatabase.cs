@@ -11,8 +11,11 @@ public enum ResourceType
 
 public enum EquipSlot
 {
-	Weapon,
-	Armor
+	Knife,
+	Rifle,
+	Head,
+	Body,
+	Accessory
 }
 
 public enum StationType
@@ -91,10 +94,12 @@ public class EquipmentDef
 	public string Id;
 	public string Name;
 	public EquipSlot Slot;
+	public int Tier = 1;
 	public int WeaponDamage;
 	public int Defense;
 	public int HP;
 	public int Speed;
+	public float InfectionResist;
 	public int RequiredArmoryLevel = 1;
 	public ResourceCost Cost = new ResourceCost();
 
@@ -103,7 +108,7 @@ public class EquipmentDef
 		List<string> parts = new List<string>();
 
 		if (WeaponDamage != 0)
-			parts.Add($"Weapon DMG +{WeaponDamage}");
+			parts.Add($"DMG +{WeaponDamage}");
 		if (Defense != 0)
 			parts.Add($"DEF +{Defense}");
 		if (HP != 0)
@@ -113,6 +118,8 @@ public class EquipmentDef
 			string sign = Speed > 0 ? "+" : "";
 			parts.Add($"SPD {sign}{Speed}");
 		}
+		if (InfectionResist > 0f)
+			parts.Add($"Infection gain -{Math.Round(InfectionResist * 100)}%");
 
 		return string.Join(", ", parts);
 	}
@@ -124,8 +131,10 @@ public class ConsumableDef
 	public string Name;
 	public string Description;
 	public ResourceCost Cost = new ResourceCost();
+	public int RequiredInfirmaryLevel = 1;
 	public int Heal;
 	public int InfectionReduction;
+	public int PermanentInfectionReduction;
 	public int AttackBuff;
 	public int BuffTurns;
 }
@@ -147,75 +156,80 @@ public static class GameDatabase
 	public const int RunCapEnergy = 30;
 	public const int RunCapEssence = 10;
 
+	public const int StarterScrap = 120;
+	public const int StarterMaterial = 30;
+
+	public static readonly EquipSlot[] AllSlots = new EquipSlot[]
+	{
+		EquipSlot.Knife,
+		EquipSlot.Rifle,
+		EquipSlot.Head,
+		EquipSlot.Body,
+		EquipSlot.Accessory
+	};
+
+	private static EquipmentDef Gear(
+		string id, string name, EquipSlot slot, int tier, ResourceCost cost,
+		int weaponDamage = 0, int defense = 0, int hp = 0, int speed = 0, float resist = 0f)
+	{
+		return new EquipmentDef
+		{
+			Id = id,
+			Name = name,
+			Slot = slot,
+			Tier = tier,
+			RequiredArmoryLevel = tier,
+			Cost = cost,
+			WeaponDamage = weaponDamage,
+			Defense = defense,
+			HP = hp,
+			Speed = speed,
+			InfectionResist = resist
+		};
+	}
+
 	public static readonly List<EquipmentDef> Equipment = new List<EquipmentDef>
 	{
-		new EquipmentDef
-		{
-			Id = "rusty_blade", Name = "Rusty Blade", Slot = EquipSlot.Weapon,
-			WeaponDamage = 3, RequiredArmoryLevel = 1, Cost = new ResourceCost()
-		},
-		new EquipmentDef
-		{
-			Id = "scrap_axe", Name = "Scrap Axe", Slot = EquipSlot.Weapon,
-			WeaponDamage = 6, RequiredArmoryLevel = 1, Cost = new ResourceCost(40, 5)
-		},
-		new EquipmentDef
-		{
-			Id = "reinforced_blade", Name = "Reinforced Blade", Slot = EquipSlot.Weapon,
-			WeaponDamage = 10, RequiredArmoryLevel = 2, Cost = new ResourceCost(90, 15)
-		},
-		new EquipmentDef
-		{
-			Id = "contaminated_edge", Name = "Contaminated Edge", Slot = EquipSlot.Weapon,
-			WeaponDamage = 15, RequiredArmoryLevel = 3, Cost = new ResourceCost(150, 20, 0, 5)
-		},
-		new EquipmentDef
-		{
-			Id = "cloth_wraps", Name = "Cloth Wraps", Slot = EquipSlot.Armor,
-			Defense = 1, RequiredArmoryLevel = 1, Cost = new ResourceCost()
-		},
-		new EquipmentDef
-		{
-			Id = "scrap_vest", Name = "Scrap Vest", Slot = EquipSlot.Armor,
-			Defense = 3, HP = 10, RequiredArmoryLevel = 1, Cost = new ResourceCost(35, 5)
-		},
-		new EquipmentDef
-		{
-			Id = "plated_vest", Name = "Plated Vest", Slot = EquipSlot.Armor,
-			Defense = 6, HP = 20, RequiredArmoryLevel = 2, Cost = new ResourceCost(80, 12)
-		},
-		new EquipmentDef
-		{
-			Id = "filter_suit", Name = "Filter Suit", Slot = EquipSlot.Armor,
-			Defense = 9, HP = 30, RequiredArmoryLevel = 3, Cost = new ResourceCost(140, 20, 0, 5)
-		}
+		Gear("knife_1", "Rusty Knife", EquipSlot.Knife, 1, new ResourceCost(20, 3), weaponDamage: 3, speed: 1),
+		Gear("knife_2", "Hunter's Knife", EquipSlot.Knife, 2, new ResourceCost(60, 10), weaponDamage: 5, speed: 2),
+		Gear("knife_3", "Core-Edge Knife", EquipSlot.Knife, 3, new ResourceCost(140, 22, 0, 4), weaponDamage: 8, speed: 3),
+
+		Gear("rifle_1", "Scrap Rifle", EquipSlot.Rifle, 1, new ResourceCost(30, 5), weaponDamage: 4),
+		Gear("rifle_2", "Marksman Rifle", EquipSlot.Rifle, 2, new ResourceCost(85, 14), weaponDamage: 7),
+		Gear("rifle_3", "Core Rifle", EquipSlot.Rifle, 3, new ResourceCost(180, 28, 0, 6), weaponDamage: 11),
+
+		Gear("head_1", "Scrap Helmet", EquipSlot.Head, 1, new ResourceCost(15, 2), defense: 1, hp: 5),
+		Gear("head_2", "Filter Mask", EquipSlot.Head, 2, new ResourceCost(45, 8), defense: 2, hp: 10),
+		Gear("head_3", "Core Visor", EquipSlot.Head, 3, new ResourceCost(110, 18, 0, 3), defense: 4, hp: 15),
+
+		Gear("body_1", "Scrap Vest", EquipSlot.Body, 1, new ResourceCost(25, 4), defense: 2, hp: 10),
+		Gear("body_2", "Plated Armor", EquipSlot.Body, 2, new ResourceCost(75, 12), defense: 4, hp: 20),
+		Gear("body_3", "Hazmat Suit", EquipSlot.Body, 3, new ResourceCost(160, 25, 0, 5), defense: 7, hp: 30),
+
+		Gear("accessory_1", "Filter Charm", EquipSlot.Accessory, 1, new ResourceCost(15, 3), resist: 0.05f),
+		Gear("accessory_2", "Purifier Charm", EquipSlot.Accessory, 2, new ResourceCost(50, 9, 5), resist: 0.10f),
+		Gear("accessory_3", "Core Talisman", EquipSlot.Accessory, 3, new ResourceCost(120, 20, 10, 5), resist: 0.15f)
 	};
 
 	public static readonly List<ConsumableDef> Consumables = new List<ConsumableDef>
 	{
 		new ConsumableDef
 		{
-			Id = "health_potion", Name = "Health Potion",
-			Description = "Restores 40 HP.",
-			Cost = new ResourceCost(10, 2), Heal = 40
-		},
-		new ConsumableDef
-		{
 			Id = "antidote", Name = "Antidote",
-			Description = "Reduces Infection by 10%.",
-			Cost = new ResourceCost(15, 3), InfectionReduction = 10
+			Description = "Reduces Infection by 15%.",
+			Cost = new ResourceCost(15, 3), RequiredInfirmaryLevel = 1, InfectionReduction = 15
 		},
 		new ConsumableDef
 		{
-			Id = "temporary_buff", Name = "Temporary Buff",
-			Description = "+6 Attack for the next 3 attacks.",
-			Cost = new ResourceCost(0, 2, 5), AttackBuff = 6, BuffTurns = 3
+			Id = "health_potion", Name = "Health Potion",
+			Description = "Restores 40 HP and gives +6 Attack for 3 attacks.",
+			Cost = new ResourceCost(12, 3), RequiredInfirmaryLevel = 1, Heal = 40, AttackBuff = 6, BuffTurns = 3
 		},
 		new ConsumableDef
 		{
 			Id = "infection_reducer", Name = "Infection Reducer",
-			Description = "Reduces Infection by 25%.",
-			Cost = new ResourceCost(0, 5, 5, 2), InfectionReduction = 25
+			Description = "Permanently lowers your starting infection by 8%.",
+			Cost = new ResourceCost(0, 6, 5, 2), RequiredInfirmaryLevel = 2, PermanentInfectionReduction = 8
 		}
 	};
 
@@ -305,7 +319,7 @@ public static class GameDatabase
 				$"Essence {RunCap(next, ResourceType.Essence)}";
 		}
 
-		return $"Unlocks tier {currentLevel + 1} weapons and armor.";
+		return $"Unlocks tier {currentLevel + 1} gear.";
 	}
 
 	public static float WorkshopDiscount(int workshopLevel)
@@ -344,6 +358,23 @@ public static class GameDatabase
 			return null;
 
 		return BossSpecials[bossIndex - 1];
+	}
+
+	public static string SlotDisplayName(EquipSlot slot)
+	{
+		switch (slot)
+		{
+			case EquipSlot.Knife:
+				return "Knife";
+			case EquipSlot.Rifle:
+				return "Rifle";
+			case EquipSlot.Head:
+				return "Head Gear";
+			case EquipSlot.Body:
+				return "Body Armor";
+			default:
+				return "Accessory";
+		}
 	}
 
 	public static ZoneRule GetZone(int number)

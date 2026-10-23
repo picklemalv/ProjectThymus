@@ -33,6 +33,10 @@ public partial class Stats : Node
 
 	public void AddInfection(float amount)
 	{
+		// After the final boss falls, infection can no longer rise.
+		if (amount > 0f && GameState.Instance != null && GameState.Instance.CarryingFinalCore)
+			return;
+
 		if (amount > 0f)
 			amount *= InfectionGainMultiplier;
 

@@ -316,7 +316,11 @@ public partial class ShelterStation : Area2D
 					message = state.InstallCore(index);
 
 					if (index == GameDatabase.CoreCount && state.GameWon)
-						showEnding = true;
+					{
+						// The final core is in: the game is over.
+						GetTree().CallDeferred(SceneTree.MethodName.ChangeSceneToFile, "res://Scenes/Ending.tscn");
+						return;
+					}
 
 					Refresh();
 				});
@@ -330,8 +334,7 @@ public partial class ShelterStation : Area2D
 		if (state.GameWon)
 			AddRow("The time loop has ended.", "Replay ending", true, () =>
 			{
-				showEnding = true;
-				Refresh();
+				GetTree().CallDeferred(SceneTree.MethodName.ChangeSceneToFile, "res://Scenes/Ending.tscn");
 			});
 	}
 
@@ -387,30 +390,26 @@ public partial class ShelterStation : Area2D
 
 		AddHeader($"ARMORY  -  Level {state.ArmoryLevel}/{GameDatabase.MaxStationLevel}");
 
+		if (!state.GearUpQuestDone)
+			AddRow("QUEST - Gear Up: craft and equip one item in every slot before heading out.", null, false, null);
+
 		AddRow(
 			$"Stock: Scrap {state.PermanentScrap}, Material {state.PermanentMaterial}, " +
 			$"Energy {state.PermanentEnergy}, Essence {state.PermanentEssence}",
 			null, false, null
 		);
 
-		EquipmentDef weapon = GameDatabase.GetEquipment(state.EquippedWeaponId);
-		EquipmentDef armor = GameDatabase.GetEquipment(state.EquippedArmorId);
-		string weaponName = weapon != null ? weapon.Name : "None";
-		string armorName = armor != null ? armor.Name : "None";
-		AddRow($"Equipped: {weaponName} / {armorName}", null, false, null);
+		AddRow("Knife and Rifle damage stack. Higher tiers unlock as the Armory levels up.", null, false, null);
 
-		AddHeader("Weapons");
-		foreach (EquipmentDef def in GameDatabase.Equipment)
+		foreach (EquipSlot slot in GameDatabase.AllSlots)
 		{
-			if (def.Slot == EquipSlot.Weapon)
-				AddEquipmentRow(def);
-		}
+			AddHeader(GameDatabase.SlotDisplayName(slot));
 
-		AddHeader("Armor");
-		foreach (EquipmentDef def in GameDatabase.Equipment)
-		{
-			if (def.Slot == EquipSlot.Armor)
-				AddEquipmentRow(def);
+			foreach (EquipmentDef def in GameDatabase.Equipment)
+			{
+				if (def.Slot == slot)
+					AddEquipmentRow(def);
+			}
 		}
 
 		AddRow("Upgrade this facility at the Workshop.", null, false, null);
@@ -434,22 +433,46 @@ public partial class ShelterStation : Area2D
 			null, false, null
 		);
 
-		AddHeader($"Supplies (carry up to {GameState.ItemCarryLimit} of each per run)");
+		AddHeader($"Potions (carry up to {GameState.ItemCarryLimit} of each per run)");
 
 		foreach (ConsumableDef def in GameDatabase.Consumables)
 		{
 			string id = def.Id;
+			ResourceCost cost = state.GetCost(def.Cost);
+			string info = $"{def.Name} - {def.Description}\nIn stock: {state.GetPermanentItemCount(id)}";
+
+			if (def.RequiredInfirmaryLevel > state.InfirmaryLevel)
+			{
+				AddRow($"{info}\nRequires Infirmary Level {def.RequiredInfirmaryLevel}", "Locked", false, null);
+				continue;
+			}
 
 			AddRow(
-				$"{def.Name} - {def.Description}\nIn stock: {state.GetPermanentItemCount(id)}",
-				$"Craft: {state.GetCost(def.Cost).ToText()}",
-				state.CanAfford(state.GetCost(def.Cost)),
+				info,
+				$"Craft: {cost.ToText()}",
+				state.CanAfford(cost),
 				() =>
 				{
 					message = state.CraftConsumable(id);
 					Refresh();
 				}
 			);
+
+			if (def.PermanentInfectionReduction > 0)
+			{
+				int stock = state.GetPermanentItemCount(id);
+
+				AddRow(
+					"Use one now to lower your starting infection.",
+					$"Use ({stock})",
+					stock > 0 && state.PermanentInfection > 0f,
+					() =>
+					{
+						message = state.UseInfectionReducerFromStock();
+						Refresh();
+					}
+				);
+			}
 		}
 
 		AddRow("Upgrade this facility at the Workshop.", null, false, null);
@@ -459,7 +482,7 @@ public partial class ShelterStation : Area2D
 	{
 		GameState state = GameState.Instance;
 		string id = def.Id;
-		string text = $"{def.Name}  ({def.StatText()})";
+		string text = $"{def.Name} (Lv {def.Tier})  ({def.StatText()})";
 
 		if (state.IsEquipped(id))
 		{

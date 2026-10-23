@@ -1661,7 +1661,7 @@ position = Vector2(9009, 870)
 y_sort_enabled = true
 
 [node name="Player" parent="Objects" unique_id=2068987577 instance=ExtResource("9_ynf5e")]
-position = Vector2(2435, 1346)
+position = Vector2(2548, 1302)
 
 [node name="NPC" parent="Objects" unique_id=1286714938 instance=ExtResource("4_hptm8")]
 position = Vector2(580, 426)
