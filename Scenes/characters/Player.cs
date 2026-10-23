@@ -10,10 +10,12 @@ public partial class Player : CharacterBody2D
 	private Vector2 baseZoom = Vector2.One;
 	private Vector2 baseOffset = Vector2.Zero;
 	private float swayTime = 0f;
+	private AudioStreamPlayer footstepPlayer;
 
 	public override void _Ready()
 	{
 		sprite = GetNode<AnimatedSprite2D>("AnimatedSprite2D");
+		footstepPlayer = GetNode<AudioStreamPlayer>("FootstepPlayer");
 
 		foreach (Node child in GetChildren())
 		{
@@ -46,7 +48,7 @@ public partial class Player : CharacterBody2D
 
 		return node.SceneFilePath == "res://Scenes/main.tscn";
 	}
-
+	
 	public override void _PhysicsProcess(double delta)
 	{
 		float multiplier = GameState.Instance.MoveSpeedMultiplier;
@@ -64,6 +66,17 @@ public partial class Player : CharacterBody2D
 
 		UpdateAnimation(direction, multiplier);
 		UpdateCamera(delta);
+		
+		if (Velocity.LengthSquared() > 0.01f)
+		{
+			if (!footstepPlayer.Playing)
+				footstepPlayer.Play();
+		}
+		else
+		{
+			if (footstepPlayer.Playing)
+				footstepPlayer.Stop();
+		}
 	}
 
 	private void UpdateCamera(double delta)
@@ -96,15 +109,29 @@ public partial class Player : CharacterBody2D
 	{
 		sprite.SpeedScale = multiplier;
 
-		if (direction != Vector2.Zero)
+		// Get the player's current infection percentage.
+		float infection = GameState.Instance.PlayerStats.CurrentInfection;
+
+		// Determine the animation suffix based on infection.
+		string suffix = "";
+
+		if (infection >= 75f)
 		{
-			sprite.Play("running");
+			suffix = "75";
 		}
-		else
+		else if (infection >= 50f)
 		{
-			sprite.Play("default");
+			suffix = "50";
 		}
 
+		// Select the animation based on movement.
+		string animationName = direction != Vector2.Zero
+			? $"running{suffix}"
+			: $"default{suffix}";
+
+		sprite.Play(animationName);
+
+		// Preserve horizontal sprite flipping.
 		if (direction.X != 0)
 		{
 			sprite.FlipH = direction.X < 0;

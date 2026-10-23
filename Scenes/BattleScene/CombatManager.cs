@@ -37,11 +37,13 @@ public partial class CombatManager : Node2D
 
 	public override void _Ready()
 	{
-		playerHPLabel = GetNode<Label>("UI/VBoxContainer/PlayerHPLabel");
-		enemyHPLabel = GetNode<Label>("UI/VBoxContainer/EnemyHPLabel");
+		playerHPLabel = GetNode<Label>("UI/PlayerHPLabel");
+		enemyHPLabel = GetNode<Label>("UI/EnemyHPLabel");
 		infectionLabel = GetNode<Label>("UI/VBoxContainer/InfectionLabel");
 		statusLabel = GetNode<Label>("UI/VBoxContainer/StatusLabel");
-		attackButton = GetNode<Button>("UI/VBoxContainer/AttackButton");
+		attackButton = GetNode<Button>("UI/AttackButton");
+		defendButton = GetNode<Button>("UI/DefendButton");
+		escapeButton = GetNode<Button>("UI/EscapeButton");
 		fadeRect = GetNode<ColorRect>("FadeLayer/FadeRect");
 		playerSprite = GetNode<AnimatedSprite2D>("Player/AnimatedSprite2D");
 		playerSprite.AnimationFinished += OnAnimationFinished;
@@ -50,8 +52,6 @@ public partial class CombatManager : Node2D
 		enemySprite.AnimationFinished += OnEnemyAnimationFinished;
 
 		LoadEncounteredEnemy();
-
-		attackButton.Pressed += OnAttackPressed;
 
 		playerStats = GameState.Instance.PlayerStats;
 		zone = GameState.Instance.CurrentZoneRule;
@@ -105,43 +105,109 @@ public partial class CombatManager : Node2D
 			SetActionsEnabled(true);
 		}
 	}
+	
+	private string GetPlayerAnimation(string baseName)
+	{
+		float infection = playerStats.CurrentInfection;
+
+		string suffix = "";
+
+		if (infection >= 75f)
+			suffix = "75";
+		else if (infection >= 50f)
+			suffix = "50";
+
+		string animationName = baseName + suffix;
+
+		// Fall back to the original animation if a variant is missing.
+		if (playerSprite.SpriteFrames.HasAnimation(animationName))
+			return animationName;
+
+		return baseName;
+	}
+
+	private void PlayPlayerAnimation(string baseName)
+	{
+		string animationName = GetPlayerAnimation(baseName);
+
+		if (playerSprite.SpriteFrames.HasAnimation(animationName))
+			playerSprite.Play(animationName);
+	}
 
 	private void BuildActionButtons()
 	{
-		VBoxContainer box = GetNode<VBoxContainer>("UI/VBoxContainer");
-
-		HBoxContainer actionRow = new HBoxContainer();
-		actionRow.AddThemeConstantOverride("separation", 8);
-		box.AddChild(actionRow);
-
-		defendButton = new Button();
-		defendButton.Text = "Defend";
-		defendButton.TooltipText = "Take half damage from the next enemy attack.";
+		// These buttons are placed in the BattleScene UI in the Godot editor.
+		attackButton.Pressed += OnAttackPressed;
 		defendButton.Pressed += OnDefendPressed;
-		actionRow.AddChild(defendButton);
-
-		escapeButton = new Button();
-		escapeButton.Text = "Escape (50%)";
-		escapeButton.TooltipText = "50% chance to flee the battle.";
 		escapeButton.Pressed += OnEscapePressed;
-		actionRow.AddChild(escapeButton);
 
-		HBoxContainer itemRow = new HBoxContainer();
-		itemRow.AddThemeConstantOverride("separation", 8);
-		box.AddChild(itemRow);
-
-		foreach (ConsumableDef def in GameDatabase.Consumables)
-		{
-			string id = def.Id;
-
-			Button button = new Button();
-			button.Pressed += () => OnItemPressed(id);
-			itemRow.AddChild(button);
-
-			itemButtons[id] = button;
-		}
+		BindItemButton("UI/AntidoteButton", "antidote", "cure");
+		BindItemButton("UI/HealthButton", "health", "heal", "medkit", "medical");
+		BindItemButton(
+			"UI/InfectionReductButton",
+			"infectionreduct",
+			"infectionreduction",
+			"reduceinfection",
+			"antivirus",
+			"purge"
+		);
 
 		RefreshActionButtons();
+	}
+
+	private void BindItemButton(string nodePath, params string[] keywords)
+	{
+		Button button = GetNode<Button>(nodePath);
+		ConsumableDef def = FindConsumable(keywords);
+
+		if (def == null)
+		{
+			GD.PushWarning(
+				$"No consumable matched button '{nodePath}'. " +
+				$"Check the consumable IDs/names in GameDatabase."
+			);
+			button.Disabled = true;
+			return;
+		}
+
+		if (itemButtons.ContainsKey(def.Id))
+		{
+			GD.PushWarning($"Consumable '{def.Id}' was matched to more than one UI button.");
+			button.Disabled = true;
+			return;
+		}
+
+		itemButtons[def.Id] = button;
+		string id = def.Id;
+		button.Pressed += () => OnItemPressed(id);
+	}
+
+	private ConsumableDef FindConsumable(params string[] keywords)
+	{
+		foreach (ConsumableDef def in GameDatabase.Consumables)
+		{
+			if (itemButtons.ContainsKey(def.Id))
+				continue;
+
+			string searchable = Normalize(def.Id + def.Name);
+
+			foreach (string keyword in keywords)
+			{
+				if (searchable.Contains(Normalize(keyword)))
+					return def;
+			}
+		}
+
+		return null;
+	}
+
+	private string Normalize(string value)
+	{
+		return System.Text.RegularExpressions.Regex.Replace(
+			value.ToLowerInvariant(),
+			"[^a-z0-9]",
+			""
+		);
 	}
 
 	private void RefreshActionButtons()
@@ -154,9 +220,10 @@ public partial class CombatManager : Node2D
 
 		foreach (ConsumableDef def in GameDatabase.Consumables)
 		{
-			int count = GameState.Instance.GetRunItemCount(def.Id);
-			Button button = itemButtons[def.Id];
+			if (!itemButtons.TryGetValue(def.Id, out Button button))
+				continue;
 
+			int count = GameState.Instance.GetRunItemCount(def.Id);
 			button.Text = $"{def.Name} x{count}";
 			button.TooltipText = def.Description;
 			button.Disabled = !canAct || count <= 0;
@@ -215,7 +282,7 @@ public partial class CombatManager : Node2D
 		// Play player getting-hit animation
 		if (playerSprite.SpriteFrames.HasAnimation("hit"))
 		{
-			playerSprite.Play("hit");
+			PlayPlayerAnimation("hit");
 		}
 
 		if (special)
@@ -230,7 +297,7 @@ public partial class CombatManager : Node2D
 		{
 			if (playerSprite.SpriteFrames.HasAnimation("die"))
 			{
-				playerSprite.Play("die");
+				PlayPlayerAnimation("die");
 			}
 
 			TriggerTimeLoop("You were overwhelmed...");
@@ -302,7 +369,7 @@ public partial class CombatManager : Node2D
 
 	private void PerformAttack()
 	{
-		playerSprite.Play("attack");
+		PlayPlayerAnimation("attack");
 
 		// Play NPC hit animation
 		if (enemySprite.SpriteFrames.HasAnimation("hit"))
@@ -457,13 +524,12 @@ public partial class CombatManager : Node2D
 
 	private void OnAnimationFinished()
 	{
-		if (playerSprite.Animation == "attack" ||
-			playerSprite.Animation == "hit")
+		string currentAnimation = playerSprite.Animation;
+
+		if (currentAnimation.StartsWith("attack", StringComparison.Ordinal) ||
+			currentAnimation.StartsWith("hit", StringComparison.Ordinal))
 		{
-			if (playerSprite.SpriteFrames.HasAnimation("default"))
-			{
-				playerSprite.Play("default");
-			}
+			PlayPlayerAnimation("default");
 		}
 	}
 

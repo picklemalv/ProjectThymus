@@ -57,8 +57,6 @@ public partial class ShelterHud : Label
 			$"Material: {state.PermanentMaterial}/{GameDatabase.StorageCap(state.StorageLevel, ResourceType.Material)}\n" +
 			$"Energy: {state.PermanentEnergy}/{GameDatabase.StorageCap(state.StorageLevel, ResourceType.Energy)}\n" +
 			$"Essence: {state.PermanentEssence}/{GameDatabase.StorageCap(state.StorageLevel, ResourceType.Essence)}\n" +
-			$"Cores: {state.InstalledCoreCount}/{GameDatabase.CoreCount} installed, {state.PermanentCoreFragments} waiting\n\n" +
-			$"{gear}\n" +
-			$"Storage Lv.{state.StorageLevel}  Armory Lv.{state.ArmoryLevel}  Infirmary Lv.{state.InfirmaryLevel}  Workshop Lv.{state.WorkshopLevel}";
+			$"Cores: {state.InstalledCoreCount}/{GameDatabase.CoreCount} installed, {state.PermanentCoreFragments} waiting\n\n";
 	}
 }

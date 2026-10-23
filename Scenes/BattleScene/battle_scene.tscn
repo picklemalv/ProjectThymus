@@ -1,20 +1,37 @@
 [gd_scene format=3 uid="uid://b2bba0k4citj5"]
 
 [ext_resource type="Script" uid="uid://b3si8t50nkbvo" path="res://Scenes/BattleScene/CombatManager.cs" id="1_w4hjr"]
-[ext_resource type="Texture2D" uid="uid://cksf4po1raol4" path="res://Assets/ThymusAssets/Map/Battle Scene 1.jpg" id="4_5ewv1"]
+[ext_resource type="Texture2D" uid="uid://bf7nh4h60n5gn" path="res://Assets/ThymusAssets/Map/Battle Scene 1 1.png" id="2_0i5j7"]
 [ext_resource type="Texture2D" uid="uid://bc1inec6tto3s" path="res://Assets/Tiny Swords (Free Pack)/Units/Black Units/Monk/Idle.png" id="5_0c8r6"]
-[ext_resource type="Texture2D" uid="uid://d4fh05tsgo5tc" path="res://Assets/ThymusAssets/Sprites/Runner/RIfle Attack 1.png" id="6_gomgp"]
-[ext_resource type="Texture2D" uid="uid://d2sn0opb3n1ek" path="res://Assets/ThymusAssets/Sprites/Runner/Rifle Attack 2.png" id="7_52re7"]
+[ext_resource type="Texture2D" uid="uid://6wwcombr20t6" path="res://Assets/ThymusAssets/Sprites/Runner/Knife Idle.png" id="5_4jeya"]
+[ext_resource type="Texture2D" uid="uid://brhsv4k8y4k4i" path="res://Assets/ThymusAssets/Sprites/Runner/Knife Attack 1.png" id="6_ujmno"]
+[ext_resource type="Texture2D" uid="uid://qmng71c8xht" path="res://Assets/ThymusAssets/Sprites/Runner/Knife Attack 2.png" id="7_vlllc"]
 [ext_resource type="Texture2D" uid="uid://dn4tqt753r6jp" path="res://Assets/ThymusAssets/Sprites/Runner/Falling 1 (2).png" id="8_0i5j7"]
 [ext_resource type="Texture2D" uid="uid://vle3o2612co4" path="res://Assets/ThymusAssets/Sprites/Runner/Idle Right.png" id="8_5ewv1"]
 [ext_resource type="Texture2D" uid="uid://d8fbvjbnsekr" path="res://Assets/ThymusAssets/Sprites/Runner/Taking damage 1.png" id="8_52re7"]
+[ext_resource type="Texture2D" uid="uid://dlbp7fp2e0j54" path="res://Assets/ThymusAssets/Sprites/Runner/cont50/Knife Attack 1 (1).png" id="8_71q1p"]
 [ext_resource type="Script" uid="uid://diufc3r3pr5kf" path="res://Scenes/characters/FlipChar.cs" id="8_rgnyu"]
 [ext_resource type="Texture2D" uid="uid://cr8x8mbm5khq8" path="res://Assets/ThymusAssets/Sprites/Runner/Falling 2 (2).png" id="9_4jeya"]
 [ext_resource type="Texture2D" uid="uid://dtpecrqmse5e3" path="res://Assets/ThymusAssets/Sprites/Runner/Taking Damage 2.png" id="9_5ewv1"]
+[ext_resource type="Texture2D" uid="uid://bmesxyf80f1um" path="res://Assets/ThymusAssets/Sprites/Runner/cont50/Knife Attak 2.png" id="9_7hs23"]
 [ext_resource type="Texture2D" uid="uid://djqhjhvrhys2" path="res://Assets/Tiny Swords (Free Pack)/Terrain/Tileset/Shadow.png" id="9_52re7"]
 [ext_resource type="Texture2D" uid="uid://bp1yho1mp876i" path="res://Assets/ThymusAssets/pixel_ui/icons/pause.png" id="9_l5m2j"]
+[ext_resource type="Texture2D" uid="uid://cgkx43ck05fca" path="res://Assets/ThymusAssets/Sprites/Runner/cont50/Idle Right (8) 1.png" id="9_vlllc"]
+[ext_resource type="Texture2D" uid="uid://2jp2710jtxng" path="res://Assets/ThymusAssets/Sprites/Runner/cont75/Idle Right (9).png" id="10_8fjb8"]
 [ext_resource type="FontFile" uid="uid://db3kmltwkjphx" path="res://Assets/ThymusAssets/pixel_ui/font/pixel_ui_font.fnt" id="10_gomgp"]
+[ext_resource type="Texture2D" uid="uid://dxm2uvabvhb52" path="res://Assets/ThymusAssets/Sprites/Runner/cont50/Knife Attack 3.png" id="10_toumw"]
 [ext_resource type="Texture2D" uid="uid://pjtamfpv5wqv" path="res://Assets/ThymusAssets/Sprites/Runner/Falling 3 (1).png" id="10_ujmno"]
+[ext_resource type="Texture2D" uid="uid://d2txr2480dtv2" path="res://Assets/ThymusAssets/Sprites/Runner/cont75/Falling 1 (7).png" id="11_l6ngm"]
+[ext_resource type="Texture2D" uid="uid://bp2nc7vcrim16" path="res://Assets/ThymusAssets/Sprites/Runner/cont75/Claw Attack 1 (1).png" id="12_vcll0"]
+[ext_resource type="Texture2D" uid="uid://cuhveqlua251v" path="res://Assets/ThymusAssets/Sprites/Runner/cont75/Claw Attack 2 (1).png" id="13_vi0b0"]
+[ext_resource type="Texture2D" uid="uid://c4sf3ag33xde0" path="res://Assets/ThymusAssets/Sprites/Runner/cont50/Falling 1 (6).png" id="17_udskx"]
+[ext_resource type="Texture2D" uid="uid://0ver530jiqyh" path="res://Assets/ThymusAssets/Sprites/Runner/cont50/Falling 2 (6).png" id="18_4jan8"]
+[ext_resource type="Texture2D" uid="uid://dxu3pxk7hdfcw" path="res://Assets/ThymusAssets/Sprites/Runner/cont50/Falling 3 (4).png" id="19_feb8q"]
+[ext_resource type="Texture2D" uid="uid://bgs8mt4ya4ebb" path="res://Assets/ThymusAssets/Sprites/Runner/cont50/Taking Dmg (6).png" id="22_0j4md"]
+[ext_resource type="Texture2D" uid="uid://bd2tdwmw51epu" path="res://Assets/ThymusAssets/Sprites/Runner/cont75/Falling 2 (7).png" id="23_rk37m"]
+[ext_resource type="Texture2D" uid="uid://b6bltbtka6587" path="res://Assets/ThymusAssets/Sprites/Runner/cont75/Falling 3 (5).png" id="24_7ngco"]
+[ext_resource type="Texture2D" uid="uid://bhqu82vaok2wl" path="res://Assets/ThymusAssets/Sprites/Runner/cont75/Falling 4 (3).png" id="25_bksiv"]
+[ext_resource type="Texture2D" uid="uid://d0y000ig6ufet" path="res://Assets/ThymusAssets/Sprites/Runner/cont75/Taking Dmg (7).png" id="29_3geur"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_5pne0"]
 atlas = ExtResource("8_5ewv1")
@@ -24,16 +41,50 @@ region = Rect2(0, 0, 162, 288)
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("6_gomgp")
+"texture": ExtResource("5_4jeya")
 }, {
 "duration": 1.0,
-"texture": ExtResource("7_52re7")
+"texture": ExtResource("6_ujmno")
 }, {
 "duration": 1.0,
-"texture": ExtResource("6_gomgp")
+"texture": ExtResource("7_vlllc")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_4jeya")
 }],
 "loop": 0,
 "name": &"attack",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("8_71q1p")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_7hs23")
+}, {
+"duration": 1.0,
+"texture": ExtResource("10_toumw")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_71q1p")
+}],
+"loop": 0,
+"name": &"attack50",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("11_l6ngm")
+}, {
+"duration": 1.0,
+"texture": ExtResource("12_vcll0")
+}, {
+"duration": 1.0,
+"texture": ExtResource("13_vi0b0")
+}],
+"loop": 0,
+"name": &"attack75",
 "speed": 5.0
 }, {
 "frames": [{
@@ -42,6 +93,22 @@ animations = [{
 }],
 "loop": 1,
 "name": &"default",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("9_vlllc")
+}],
+"loop": 1,
+"name": &"default50",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("10_8fjb8")
+}],
+"loop": 1,
+"name": &"default75",
 "speed": 5.0
 }, {
 "frames": [{
@@ -60,6 +127,37 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
+"texture": ExtResource("17_udskx")
+}, {
+"duration": 1.0,
+"texture": ExtResource("18_4jan8")
+}, {
+"duration": 1.0,
+"texture": ExtResource("19_feb8q")
+}],
+"loop": 0,
+"name": &"die50",
+"speed": 3.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("11_l6ngm")
+}, {
+"duration": 1.0,
+"texture": ExtResource("23_rk37m")
+}, {
+"duration": 1.0,
+"texture": ExtResource("24_7ngco")
+}, {
+"duration": 1.0,
+"texture": ExtResource("25_bksiv")
+}],
+"loop": 0,
+"name": &"die75",
+"speed": 3.0
+}, {
+"frames": [{
+"duration": 1.0,
 "texture": ExtResource("8_52re7")
 }, {
 "duration": 1.0,
@@ -67,6 +165,28 @@ animations = [{
 }],
 "loop": 0,
 "name": &"hit",
+"speed": 2.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("17_udskx")
+}, {
+"duration": 1.0,
+"texture": ExtResource("22_0j4md")
+}],
+"loop": 0,
+"name": &"hit50",
+"speed": 2.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("29_3geur")
+}, {
+"duration": 1.0,
+"texture": ExtResource("11_l6ngm")
+}],
+"loop": 0,
+"name": &"hit75",
 "speed": 2.0
 }]
 
@@ -135,31 +255,44 @@ script = ExtResource("1_w4hjr")
 y_sort_enabled = true
 
 [node name="Sprite2D" type="Sprite2D" parent="World" unique_id=4858418]
-position = Vector2(588.5623, 328.49997)
-scale = Vector2(0.43424472, 0.4342448)
-texture = ExtResource("4_5ewv1")
+position = Vector2(571.41644, 315)
+scale = Vector2(0.44140613, 0.44140628)
+texture = ExtResource("2_0i5j7")
 
 [node name="UI" type="CanvasLayer" parent="." unique_id=1085917119]
 
+[node name="PlayerHPLabel" type="Label" parent="UI" unique_id=1331755451]
+texture_filter = 1
+offset_left = 197.0
+offset_top = 482.0
+offset_right = 237.0
+offset_bottom = 502.0
+theme_override_fonts/font = ExtResource("10_gomgp")
+
+[node name="EnemyHPLabel" type="Label" parent="UI" unique_id=1174655925]
+texture_filter = 1
+offset_left = 730.0
+offset_top = 487.0
+offset_right = 770.0
+offset_bottom = 507.0
+theme_override_fonts/font = ExtResource("10_gomgp")
+
 [node name="VBoxContainer" type="VBoxContainer" parent="UI" unique_id=1442069677]
-offset_right = 40.0
-offset_bottom = 40.0
-
-[node name="PlayerHPLabel" type="Label" parent="UI/VBoxContainer" unique_id=1331755451]
-layout_mode = 2
-
-[node name="EnemyHPLabel" type="Label" parent="UI/VBoxContainer" unique_id=1174655925]
-layout_mode = 2
+texture_filter = 1
+offset_left = 31.0
+offset_top = 30.0
+offset_right = 71.0
+offset_bottom = 74.0
 
 [node name="StatusLabel" type="Label" parent="UI/VBoxContainer" unique_id=647060465]
+texture_filter = 1
 layout_mode = 2
-
-[node name="AttackButton" type="Button" parent="UI/VBoxContainer" unique_id=1364900356]
-layout_mode = 2
-text = "Attack"
+theme_override_fonts/font = ExtResource("10_gomgp")
 
 [node name="InfectionLabel" type="Label" parent="UI/VBoxContainer" unique_id=461955716]
+texture_filter = 1
 layout_mode = 2
+theme_override_fonts/font = ExtResource("10_gomgp")
 
 [node name="PauseButton" type="Button" parent="UI" unique_id=764796986]
 texture_filter = 1
@@ -218,6 +351,72 @@ offset_bottom = 398.0
 theme_override_fonts/font = ExtResource("10_gomgp")
 text = "QuitGame"
 
+[node name="AttackButton" type="Button" parent="UI" unique_id=1364900356]
+texture_filter = 1
+offset_left = 45.0
+offset_top = 515.0
+offset_right = 121.0
+offset_bottom = 543.0
+scale = Vector2(2, 2)
+theme_override_fonts/font = ExtResource("10_gomgp")
+text = "Attack"
+
+[node name="DefendButton" type="Button" parent="UI" unique_id=1238397729]
+texture_filter = 1
+offset_left = 42.0
+offset_top = 580.0
+offset_right = 120.0
+offset_bottom = 608.0
+scale = Vector2(2, 2)
+theme_override_fonts/font = ExtResource("10_gomgp")
+text = "Defend"
+
+[node name="EscapeButton" type="Button" parent="UI" unique_id=962231871]
+texture_filter = 1
+offset_left = 211.0
+offset_top = 547.0
+offset_right = 289.0
+offset_bottom = 575.0
+scale = Vector2(2, 2)
+theme_override_fonts/font = ExtResource("10_gomgp")
+text = "Escape"
+
+[node name="AntidoteButton" type="Button" parent="UI" unique_id=1480246455]
+texture_filter = 1
+offset_left = 917.0
+offset_top = 550.0
+offset_right = 1017.0
+offset_bottom = 578.0
+theme_override_fonts/font = ExtResource("10_gomgp")
+text = "Antidote"
+
+[node name="HealthButton" type="Button" parent="UI" unique_id=447952182]
+texture_filter = 1
+offset_left = 917.0
+offset_top = 582.0
+offset_right = 993.0
+offset_bottom = 610.0
+theme_override_fonts/font = ExtResource("10_gomgp")
+text = "Health"
+
+[node name="InfectionReductButton" type="Button" parent="UI" unique_id=1725675288]
+texture_filter = 1
+offset_left = 917.0
+offset_top = 614.0
+offset_right = 1123.0
+offset_bottom = 642.0
+theme_override_fonts/font = ExtResource("10_gomgp")
+text = "Infection Reductor"
+
+[node name="PotLabel" type="Label" parent="UI" unique_id=1271716114]
+texture_filter = 1
+offset_left = 917.0
+offset_top = 525.0
+offset_right = 1005.0
+offset_bottom = 548.0
+theme_override_fonts/font = ExtResource("10_gomgp")
+text = "Potions:"
+
 [node name="FadeLayer" type="CanvasLayer" parent="." unique_id=2825734]
 layer = 10
 visible = false
@@ -241,10 +440,6 @@ texture_filter = 1
 position = Vector2(0, -30)
 scale = Vector2(0.4, 0.4)
 sprite_frames = SubResource("SpriteFrames_b4ovn")
-animation = &"die"
-autoplay = "default"
-frame = 2
-frame_progress = 1.0
 offset = Vector2(0, -27)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Player" unique_id=900307293]
