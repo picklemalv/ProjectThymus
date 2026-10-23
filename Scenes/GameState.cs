@@ -97,7 +97,7 @@ public partial class GameState : Node
 	};
 
 	private CanvasLayer hudLayer;
-	private Label hudLabel;
+	private Label meterLabel;
 	public int WorkshopLevel = 1;
 
 	public ZoneRule CurrentZoneRule => GameDatabase.GetZone(CurrentZone);
@@ -926,10 +926,6 @@ public partial class GameState : Node
 		hudLayer.Visible = false;
 		AddChild(hudLayer);
 
-		hudLabel = new Label();
-		hudLabel.AddThemeFontSizeOverride("font_size", 18);
-		hudLayer.AddChild(hudLabel);
-
 		Shader vignette = new Shader();
 		vignette.Code =
 			"shader_type canvas_item;\n" +
@@ -990,12 +986,6 @@ public partial class GameState : Node
 		subtitleLabel.OffsetTop -= 90;
 		subtitleLabel.OffsetBottom -= 90;
 		subtitleLabel.Modulate = new Color(1f, 1f, 1f, 0f);
-
-		hudLabel.Text = "Zone 1   Infection: 100.0%   Base: 100%";
-		hudLabel.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.CenterTop);
-		hudLabel.GrowHorizontal = Control.GrowDirection.Both;
-		hudLabel.OffsetTop += 10;
-		hudLabel.OffsetBottom += 10;
 	}
 
 	private void SetVignetteStrength(float value)
@@ -1065,8 +1055,16 @@ public partial class GameState : Node
 		bool exploring = IsExploring() && CurrentExpeditionStatus == ExpeditionStatus.Active;
 
 		hudLayer.Visible = exploring;
-		retreatTint.Visible = CarryingFinalCore;
+		retreatTint.Visible = exploring && CarryingFinalCore;
 		ashParticles.Emitting = exploring && CarryingFinalCore;
+
+		// MeterLabel is authored in main.tscn at Main/UI/MeterLabel.
+		Node scene = GetTree().CurrentScene;
+		meterLabel = scene != null
+			? scene.FindChild("MeterLabel", true, false) as Label
+			: null;
+		if (meterLabel != null)
+			meterLabel.Visible = exploring;
 
 		if (!CarryingFinalCore)
 		{
@@ -1082,7 +1080,8 @@ public partial class GameState : Node
 
 		if (CarryingFinalCore)
 		{
-			hudLabel.Text = "The final core weighs on you. Return to the shelter.";
+			if (meterLabel != null)
+				meterLabel.Text = "The final core weighs on you. Return to the shelter.";
 
 			if (!retreatBannerShown)
 			{
@@ -1098,7 +1097,8 @@ public partial class GameState : Node
 
 		PlayerStats.AddInfection(rule.ExploreInfectionPerSecond * (float)delta);
 
-		hudLabel.Text = $"{rule.Name}   Infection: {PlayerStats.CurrentInfection:0.0}%   Base: {PermanentInfection:0}%";
+		if (meterLabel != null)
+			meterLabel.Text = $"{rule.Name}   Infection: {PlayerStats.CurrentInfection:0.0}%   Base: {PermanentInfection:0}%";
 
 		if (PlayerStats.IsInfectionMaxed())
 			FinishExpedition();

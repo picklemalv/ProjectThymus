@@ -141,29 +141,36 @@ texture = ExtResource("4_5ewv1")
 
 [node name="UI" type="CanvasLayer" parent="." unique_id=1085917119]
 
+[node name="PlayerHPLabel" type="Label" parent="UI" unique_id=1331755451]
+texture_filter = 1
+offset_left = 197.0
+offset_top = 482.0
+offset_right = 237.0
+offset_bottom = 502.0
+theme_override_fonts/font = ExtResource("10_gomgp")
+
+[node name="EnemyHPLabel" type="Label" parent="UI" unique_id=1174655925]
+texture_filter = 1
+offset_left = 730.0
+offset_top = 487.0
+offset_right = 770.0
+offset_bottom = 507.0
+theme_override_fonts/font = ExtResource("10_gomgp")
+
 [node name="VBoxContainer" type="VBoxContainer" parent="UI" unique_id=1442069677]
 texture_filter = 1
-offset_right = 40.0
-offset_bottom = 40.0
-
-[node name="PlayerHPLabel" type="Label" parent="UI/VBoxContainer" unique_id=1331755451]
-layout_mode = 2
-theme_override_fonts/font = ExtResource("10_gomgp")
-
-[node name="EnemyHPLabel" type="Label" parent="UI/VBoxContainer" unique_id=1174655925]
-layout_mode = 2
-theme_override_fonts/font = ExtResource("10_gomgp")
+offset_left = 31.0
+offset_top = 30.0
+offset_right = 71.0
+offset_bottom = 74.0
 
 [node name="StatusLabel" type="Label" parent="UI/VBoxContainer" unique_id=647060465]
+texture_filter = 1
 layout_mode = 2
 theme_override_fonts/font = ExtResource("10_gomgp")
-
-[node name="AttackButton" type="Button" parent="UI/VBoxContainer" unique_id=1364900356]
-layout_mode = 2
-theme_override_fonts/font = ExtResource("10_gomgp")
-text = "Attack"
 
 [node name="InfectionLabel" type="Label" parent="UI/VBoxContainer" unique_id=461955716]
+texture_filter = 1
 layout_mode = 2
 theme_override_fonts/font = ExtResource("10_gomgp")
 
@@ -223,6 +230,72 @@ offset_right = 273.0
 offset_bottom = 398.0
 theme_override_fonts/font = ExtResource("10_gomgp")
 text = "QuitGame"
+
+[node name="AttackButton" type="Button" parent="UI" unique_id=1364900356]
+texture_filter = 1
+offset_left = 45.0
+offset_top = 515.0
+offset_right = 121.0
+offset_bottom = 543.0
+scale = Vector2(2, 2)
+theme_override_fonts/font = ExtResource("10_gomgp")
+text = "Attack"
+
+[node name="DefendButton" type="Button" parent="UI" unique_id=1238397729]
+texture_filter = 1
+offset_left = 42.0
+offset_top = 580.0
+offset_right = 120.0
+offset_bottom = 608.0
+scale = Vector2(2, 2)
+theme_override_fonts/font = ExtResource("10_gomgp")
+text = "Defend"
+
+[node name="EscapeButton" type="Button" parent="UI" unique_id=962231871]
+texture_filter = 1
+offset_left = 211.0
+offset_top = 547.0
+offset_right = 289.0
+offset_bottom = 575.0
+scale = Vector2(2, 2)
+theme_override_fonts/font = ExtResource("10_gomgp")
+text = "Escape"
+
+[node name="AntidoteButton" type="Button" parent="UI" unique_id=1480246455]
+texture_filter = 1
+offset_left = 917.0
+offset_top = 550.0
+offset_right = 1017.0
+offset_bottom = 578.0
+theme_override_fonts/font = ExtResource("10_gomgp")
+text = "Antidote"
+
+[node name="HealthButton" type="Button" parent="UI" unique_id=447952182]
+texture_filter = 1
+offset_left = 917.0
+offset_top = 582.0
+offset_right = 993.0
+offset_bottom = 610.0
+theme_override_fonts/font = ExtResource("10_gomgp")
+text = "Health"
+
+[node name="InfectionReductButton" type="Button" parent="UI" unique_id=1725675288]
+texture_filter = 1
+offset_left = 917.0
+offset_top = 614.0
+offset_right = 1123.0
+offset_bottom = 642.0
+theme_override_fonts/font = ExtResource("10_gomgp")
+text = "Infection Reductor"
+
+[node name="PotLabel" type="Label" parent="UI" unique_id=1271716114]
+texture_filter = 1
+offset_left = 917.0
+offset_top = 525.0
+offset_right = 1005.0
+offset_bottom = 548.0
+theme_override_fonts/font = ExtResource("10_gomgp")
+text = "Potions:"
 
 [node name="FadeLayer" type="CanvasLayer" parent="." unique_id=2825734]
 layer = 10
