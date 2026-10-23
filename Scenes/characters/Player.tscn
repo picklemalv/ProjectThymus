@@ -2,9 +2,15 @@
 
 [ext_resource type="Script" uid="uid://bu0x7lbnpipfq" path="res://Scenes/characters/Player.cs" id="1_rrba0"]
 [ext_resource type="Texture2D" uid="uid://vle3o2612co4" path="res://Assets/ThymusAssets/Sprites/Runner/Idle Right.png" id="2_0titu"]
+[ext_resource type="Texture2D" uid="uid://cgkx43ck05fca" path="res://Assets/ThymusAssets/Sprites/Runner/cont50/Idle Right (8) 1.png" id="3_6km32"]
 [ext_resource type="Texture2D" uid="uid://diu6p3d68uxts" path="res://Assets/ThymusAssets/Sprites/Runner/Walk Right 2.png" id="3_64acq"]
+[ext_resource type="Texture2D" uid="uid://2jp2710jtxng" path="res://Assets/ThymusAssets/Sprites/Runner/cont75/Idle Right (9).png" id="4_313w8"]
 [ext_resource type="Texture2D" uid="uid://c1cdtc3citv2u" path="res://Assets/ThymusAssets/Sprites/Runner/Walk Right 1.png" id="4_oj275"]
 [ext_resource type="Texture2D" uid="uid://djqhjhvrhys2" path="res://Assets/Tiny Swords (Free Pack)/Terrain/Tileset/Shadow.png" id="5_0titu"]
+[ext_resource type="Texture2D" uid="uid://ci7giqmh6glqa" path="res://Assets/ThymusAssets/Sprites/Runner/cont50/Walk Right 1 (1) 1.png" id="7_7cg7h"]
+[ext_resource type="Texture2D" uid="uid://djvkreeb5vrpn" path="res://Assets/ThymusAssets/Sprites/Runner/cont50/Walk Right 2 (1) 1.png" id="8_4mc0p"]
+[ext_resource type="Texture2D" uid="uid://crox6qp0d8j3y" path="res://Assets/ThymusAssets/Sprites/Runner/cont75/Walk Right 1 (2).png" id="9_j3xg7"]
+[ext_resource type="Texture2D" uid="uid://cppyh2jx3mseu" path="res://Assets/ThymusAssets/Sprites/Runner/cont75/Walk Right 2 (2).png" id="10_uetqy"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_5pne0"]
 atlas = ExtResource("2_0titu")
@@ -30,6 +36,22 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
+"texture": ExtResource("3_6km32")
+}],
+"loop": 1,
+"name": &"default50",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("4_313w8")
+}],
+"loop": 1,
+"name": &"default75",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
 "texture": SubResource("AtlasTexture_6km32")
 }, {
 "duration": 1.0,
@@ -41,6 +63,34 @@ animations = [{
 "loop": 1,
 "name": &"running",
 "speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("7_7cg7h")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_4mc0p")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_6km32")
+}],
+"loop": 1,
+"name": &"running50",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("9_j3xg7")
+}, {
+"duration": 1.0,
+"texture": ExtResource("10_uetqy")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_313w8")
+}],
+"loop": 1,
+"name": &"running75",
+"speed": 4.0
 }]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_b4ovn"]
@@ -56,7 +106,6 @@ texture_filter = 1
 position = Vector2(0, -30)
 scale = Vector2(0.4, 0.4)
 sprite_frames = SubResource("SpriteFrames_b4ovn")
-animation = &"running"
 autoplay = "default"
 offset = Vector2(0, -27)
 
