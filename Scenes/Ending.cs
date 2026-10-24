@@ -4,6 +4,8 @@ public partial class Ending : Control
 {
 	public override void _Ready()
 	{
+		GetTree().Paused = false;
+
 		int loops = GameState.Instance.DeathCount;
 
 		SetAnchorsPreset(LayoutPreset.FullRect);

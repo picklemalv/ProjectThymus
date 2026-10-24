@@ -2,7 +2,8 @@
 
 [ext_resource type="Texture2D" uid="uid://djuv3r7uo731c" path="res://Assets/ThymusAssets/Title/Echoes of Contamination.png" id="2_8saeu"]
 [ext_resource type="Texture2D" uid="uid://b5jbfos0c0axt" path="res://Assets/ThymusAssets/Map/Shelter 1.png" id="2_df05h"]
-[ext_resource type="Texture2D" uid="uid://cbus7yraido6x" path="res://Assets/ThymusAssets/Title/Start button.png" id="3_ghw46"]
+[ext_resource type="Texture2D" path="res://Assets/ThymusAssets/Title/Continue button.png" id="3_ghw46"]
+[ext_resource type="Texture2D" path="res://Assets/ThymusAssets/Title/New Game button.png" id="6_newgame"]
 [ext_resource type="Texture2D" uid="uid://inlt4ets1bfh" path="res://Assets/ThymusAssets/Title/Quit button.png" id="4_df05h"]
 [ext_resource type="Script" uid="uid://q301enedfw5i" path="res://Scenes/MainMenu.cs" id="5_main_menu_script"]
 
@@ -11,8 +12,8 @@ script = ExtResource("5_main_menu_script")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=650426780]
 texture_filter = 1
-position = Vector2(1109, 618)
-scale = Vector2(0.8022459, 0.8022462)
+position = Vector2(1324.5548, 618)
+scale = Vector2(0.9588991, 0.8022462)
 texture = ExtResource("2_df05h")
 
 [node name="EchoesOfContamination" type="Sprite2D" parent="." unique_id=1084708907]
@@ -21,18 +22,26 @@ position = Vector2(350, 350)
 scale = Vector2(0.44625, 0.44625)
 texture = ExtResource("2_8saeu")
 
-[node name="StartButton" type="Button" parent="." unique_id=1540504571]
+[node name="ContinueButton" type="Button" parent="." unique_id=1540504571]
 texture_filter = 1
 offset_left = 760.0
-offset_top = 248.0
+offset_top = 199.0
 offset_right = 1088.0
-offset_bottom = 336.0
+offset_bottom = 287.0
 icon = ExtResource("3_ghw46")
+
+[node name="NewGameButton" type="Button" parent="." unique_id=1540504572]
+texture_filter = 1
+offset_left = 760.0
+offset_top = 311.0
+offset_right = 1088.0
+offset_bottom = 399.0
+icon = ExtResource("6_newgame")
 
 [node name="QuitButton" type="Button" parent="." unique_id=1809233633]
 texture_filter = 1
 offset_left = 760.0
-offset_top = 374.0
+offset_top = 423.0
 offset_right = 1088.0
-offset_bottom = 462.0
+offset_bottom = 511.0
 icon = ExtResource("4_df05h")

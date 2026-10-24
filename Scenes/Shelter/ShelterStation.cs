@@ -318,6 +318,7 @@ public partial class ShelterStation : Area2D
 					if (index == GameDatabase.CoreCount && state.GameWon)
 					{
 						// The final core is in: the game is over.
+						GetTree().Paused = false;
 						GetTree().CallDeferred(SceneTree.MethodName.ChangeSceneToFile, "res://Scenes/Ending.tscn");
 						return;
 					}
@@ -334,6 +335,7 @@ public partial class ShelterStation : Area2D
 		if (state.GameWon)
 			AddRow("The time loop has ended.", "Replay ending", true, () =>
 			{
+				GetTree().Paused = false;
 				GetTree().CallDeferred(SceneTree.MethodName.ChangeSceneToFile, "res://Scenes/Ending.tscn");
 			});
 	}

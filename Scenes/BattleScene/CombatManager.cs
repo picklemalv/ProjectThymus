@@ -552,20 +552,12 @@ public partial class CombatManager : Node2D
 		statusLabel.Text = $"{reason} Time Loop activated...";
 		UpdateLabels();
 
-		if (enemySprite.SpriteFrames.HasAnimation("die"))
-		{
-			// Wait until the non-looping death animation finishes.
-			await ToSignal(enemySprite, AnimatedSprite2D.SignalName.AnimationFinished);
-		}
-		else
-		{
-			await ToSignal(GetTree().CreateTimer(1.5), Timer.SignalName.Timeout);
-		}
+		// Short pause so the player can read the message and see the death animation.
+		// (Don't wait on the enemy's AnimationFinished here: it never fires when the enemy
+		// is on a looping idle animation, which left the screen stuck without a fade.)
+		await ToSignal(GetTree().CreateTimer(1.2), Timer.SignalName.Timeout);
 
-		Tween tween = CreateTween();
-		tween.TweenProperty(fadeRect, "modulate:a", 1.0f, 0.6f);
-		await ToSignal(tween, Tween.SignalName.Finished);
-
+		// GameState fades the screen to black, then returns the runner to the shelter.
 		GameState.Instance.FinishExpedition();
 	}
 
@@ -669,6 +661,9 @@ public partial class CombatManager : Node2D
 
 		string coreText = "";
 		int coreIndex = GameDatabase.BossCoreIndex(GameState.Instance.CurrentNpcID);
+
+		if (coreIndex > 0)
+			GD.Print($"[BALANCE] Boss {coreIndex} defeated after {GameState.Instance.DeathCount} loops (expedition #{GameState.Instance.DeathCount + 1}).");
 
 		if (coreIndex > 0 && GameState.Instance.TryAddRunCore(coreIndex))
 			coreText = $" +Core Fragment {coreIndex}!";

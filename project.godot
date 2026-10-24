@@ -24,7 +24,7 @@ AudioManager="*uid://cerc44j48ryb6"
 [display]
 
 window/stretch/mode="canvas_items"
-window/stretch/aspect="expand"
+window/stretch/aspect="ignore"
 
 [dotnet]
 

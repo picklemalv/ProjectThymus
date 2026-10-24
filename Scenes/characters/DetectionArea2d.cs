@@ -14,7 +14,7 @@ public partial class DetectionArea2d : Area2D
 		if (battleStarted)
 			return;
 
-		if (GameState.Instance.IsEscapeGraceActive() || GameState.Instance.CarryingFinalCore)
+		if (GameState.Instance.IsEscapeGraceActive() || GameState.Instance.CarryingFinalCore || GameState.Instance.Fading)
 			return;
 
 		if (body is Player)
@@ -45,6 +45,8 @@ public partial class DetectionArea2d : Area2D
 				GD.PushError($"NPC {npc.NpcID} has NO EnemyData assigned!");
 				return;
 			}
+
+			enemyData = EnemyBalance.Apply(npc.NpcID, enemyData);
 
 			AnimatedSprite2D npcSprite = npc.GetNode<AnimatedSprite2D>("AnimatedSprite2D");
 

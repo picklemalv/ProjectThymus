@@ -108,7 +108,20 @@ public partial class GameState : Node
 	public bool HoldingFinalCore =>
 		CarryingFinalCore || (IsCoreOwned(GameDatabase.CoreCount) && !IsCoreInstalled(GameDatabase.CoreCount));
 
-	public float MoveSpeedMultiplier => HoldingFinalCore ? 0.6f : 1f;
+	public float MoveSpeedMultiplier => Fading ? 0f : (HoldingFinalCore ? 0.6f : 1f);
+
+	// True while the death fade-out / fade-in is playing. Freezes the player and blocks new fights.
+	public bool Fading { get; private set; } = false;
+
+	private const float DeathFadeOutSeconds = 1.0f;
+	private const float DeathFadeInSeconds = 1.2f;
+	private CanvasLayer fadeLayer;
+	private ColorRect fadeRect;
+
+	// True when the save holds anything beyond a fresh start (used by the main menu's Continue button).
+	public bool HasProgress =>
+		DeathCount > 0 || GearUpQuestDone || StorageLevel > 1 || ArmoryLevel > 1 ||
+		InfirmaryLevel > 1 || WorkshopLevel > 1 || PermanentCoreFragments > 0 || InstalledCoreCount > 0;
 
 	public int TriesLeft
 	{
@@ -207,6 +220,7 @@ public partial class GameState : Node
 		AddChild(PlayerStats);
 
 		BuildExplorationHud();
+		BuildFadeOverlay();
 
 		bool hasSave = FileAccess.FileExists(SavePath);
 
@@ -854,8 +868,37 @@ public partial class GameState : Node
 		tween.TweenCallback(Callable.From(layer.QueueFree));
 	}
 
+	// Ends the run (death or full infection) with a fade to black, then returns to the shelter.
 	public void FinishExpedition()
 	{
+		if (Fading)
+			return;
+
+		Fading = true;
+		FadeOutAndFinish();
+	}
+
+	private void BuildFadeOverlay()
+	{
+		fadeLayer = new CanvasLayer();
+		fadeLayer.Layer = 100;
+		fadeLayer.ProcessMode = ProcessModeEnum.Always;
+		AddChild(fadeLayer);
+
+		fadeRect = new ColorRect();
+		fadeRect.Color = Colors.Black;
+		fadeRect.MouseFilter = Control.MouseFilterEnum.Ignore;
+		fadeRect.SetAnchorsPreset(Control.LayoutPreset.FullRect);
+		fadeRect.Modulate = new Color(1f, 1f, 1f, 0f);
+		fadeLayer.AddChild(fadeRect);
+	}
+
+	private async void FadeOutAndFinish()
+	{
+		Tween fadeOut = fadeRect.CreateTween();
+		fadeOut.TweenProperty(fadeRect, "modulate:a", 1.0f, DeathFadeOutSeconds);
+		await ToSignal(fadeOut, Tween.SignalName.Finished);
+
 		EndExpedition();
 
 		string path = GameLostPending
@@ -864,6 +907,16 @@ public partial class GameState : Node
 
 		GameLostPending = false;
 		GetTree().CallDeferred(SceneTree.MethodName.ChangeSceneToFile, path);
+
+		// Let the new scene finish loading while the screen is still black, then fade back in.
+		await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+		await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+
+		// The runner is back at the shelter, so give control back while the screen fades in.
+		Fading = false;
+
+		Tween fadeIn = fadeRect.CreateTween();
+		fadeIn.TweenProperty(fadeRect, "modulate:a", 0.0f, DeathFadeInSeconds);
 	}
 
 	public void ResetAllProgress()

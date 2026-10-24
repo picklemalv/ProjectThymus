@@ -1795,7 +1795,7 @@ EnemyData = SubResource("Resource_h48ge")
 
 [node name="NPC31" parent="Objects" unique_id=1513259877 instance=ExtResource("9_d1ilt")]
 position = Vector2(4627, 990)
-NpcID = "20"
+NpcID = "31"
 EnemyData = SubResource("Resource_h48ge")
 
 [node name="NPC21" parent="Objects" unique_id=1385626326 instance=ExtResource("9_d1ilt")]

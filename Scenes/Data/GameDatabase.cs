@@ -148,7 +148,7 @@ public static class GameDatabase
 	{
 		new ZoneRule { Number = 1, Name = "Zone 1", InfectionPerTurn = 1f, ExploreInfectionPerSecond = 0.08f, RewardMultiplier = 1.0f },
 		new ZoneRule { Number = 2, Name = "Zone 2", InfectionPerTurn = 2f, ExploreInfectionPerSecond = 0.15f, RewardMultiplier = 1.5f },
-		new ZoneRule { Number = 3, Name = "Zone 3", InfectionPerTurn = 4f, ExploreInfectionPerSecond = 0.30f, RewardMultiplier = 2.0f }
+		new ZoneRule { Number = 3, Name = "Zone 3", InfectionPerTurn = 4f, ExploreInfectionPerSecond = 0.20f, RewardMultiplier = 2.0f }
 	};
 
 	public const int RunCapScrap = 100;
@@ -191,24 +191,24 @@ public static class GameDatabase
 	public static readonly List<EquipmentDef> Equipment = new List<EquipmentDef>
 	{
 		Gear("knife_1", "Rusty Knife", EquipSlot.Knife, 1, new ResourceCost(20, 3), weaponDamage: 3, speed: 1),
-		Gear("knife_2", "Hunter's Knife", EquipSlot.Knife, 2, new ResourceCost(60, 10), weaponDamage: 5, speed: 2),
-		Gear("knife_3", "Core-Edge Knife", EquipSlot.Knife, 3, new ResourceCost(140, 22, 0, 4), weaponDamage: 8, speed: 3),
+		Gear("knife_2", "Hunter's Knife", EquipSlot.Knife, 2, new ResourceCost(50, 8), weaponDamage: 5, speed: 2),
+		Gear("knife_3", "Core-Edge Knife", EquipSlot.Knife, 3, new ResourceCost(85, 16, 0, 3), weaponDamage: 8, speed: 3),
 
 		Gear("rifle_1", "Scrap Rifle", EquipSlot.Rifle, 1, new ResourceCost(30, 5), weaponDamage: 4),
-		Gear("rifle_2", "Marksman Rifle", EquipSlot.Rifle, 2, new ResourceCost(85, 14), weaponDamage: 7),
-		Gear("rifle_3", "Core Rifle", EquipSlot.Rifle, 3, new ResourceCost(180, 28, 0, 6), weaponDamage: 11),
+		Gear("rifle_2", "Marksman Rifle", EquipSlot.Rifle, 2, new ResourceCost(70, 12), weaponDamage: 7),
+		Gear("rifle_3", "Core Rifle", EquipSlot.Rifle, 3, new ResourceCost(106, 20, 0, 4), weaponDamage: 11),
 
 		Gear("head_1", "Scrap Helmet", EquipSlot.Head, 1, new ResourceCost(15, 2), defense: 1, hp: 5),
-		Gear("head_2", "Filter Mask", EquipSlot.Head, 2, new ResourceCost(45, 8), defense: 2, hp: 10),
-		Gear("head_3", "Core Visor", EquipSlot.Head, 3, new ResourceCost(110, 18, 0, 3), defense: 4, hp: 15),
+		Gear("head_2", "Filter Mask", EquipSlot.Head, 2, new ResourceCost(40, 7), defense: 2, hp: 10),
+		Gear("head_3", "Core Visor", EquipSlot.Head, 3, new ResourceCost(63, 13, 0, 2), defense: 4, hp: 15),
 
 		Gear("body_1", "Scrap Vest", EquipSlot.Body, 1, new ResourceCost(25, 4), defense: 2, hp: 10),
-		Gear("body_2", "Plated Armor", EquipSlot.Body, 2, new ResourceCost(75, 12), defense: 4, hp: 20),
-		Gear("body_3", "Hazmat Suit", EquipSlot.Body, 3, new ResourceCost(160, 25, 0, 5), defense: 7, hp: 30),
+		Gear("body_2", "Plated Armor", EquipSlot.Body, 2, new ResourceCost(60, 10), defense: 4, hp: 20),
+		Gear("body_3", "Hazmat Suit", EquipSlot.Body, 3, new ResourceCost(93, 18, 0, 3), defense: 7, hp: 30),
 
 		Gear("accessory_1", "Filter Charm", EquipSlot.Accessory, 1, new ResourceCost(15, 3), resist: 0.05f),
-		Gear("accessory_2", "Purifier Charm", EquipSlot.Accessory, 2, new ResourceCost(50, 9, 5), resist: 0.10f),
-		Gear("accessory_3", "Core Talisman", EquipSlot.Accessory, 3, new ResourceCost(120, 20, 10, 5), resist: 0.15f)
+		Gear("accessory_2", "Purifier Charm", EquipSlot.Accessory, 2, new ResourceCost(40, 7, 4), resist: 0.10f),
+		Gear("accessory_3", "Core Talisman", EquipSlot.Accessory, 3, new ResourceCost(72, 14, 7, 3), resist: 0.15f)
 	};
 
 	public static readonly List<ConsumableDef> Consumables = new List<ConsumableDef>
@@ -217,13 +217,13 @@ public static class GameDatabase
 		{
 			Id = "antidote", Name = "Antidote",
 			Description = "Reduces Infection by 15%.",
-			Cost = new ResourceCost(15, 3), RequiredInfirmaryLevel = 1, InfectionReduction = 15
+			Cost = new ResourceCost(30, 6), RequiredInfirmaryLevel = 1, InfectionReduction = 15
 		},
 		new ConsumableDef
 		{
 			Id = "health_potion", Name = "Health Potion",
 			Description = "Restores 40 HP and gives +6 Attack for 3 attacks.",
-			Cost = new ResourceCost(12, 3), RequiredInfirmaryLevel = 1, Heal = 40, AttackBuff = 6, BuffTurns = 3
+			Cost = new ResourceCost(60, 10), RequiredInfirmaryLevel = 1, Heal = 40, AttackBuff = 6, BuffTurns = 3
 		},
 		new ConsumableDef
 		{
@@ -281,7 +281,7 @@ public static class GameDatabase
 			return null;
 
 		if (station == StationType.Infirmary)
-			return currentLevel == 1 ? new ResourceCost(100, 30, 0, 3) : new ResourceCost(250, 70, 0, 8);
+			return currentLevel == 1 ? new ResourceCost(60, 18, 0, 2) : new ResourceCost(250, 70, 0, 8);
 
 		if (station == StationType.Workshop)
 			return currentLevel == 1 ? new ResourceCost(120, 30, 10) : new ResourceCost(280, 70, 20, 6);
@@ -289,7 +289,7 @@ public static class GameDatabase
 		if (station == StationType.Storage)
 			return currentLevel == 1 ? new ResourceCost(100, 25) : new ResourceCost(300, 80, 0, 8);
 
-		return currentLevel == 1 ? new ResourceCost(120, 30) : new ResourceCost(300, 80, 0, 8);
+		return currentLevel == 1 ? new ResourceCost(80, 20) : new ResourceCost(120, 30, 0, 3);
 	}
 
 	public static string UpgradeBenefitText(StationType station, int currentLevel)
