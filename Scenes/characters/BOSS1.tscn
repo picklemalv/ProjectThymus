@@ -10,6 +10,8 @@
 [ext_resource type="Texture2D" uid="uid://cx6mv3nfdyivj" path="res://Assets/ThymusAssets/Sprites/BossLumber/Falling 1 (4).png" id="6_w6pea"]
 [ext_resource type="Texture2D" uid="uid://co7vanv2ulp0d" path="res://Assets/ThymusAssets/Sprites/BossLumber/Falling 2 (4).png" id="7_1cqi2"]
 [ext_resource type="Texture2D" uid="uid://cq6vxv3qc3otk" path="res://Assets/ThymusAssets/Sprites/BossLumber/Taking Dmg (3).png" id="8_7nx7m"]
+[ext_resource type="Texture2D" uid="uid://csu6iueys5gam" path="res://Assets/ThymusAssets/Sprites/BossLumber/Walk Right1.png" id="9_7nx7m"]
+[ext_resource type="Texture2D" uid="uid://bhj5hoo5mfjdg" path="res://Assets/ThymusAssets/Sprites/BossLumber/Walk Right 2 (5).png" id="10_8c0vk"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_b4ovn"]
 animations = [{
@@ -53,6 +55,20 @@ animations = [{
 "loop": 0,
 "name": &"hit",
 "speed": 2.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("9_7nx7m")
+}, {
+"duration": 1.0,
+"texture": ExtResource("10_8c0vk")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_s3lhi")
+}],
+"loop": 1,
+"name": &"walk",
+"speed": 2.5
 }]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_b4ovn"]
@@ -71,8 +87,9 @@ texture_filter = 1
 position = Vector2(0, -74.335)
 scale = Vector2(0.48219335, 0.48219335)
 sprite_frames = SubResource("SpriteFrames_b4ovn")
-animation = &"hit"
+animation = &"walk"
 autoplay = "default"
+frame_progress = 0.74613917
 offset = Vector2(0, -27)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=900307293]

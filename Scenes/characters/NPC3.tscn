@@ -10,6 +10,8 @@
 [ext_resource type="Texture2D" uid="uid://b51hkua3mkmyv" path="res://Assets/ThymusAssets/Sprites/Beast/Falling 2 (3).png" id="6_s5jxj"]
 [ext_resource type="Texture2D" uid="uid://b5s73nr21t0dl" path="res://Assets/ThymusAssets/Sprites/Beast/Falling 3 (2).png" id="7_fsclc"]
 [ext_resource type="Texture2D" uid="uid://be4ylvow0ed08" path="res://Assets/ThymusAssets/Sprites/Beast/Taking Dmg (2).png" id="8_cggab"]
+[ext_resource type="Texture2D" uid="uid://h666dy15ain1" path="res://Assets/ThymusAssets/Sprites/Beast/Walk Right 1 (5).png" id="9_skv0j"]
+[ext_resource type="Texture2D" uid="uid://c7dcfx4d4chsd" path="res://Assets/ThymusAssets/Sprites/Beast/Walk Right 2 (4).png" id="10_s5jxj"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_b4ovn"]
 animations = [{
@@ -56,6 +58,20 @@ animations = [{
 "loop": 0,
 "name": &"hit",
 "speed": 2.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("9_skv0j")
+}, {
+"duration": 1.0,
+"texture": ExtResource("10_s5jxj")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_h48ge")
+}],
+"loop": 1,
+"name": &"walk",
+"speed": 3.0
 }]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_b4ovn"]
@@ -74,7 +90,9 @@ texture_filter = 1
 position = Vector2(0, -25)
 scale = Vector2(0.27, 0.27)
 sprite_frames = SubResource("SpriteFrames_b4ovn")
+animation = &"walk"
 autoplay = "default"
+frame_progress = 0.4324956
 offset = Vector2(0, -27)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=900307293]

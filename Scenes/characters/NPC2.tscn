@@ -12,6 +12,7 @@
 [ext_resource type="Texture2D" uid="uid://c72qkg1jic0xu" path="res://Assets/ThymusAssets/Sprites/FogEntity/Falling 4.png" id="8_fqe58"]
 [ext_resource type="Texture2D" uid="uid://cuoj3jku7y7rb" path="res://Assets/ThymusAssets/Sprites/FogEntity/Falling 5.png" id="9_46uv1"]
 [ext_resource type="Texture2D" uid="uid://wkk4t07yfqht" path="res://Assets/ThymusAssets/Sprites/FogEntity/Taking Dmg (1).png" id="10_7r6to"]
+[ext_resource type="Texture2D" uid="uid://bo0uiwkqh1xsv" path="res://Assets/ThymusAssets/Sprites/FogEntity/Walk Right 1 (4) 1.png" id="11_837q4"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_b4ovn"]
 animations = [{
@@ -64,6 +65,17 @@ animations = [{
 "loop": 0,
 "name": &"hit",
 "speed": 2.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("11_837q4")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_ysnli")
+}],
+"loop": 1,
+"name": &"walk",
+"speed": 2.0
 }]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_b4ovn"]
@@ -82,7 +94,9 @@ texture_filter = 1
 position = Vector2(0, -25)
 scale = Vector2(0.4, 0.4)
 sprite_frames = SubResource("SpriteFrames_b4ovn")
+animation = &"walk"
 autoplay = "default"
+frame_progress = 0.24901219
 offset = Vector2(0, -27)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=900307293]
