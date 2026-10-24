@@ -9,8 +9,8 @@
     ".NETCoreApp,Version=v8.0/win-x64": {
       "Thymus01/1.0.0": {
         "dependencies": {
-          "Godot.SourceGenerators": "4.7.1",
-          "GodotSharp": "4.7.1",
+          "Godot.SourceGenerators": "4.7.2",
+          "GodotSharp": "4.7.2",
           "runtimepack.Microsoft.NETCore.App.Runtime.win-x64": "8.0.29"
         },
         "runtime": {
@@ -737,12 +737,12 @@
           }
         }
       },
-      "Godot.SourceGenerators/4.7.1": {},
-      "GodotSharp/4.7.1": {
+      "Godot.SourceGenerators/4.7.2": {},
+      "GodotSharp/4.7.2": {
         "runtime": {
           "lib/net8.0/GodotSharp.dll": {
-            "assemblyVersion": "4.7.1.0",
-            "fileVersion": "4.7.1.0"
+            "assemblyVersion": "4.7.2.0",
+            "fileVersion": "4.7.2.0"
           }
         }
       }
@@ -759,19 +759,19 @@
       "serviceable": false,
       "sha512": ""
     },
-    "Godot.SourceGenerators/4.7.1": {
+    "Godot.SourceGenerators/4.7.2": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-XNYxnzQtZw/3ebPgpVC5eKMH5z3mx/MFNAb9rNeb/SmyMus+u4GPbwMN1ZsmXf0j4a9L/Uj55PbZIHLk96EFyQ==",
-      "path": "godot.sourcegenerators/4.7.1",
-      "hashPath": "godot.sourcegenerators.4.7.1.nupkg.sha512"
+      "sha512": "sha512-PeYESFlRxlmeClrPhlMINhVvt2HiKnx2Ux/FYA10rimDevHljji3/jmRZOMo9XDNQsZzPH4uQmDyPgQgzTFvAg==",
+      "path": "godot.sourcegenerators/4.7.2",
+      "hashPath": "godot.sourcegenerators.4.7.2.nupkg.sha512"
     },
-    "GodotSharp/4.7.1": {
+    "GodotSharp/4.7.2": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-OCTPz0MtENY0J1e9Sw4VB9qxS0DK9xpEQLAIMRzCtnVKiJvHZUAAnJ9mU4ewW5+88V4beewp3dl8OE813Qw73g==",
-      "path": "godotsharp/4.7.1",
-      "hashPath": "godotsharp.4.7.1.nupkg.sha512"
+      "sha512": "sha512-EPvfayB7b7MrBNdASvy86jRS5AbM9dprkVivcRD80g+ngn2M8KAIrBQH4NhyQL+pwxni0xVnuqhD9AFpZeNQpw==",
+      "path": "godotsharp/4.7.2",
+      "hashPath": "godotsharp.4.7.2.nupkg.sha512"
     }
   },
   "runtimes": {
