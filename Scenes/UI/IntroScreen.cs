@@ -99,7 +99,7 @@ public partial class IntroScreen : CanvasLayer
 			"[b]Defend[/b]: halves the next hit you take.\n" +
 			"[b]Item[/b]: use a potion or antidote.\n" +
 			"[b]Escape[/b]: a 50% chance to run away.\n\n" +
-			$"Every action costs infection. Bosses warn you before a special attack, so Defend then. You can carry up to {GameState.ItemCarryLimit} of each item.",
+			$"Every action costs infection. Bosses warn you before a special attack, so Defend then. You can carry up to {GameState.ItemCarryLimit} of each item, and {GameDatabase.HealthPotionCarry} Health Potions.",
 			"intro_04_combat.png");
 
 		AddPage("Resources and Core Fragments",

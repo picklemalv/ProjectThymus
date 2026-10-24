@@ -385,10 +385,10 @@ public partial class ShelterStation : Area2D
 
 		AddRow($"Core Fragments: {state.PermanentCoreFragments}", null, false, null);
 
-		AddHeader($"Supplies in stock (carry up to {GameState.ItemCarryLimit} of each per run)");
+		AddHeader("Potions in stock");
 
 		foreach (ConsumableDef def in GameDatabase.Consumables)
-			AddRow($"{def.Name}: {state.GetPermanentItemCount(def.Id)}", null, false, null);
+			AddRow($"{def.Name}: {state.GetPermanentItemCount(def.Id)}  (carry up to {def.CarryLimit} per run)", null, false, null);
 
 		AddRow("Upgrade this facility at the Workshop.", null, false, null);
 	}
@@ -442,13 +442,13 @@ public partial class ShelterStation : Area2D
 			null, false, null
 		);
 
-		AddHeader($"Potions (carry up to {GameState.ItemCarryLimit} of each per run)");
+		AddHeader("Potions");
 
 		foreach (ConsumableDef def in GameDatabase.Consumables)
 		{
 			string id = def.Id;
 			ResourceCost cost = state.GetCost(def.Cost);
-			string info = $"{def.Name} - {def.Description}\nIn stock: {state.GetPermanentItemCount(id)}";
+			string info = $"{def.Name} - {def.Description}\nIn stock: {state.GetPermanentItemCount(id)}   (carry up to {def.CarryLimit} per run)";
 
 			if (def.RequiredInfirmaryLevel > state.InfirmaryLevel)
 			{

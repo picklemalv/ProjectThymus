@@ -132,6 +132,7 @@ public class ConsumableDef
 	public string Description;
 	public ResourceCost Cost = new ResourceCost();
 	public int RequiredInfirmaryLevel = 1;
+	public int CarryLimit = 3;
 	public int Heal;
 	public int InfectionReduction;
 	public int PermanentInfectionReduction;
@@ -151,10 +152,12 @@ public static class GameDatabase
 		new ZoneRule { Number = 3, Name = "Zone 3", InfectionPerTurn = 4f, ExploreInfectionPerSecond = 0.20f, RewardMultiplier = 2.0f }
 	};
 
-	public const int RunCapScrap = 100;
-	public const int RunCapMaterial = 50;
-	public const int RunCapEnergy = 30;
-	public const int RunCapEssence = 10;
+	public const int RunCapScrap = 150;
+	public const int RunCapMaterial = 75;
+	public const int RunCapEnergy = 45;
+	public const int RunCapEssence = 15;
+
+	public const int HealthPotionCarry = 5;
 
 	public const int StarterScrap = 120;
 	public const int StarterMaterial = 30;
@@ -217,19 +220,19 @@ public static class GameDatabase
 		{
 			Id = "antidote", Name = "Antidote",
 			Description = "Reduces Infection by 15%.",
-			Cost = new ResourceCost(30, 6), RequiredInfirmaryLevel = 1, InfectionReduction = 15
+			Cost = new ResourceCost(40, 8), RequiredInfirmaryLevel = 1, InfectionReduction = 15
 		},
 		new ConsumableDef
 		{
 			Id = "health_potion", Name = "Health Potion",
 			Description = "Restores 40 HP and gives +6 Attack for 3 attacks.",
-			Cost = new ResourceCost(60, 10), RequiredInfirmaryLevel = 1, Heal = 40, AttackBuff = 6, BuffTurns = 3
+			Cost = new ResourceCost(35, 6), RequiredInfirmaryLevel = 1, CarryLimit = HealthPotionCarry, Heal = 40, AttackBuff = 6, BuffTurns = 3
 		},
 		new ConsumableDef
 		{
 			Id = "infection_reducer", Name = "Infection Reducer",
 			Description = "Permanently lowers your starting infection by 8%.",
-			Cost = new ResourceCost(0, 6, 5, 2), RequiredInfirmaryLevel = 2, PermanentInfectionReduction = 8
+			Cost = new ResourceCost(0, 9, 7, 3), RequiredInfirmaryLevel = 2, PermanentInfectionReduction = 8
 		}
 	};
 
@@ -242,10 +245,10 @@ public static class GameDatabase
 
 	private static readonly int[][] storageCaps = new int[][]
 	{
-		new int[] { 300, 600, 1200 },
+		new int[] { 450, 900, 1800 },
+		new int[] { 225, 450, 900 },
 		new int[] { 150, 300, 600 },
-		new int[] { 100, 200, 400 },
-		new int[] { 50, 100, 200 }
+		new int[] { 75, 150, 300 }
 	};
 
 	public static int RunCapBase(ResourceType type)

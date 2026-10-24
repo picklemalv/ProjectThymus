@@ -694,7 +694,7 @@ public partial class GameState : Node
 
 		foreach (ConsumableDef def in GameDatabase.Consumables)
 		{
-			int take = Mathf.Min(GetPermanentItemCount(def.Id), ItemCarryLimit);
+			int take = Mathf.Min(GetPermanentItemCount(def.Id), def.CarryLimit);
 			permanentItems[def.Id] = GetPermanentItemCount(def.Id) - take;
 			runItems[def.Id] = take;
 		}
