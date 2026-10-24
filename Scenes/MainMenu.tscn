@@ -5,6 +5,7 @@
 [ext_resource type="Texture2D" path="res://Assets/ThymusAssets/Title/Continue button.png" id="3_ghw46"]
 [ext_resource type="Texture2D" path="res://Assets/ThymusAssets/Title/New Game button.png" id="6_newgame"]
 [ext_resource type="Texture2D" uid="uid://inlt4ets1bfh" path="res://Assets/ThymusAssets/Title/Quit button.png" id="4_df05h"]
+[ext_resource type="Texture2D" path="res://Assets/ThymusAssets/Title/Settings button.png" id="7_settings"]
 [ext_resource type="Script" uid="uid://q301enedfw5i" path="res://Scenes/MainMenu.cs" id="5_main_menu_script"]
 
 [node name="MainMenu" type="Node2D" unique_id=544837988]
@@ -25,23 +26,31 @@ texture = ExtResource("2_8saeu")
 [node name="ContinueButton" type="Button" parent="." unique_id=1540504571]
 texture_filter = 1
 offset_left = 760.0
-offset_top = 199.0
+offset_top = 150.0
 offset_right = 1088.0
-offset_bottom = 287.0
+offset_bottom = 238.0
 icon = ExtResource("3_ghw46")
 
 [node name="NewGameButton" type="Button" parent="." unique_id=1540504572]
 texture_filter = 1
 offset_left = 760.0
-offset_top = 311.0
+offset_top = 262.0
 offset_right = 1088.0
-offset_bottom = 399.0
+offset_bottom = 350.0
 icon = ExtResource("6_newgame")
+
+[node name="SettingsButton" type="Button" parent="." unique_id=1540504573]
+texture_filter = 1
+offset_left = 760.0
+offset_top = 374.0
+offset_right = 1088.0
+offset_bottom = 462.0
+icon = ExtResource("7_settings")
 
 [node name="QuitButton" type="Button" parent="." unique_id=1809233633]
 texture_filter = 1
 offset_left = 760.0
-offset_top = 423.0
+offset_top = 486.0
 offset_right = 1088.0
-offset_bottom = 511.0
+offset_bottom = 574.0
 icon = ExtResource("4_df05h")

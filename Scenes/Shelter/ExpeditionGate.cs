@@ -17,6 +17,7 @@ public partial class ExpeditionGate : Area2D
 	{
 		BodyEntered += OnBodyEntered;
 
+
 		if (GameState.Instance.SpawnAtGate)
 		{
 			GameState.Instance.SpawnAtGate = false;

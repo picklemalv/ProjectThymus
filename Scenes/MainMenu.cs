@@ -8,6 +8,7 @@ public partial class MainMenu : Node2D
 	private Button continueButton;
 	private Button newGameButton;
 	private Button quitButton;
+	private Button settingsButton;
 
 	public override void _Ready()
 	{
@@ -15,11 +16,13 @@ public partial class MainMenu : Node2D
 		continueButton = GetNode<Button>("ContinueButton");
 		newGameButton = GetNode<Button>("NewGameButton");
 		quitButton = GetNode<Button>("QuitButton");
+		settingsButton = GetNode<Button>("SettingsButton");
 
 		continueButton.Disabled = !GameState.Instance.HasProgress;
 		continueButton.Pressed += OnContinuePressed;
 		newGameButton.Pressed += OnNewGamePressed;
 		quitButton.Pressed += OnQuitPressed;
+		settingsButton.Pressed += () => SettingsMenu.Open(this);
 
 		StartBackgroundPan();
 	}
@@ -77,6 +80,24 @@ public partial class MainMenu : Node2D
 		dialog.OkButtonText = "Erase & Start";
 		dialog.CancelButtonText = "Cancel";
 		dialog.Confirmed += StartNewGame;
+
+		// Same pixel font as the rest of the game (drawn at size 8, so sizes are multiples of 8).
+		const string fontPath = "res://Assets/ThymusAssets/pixel_ui/font/pixel_ui_font.fnt";
+
+		if (ResourceLoader.Exists(fontPath))
+		{
+			Font pixelFont = GD.Load<Font>(fontPath);
+
+			Theme dialogTheme = new Theme();
+			dialogTheme.DefaultFont = pixelFont;
+			dialogTheme.DefaultFontSize = 16;
+			dialog.Theme = dialogTheme;
+
+			dialog.AddThemeFontOverride("title_font", pixelFont);
+			dialog.AddThemeFontSizeOverride("title_font_size", 16);
+			dialog.CanvasItemDefaultTextureFilter = Viewport.DefaultCanvasItemTextureFilter.Nearest;
+		}
+
 		AddChild(dialog);
 		dialog.PopupCentered();
 	}

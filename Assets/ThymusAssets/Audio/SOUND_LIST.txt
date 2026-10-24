@@ -1,0 +1,43 @@
+SOUND LIST  (from GDD section 5.2)
+Put each file in the folder shown, named exactly like the 'file' (extension .ogg, .wav or .mp3).
+Loops (music / ambience / infection layers): use .ogg or .mp3.
+
+FILE                          FOLDER      WHAT IT IS                                                            SUGGESTED TRIGGER
+--------------------------------------------------------------------------------------------------------------------------------------------
+music_shelter                 Music       Shelter: calm, simple, safe-feeling music.                            When the Shelter scene loads.
+music_exploration             Music       Exploration: dark, slow tempo, lonely and unsafe.                     When an expedition starts / exploring a zone.
+music_combat                  Music       Combat: faster tempo, raises tension.                                 When a fight starts.
+music_high_contamination      Music       High contamination area: more intense, unstable music or ambience.    In zone 3 or when infection is high.
+music_final_boss              Music       Final boss: heavy, tense, big threat.                                 When the final boss fight starts.
+music_ending                  Music       Ending: after the final boss is defeated and the loop stops.          On the Ending screen.
+footstep                      SFX         Player movement: footstep.                                            While the Runner walks (every few steps).
+door_open                     SFX         Opening a door.                                                       When passing a door / zone teleport.
+pickup_resource               SFX         Picking up a resource.                                                When loot is added to the run.
+item_use                      SFX         Using an item.                                                        Potion / antidote used in combat or shelter.
+attack                        SFX         Attacking.                                                            When the player presses Attack.
+hit_impact                    SFX         Hit landing on an enemy (hit / impact).                               When damage is dealt.
+skill                         SFX         Using a skill (skill effect).                                         When a skill is used (skills are not in the game yet).
+enemy_death                   SFX         Enemy dies.                                                           When an enemy HP reaches 0.
+interact                      SFX         Interacting with an object.                                           Pressing E at a shelter station.
+pickup_core_fragment          SFX         Getting a Core Fragment (special item sound).                         When a boss drops a core.
+extraction                    SFX         Extraction / confirmation sound.                                      On extraction / install core / returning home.
+ui_click                      SFX         UI: button click.                                                     Any button press.
+ui_select                     SFX         UI: menu selection.                                                   Menu / page change.
+ui_notification               SFX         UI: notification.                                                     Messages such as 'Storage full'.
+infection_heartbeat           Infection   Heartbeat; gets stronger as infection rises.                          Looping layer, louder as infection grows.
+infection_drone               Infection   Low-frequency drone.                                                  Looping layer, louder as infection grows.
+infection_hum                 Infection   Humming sound.                                                        Looping layer, louder as infection grows.
+infection_distortion          Infection   Audio distortion.                                                     Looping layer near high infection.
+infection_breath              Infection   Breathing (running out of oxygen).                                    Looping layer near high infection.
+infection_near_max            Infection   Strongest effect as the meter approaches 100%.                        Looping layer at 80%+ infection.
+time_loop_trigger             Infection   Special effect: infection hit 100%, expedition failed, Time Loop activates.When the Time Loop starts.
+boss_music                    Boss        Boss background music.                                                When a boss fight starts.
+boss_ambience                 Boss        Boss ambience.                                                        Looping layer during a boss fight.
+boss_attack                   Boss        Boss attack sound.                                                    When the boss attacks.
+boss_heavy_impact             Boss        Heavy impact.                                                         Boss special attack lands.
+boss_skill                    Boss        Boss skill sound.                                                     Boss special attack is used.
+boss_damage                   Boss        Boss takes damage.                                                    When the boss is hit.
+boss_death                    Boss        Boss death sound.                                                     When a boss HP reaches 0.
+boss_transition               Boss        Ending / transition sound after the boss is defeated.                 After the boss is defeated.
+ambient_shelter               Ambient     Ambient sound for the shelter (optional).                             Looping ambience in the shelter.
+ambient_wasteland             Ambient     Ambient sound for the contaminated area (optional).                   Looping ambience while exploring.

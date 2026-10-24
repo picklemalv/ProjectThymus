@@ -456,11 +456,7 @@ public partial class CombatManager : Node2D
 
 		await ToSignal(GetTree().CreateTimer(1.0), Timer.SignalName.Timeout);
 
-		Tween tween = CreateTween();
-		tween.TweenProperty(fadeRect, "modulate:a", 1.0f, 0.6f);
-		await ToSignal(tween, Tween.SignalName.Finished);
-
-		GetTree().ChangeSceneToFile("res://Scenes/main.tscn");
+		GameState.Instance.FadeToScene("res://Scenes/main.tscn");
 	}
 
 	private void OnItemPressed(string id)
@@ -695,12 +691,7 @@ public partial class CombatManager : Node2D
 
 		await ToSignal(GetTree().CreateTimer(1.5), Timer.SignalName.Timeout);
 
-		Tween tween = CreateTween();
-		tween.TweenProperty(fadeRect, "modulate:a", 1.0f, 0.6f);
-		await ToSignal(tween, Tween.SignalName.Finished);
-
 		GameState.Instance.DefeatNpc(GameState.Instance.CurrentNpcID);
-
-		GetTree().ChangeSceneToFile("res://Scenes/main.tscn");
+		GameState.Instance.FadeToScene("res://Scenes/main.tscn");
 	}
 }

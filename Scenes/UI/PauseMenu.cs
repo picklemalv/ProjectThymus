@@ -61,6 +61,65 @@ public partial class PauseMenu : Node
 		_continueButton.Pressed += ResumeGame;
 		_menuButton.Pressed += ReturnToMainMenu;
 		_quitButton.Pressed += QuitGame;
+
+		SetupSettingsButton();
+	}
+
+	private void SetupSettingsButton()
+	{
+		Button settingsButton = _pausePanel.GetNodeOrNull<Button>("SettingsButton");
+
+		if (settingsButton == null)
+		{
+			settingsButton = new Button();
+			settingsButton.Name = "SettingsButton";
+			settingsButton.Text = "Settings";
+			settingsButton.TextureFilter = _continueButton.TextureFilter;
+			settingsButton.AddThemeFontOverride("font", _continueButton.GetThemeFont("font"));
+			_pausePanel.AddChild(settingsButton);
+		}
+
+		settingsButton.ProcessMode = Node.ProcessModeEnum.Always;
+		settingsButton.OffsetLeft = _continueButton.OffsetLeft;
+		settingsButton.OffsetRight = _continueButton.OffsetRight;
+
+		PlaceButton(_continueButton, 125f);
+		PlaceButton(settingsButton, 200f);
+		PlaceButton(_menuButton, 275f);
+		PlaceButton(_quitButton, 350f);
+
+		settingsButton.Pressed -= OpenSettings;
+		settingsButton.Pressed += OpenSettings;
+	}
+
+	private void PlaceButton(Button button, float top)
+	{
+		float height = _continueButton.OffsetBottom - _continueButton.OffsetTop;
+		button.OffsetTop = top;
+		button.OffsetBottom = top + height;
+	}
+
+	private void OpenSettings()
+	{
+		SettingsMenu.Open(this);
+	}
+
+	public override void _UnhandledInput(InputEvent @event)
+	{
+		if (!@event.IsActionPressed("pause_menu"))
+			return;
+
+		if (_pauseButton == null || _pausePanel == null || !IsInstanceValid(_pausePanel))
+			return;
+
+		if (_pausePanel.Visible)
+			ResumeGame();
+		else if (!GetTree().Paused)
+			OpenPauseMenu();
+		else
+			return;
+
+		GetViewport().SetInputAsHandled();
 	}
 
 	private void OpenPauseMenu()

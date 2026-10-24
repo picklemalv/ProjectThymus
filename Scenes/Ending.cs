@@ -10,6 +10,19 @@ public partial class Ending : Control
 
 		SetAnchorsPreset(LayoutPreset.FullRect);
 
+		// Same pixel font as the rest of the game (drawn at size 8, so sizes are multiples of 8).
+		const string fontPath = "res://Assets/ThymusAssets/pixel_ui/font/pixel_ui_font.fnt";
+
+		if (ResourceLoader.Exists(fontPath))
+		{
+			Theme endingTheme = new Theme();
+			endingTheme.DefaultFont = GD.Load<Font>(fontPath);
+			endingTheme.DefaultFontSize = 16;
+			Theme = endingTheme;
+		}
+
+		TextureFilter = CanvasItem.TextureFilterEnum.Nearest;
+
 		ColorRect background = new ColorRect();
 		background.Color = new Color(0.02f, 0.02f, 0.03f);
 		background.SetAnchorsPreset(LayoutPreset.FullRect);

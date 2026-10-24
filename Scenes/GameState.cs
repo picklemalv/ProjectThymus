@@ -28,6 +28,7 @@ public class SaveData
 	public List<string> OwnedEquipment { get; set; } = new List<string>();
 	public Dictionary<string, string> Equipped { get; set; } = new Dictionary<string, string>();
 	public bool GearUpQuestDone { get; set; }
+	public bool IntroSeen { get; set; }
 	public Dictionary<string, int> Items { get; set; } = new Dictionary<string, int>();
 }
 
@@ -114,6 +115,9 @@ public partial class GameState : Node
 	public bool Fading { get; private set; } = false;
 
 	private const float DeathFadeOutSeconds = 1.0f;
+	private const float FlashRiseSeconds = 0.4f;
+	private const float FlashHoldSeconds = 1.6f;
+	private const float FlashFadeSeconds = 2.6f;
 	private const float DeathFadeInSeconds = 1.2f;
 	private CanvasLayer fadeLayer;
 	private ColorRect fadeRect;
@@ -186,6 +190,7 @@ public partial class GameState : Node
 	private float equipmentInfectionResist = 0f;
 
 	public bool GearUpQuestDone = false;
+	public bool IntroSeen = false;
 
 	public ExpeditionStatus CurrentExpeditionStatus = ExpeditionStatus.Active;
 	public string LastExpeditionMessage = "Ready for expedition.";
@@ -203,6 +208,8 @@ public partial class GameState : Node
 	public override void _Ready()
 	{
 		Instance = this;
+
+		GameSettings.Load();
 
 		foreach (ResourceType type in Enum.GetValues(typeof(ResourceType)))
 		{
@@ -793,6 +800,22 @@ public partial class GameState : Node
 		GetTree().CallDeferred(SceneTree.MethodName.ChangeSceneToFile, "res://Scenes/Shelter/Shelter.tscn");
 	}
 
+	private const string PixelFontPath = "res://Assets/ThymusAssets/pixel_ui/font/pixel_ui_font.fnt";
+	private static Font pixelFont;
+
+	// Same pixel font as the HUD and menus. The font is drawn at size 8, so use multiples of 8.
+	private static void ApplyPixelFont(Control control, int size)
+	{
+		if (pixelFont == null && ResourceLoader.Exists(PixelFontPath))
+			pixelFont = GD.Load<Font>(PixelFontPath);
+
+		if (pixelFont != null)
+			control.AddThemeFontOverride("font", pixelFont);
+
+		control.AddThemeFontSizeOverride("font_size", size);
+		control.TextureFilter = CanvasItem.TextureFilterEnum.Nearest;
+	}
+
 	private void EnsureShelterExit()
 	{
 		if (!hasStartPosition)
@@ -814,16 +837,16 @@ public partial class GameState : Node
 		shape.Shape = circle;
 		shelterExit.AddChild(shape);
 
-		ColorRect marker = new ColorRect();
-		marker.Color = new Color(0.3f, 0.9f, 0.5f, 0.35f);
-		marker.Position = new Vector2(-70, -70);
-		marker.Size = new Vector2(140, 140);
-		marker.MouseFilter = Control.MouseFilterEnum.Ignore;
+		ShelterMarker marker = new ShelterMarker();
+		marker.Radius = 70f;
 		shelterExit.AddChild(marker);
 
 		Label label = new Label();
 		label.Text = "SHELTER";
-		label.Position = new Vector2(-34, -102);
+		ApplyPixelFont(label, 16);
+		label.HorizontalAlignment = HorizontalAlignment.Center;
+		label.Size = new Vector2(140f, 24f);
+		label.Position = new Vector2(-70f, -106f);
 		shelterExit.AddChild(label);
 
 		shelterExit.BodyEntered += OnShelterExitEntered;
@@ -838,34 +861,6 @@ public partial class GameState : Node
 			return;
 
 		CompleteExpedition();
-	}
-
-	private void ShowRetreatBanner()
-	{
-		Node scene = GetTree().CurrentScene;
-
-		if (scene == null)
-			return;
-
-		CanvasLayer layer = new CanvasLayer();
-		layer.Layer = 60;
-
-		Label label = new Label();
-		label.Text = "FINAL CORE RECEIVED\nThe source is destroyed. It weighs heavily on you.\nReturn to the shelter.";
-		label.HorizontalAlignment = HorizontalAlignment.Center;
-		label.AddThemeFontSizeOverride("font_size", 34);
-		layer.AddChild(label);
-
-		scene.AddChild(layer);
-
-		label.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.Center);
-		label.GrowHorizontal = Control.GrowDirection.Both;
-		label.GrowVertical = Control.GrowDirection.Both;
-
-		Tween tween = layer.CreateTween();
-		tween.TweenInterval(3.0);
-		tween.TweenProperty(label, "modulate:a", 0.0f, 2.0f);
-		tween.TweenCallback(Callable.From(layer.QueueFree));
 	}
 
 	// Ends the run (death or full infection) with a fade to black, then returns to the shelter.
@@ -919,6 +914,69 @@ public partial class GameState : Node
 		fadeIn.TweenProperty(fadeRect, "modulate:a", 0.0f, DeathFadeInSeconds);
 	}
 
+	public void FadeToScene(string path)
+	{
+		if (Fading)
+			return;
+
+		Fading = true;
+		FadeToSceneAsync(path);
+	}
+
+	private async void FadeToSceneAsync(string path)
+	{
+		fadeRect.Color = Colors.Black;
+
+		Tween fadeOut = fadeRect.CreateTween();
+		fadeOut.TweenProperty(fadeRect, "modulate:a", 1.0f, DeathFadeOutSeconds);
+		await ToSignal(fadeOut, Tween.SignalName.Finished);
+
+		GetTree().CallDeferred(SceneTree.MethodName.ChangeSceneToFile, path);
+
+		await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+		await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+
+		Fading = false;
+
+		Tween fadeIn = fadeRect.CreateTween();
+		fadeIn.TweenProperty(fadeRect, "modulate:a", 0.0f, DeathFadeInSeconds);
+	}
+
+	public void FlashToScene(string path)
+	{
+		if (Fading)
+			return;
+
+		Fading = true;
+		FlashToSceneAsync(path);
+	}
+
+	private async void FlashToSceneAsync(string path)
+	{
+		GetTree().Paused = false;
+
+		fadeRect.Color = Colors.White;
+
+		Tween rise = fadeRect.CreateTween();
+		rise.TweenProperty(fadeRect, "modulate:a", 1.0f, FlashRiseSeconds);
+		await ToSignal(rise, Tween.SignalName.Finished);
+
+		await ToSignal(GetTree().CreateTimer(FlashHoldSeconds), SceneTreeTimer.SignalName.Timeout);
+
+		GetTree().CallDeferred(SceneTree.MethodName.ChangeSceneToFile, path);
+
+		await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+		await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+
+		Fading = false;
+
+		Tween fall = fadeRect.CreateTween();
+		fall.TweenProperty(fadeRect, "modulate:a", 0.0f, FlashFadeSeconds);
+		await ToSignal(fall, Tween.SignalName.Finished);
+
+		fadeRect.Color = Colors.Black;
+	}
+
 	public void ResetAllProgress()
 	{
 		foreach (ResourceType type in Enum.GetValues(typeof(ResourceType)))
@@ -936,6 +994,7 @@ public partial class GameState : Node
 		ownedEquipment.Clear();
 		equipped.Clear();
 		GearUpQuestDone = false;
+		IntroSeen = false;   // a new game shows the intro guide again
 
 		for (int i = 1; i <= GameDatabase.CoreCount; i++)
 		{
@@ -1032,7 +1091,7 @@ public partial class GameState : Node
 		subtitleLabel = new Label();
 		subtitleLabel.Text = "The shelter lights flicker ahead and the fog parts.";
 		subtitleLabel.HorizontalAlignment = HorizontalAlignment.Center;
-		subtitleLabel.AddThemeFontSizeOverride("font_size", 22);
+		ApplyPixelFont(subtitleLabel, 24);
 		hudLayer.AddChild(subtitleLabel);
 		subtitleLabel.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.CenterBottom);
 		subtitleLabel.GrowHorizontal = Control.GrowDirection.Both;
@@ -1136,12 +1195,6 @@ public partial class GameState : Node
 			if (meterLabel != null)
 				meterLabel.Text = "The final core weighs on you. Return to the shelter.";
 
-			if (!retreatBannerShown)
-			{
-				retreatBannerShown = true;
-				ShowRetreatBanner();
-			}
-
 			retreatTime += (float)delta;
 			UpdateRetreatLines();
 			EnsureShelterExit();
@@ -1194,6 +1247,7 @@ public partial class GameState : Node
 			OwnedEquipment = new List<string>(ownedEquipment),
 			Equipped = GetEquippedMap(),
 			GearUpQuestDone = GearUpQuestDone,
+			IntroSeen = IntroSeen,
 			Items = new Dictionary<string, int>(permanentItems)
 		};
 
@@ -1293,6 +1347,7 @@ public partial class GameState : Node
 		}
 
 		GearUpQuestDone = data.GearUpQuestDone;
+		IntroSeen = data.IntroSeen;
 
 		if (data.Items != null)
 		{

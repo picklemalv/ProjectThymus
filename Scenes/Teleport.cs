@@ -16,7 +16,7 @@ public partial class Teleport : Area2D
 	public override void _Ready()
 	{
 		prompt = GetNode<Label>("Prompt");
-		prompt.Text = PromptText;
+		prompt.Text = BuildPromptText();
 		prompt.Visible = false;
 
 		BodyEntered += OnBodyEntered;
@@ -25,10 +25,18 @@ public partial class Teleport : Area2D
 
 	public override void _Process(double delta)
 	{
-		if (playerInRange && Input.IsKeyPressed(Key.E))
+		if (playerInRange && Input.IsActionPressed("interact"))
 		{
 			TeleportPlayer();
 		}
+	}
+
+	private string BuildPromptText()
+	{
+		if (PromptText.StartsWith("E - "))
+			return GameSettings.GetKeyName("interact") + PromptText.Substring(1);
+
+		return PromptText;
 	}
 
 	private void OnBodyEntered(Node2D body)
@@ -37,6 +45,7 @@ public partial class Teleport : Area2D
 		{
 			player = p;
 			playerInRange = true;
+			prompt.Text = BuildPromptText();
 			prompt.Visible = true;
 		}
 	}

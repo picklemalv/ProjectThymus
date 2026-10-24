@@ -22,6 +22,11 @@ public partial class AudioManager : Node
 		globalMusicPlayer = GetNode<AudioStreamPlayer>("GlobalMusicPlayer");
 		soundPlayer = GetNode<AudioStreamPlayer>("SoundPlayer");
 
+		GameSettings.Load();
+		musicPlayer.Bus = GameSettings.MusicBus;
+		globalMusicPlayer.Bus = GameSettings.MusicBus;
+		soundPlayer.Bus = GameSettings.SfxBus;
+
 		string path =
 			"res://Assets/ThymusAssets/Audio/StockTune-Echoes Of The Fallen_1792780190.mp3";
 

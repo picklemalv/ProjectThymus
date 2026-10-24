@@ -27,6 +27,11 @@ public partial class ShelterStation : Area2D
 		BuildPanel();
 	}
 
+	private void UpdatePromptText()
+	{
+		promptLabel.Text = $"Press {GameSettings.GetKeyName("interact")} - {StationName()}";
+	}
+
 	private string StationName()
 	{
 		return GameDatabase.StationDisplayName(Station);
@@ -39,7 +44,7 @@ public partial class ShelterStation : Area2D
 		AddChild(promptLayer);
 
 		promptLabel = new Label();
-		promptLabel.Text = $"Press E - {StationName()}";
+		UpdatePromptText();
 		promptLabel.HorizontalAlignment = HorizontalAlignment.Center;
 		promptLayer.AddChild(promptLabel);
 
@@ -93,7 +98,7 @@ public partial class ShelterStation : Area2D
 		root.AddChild(messageLabel);
 
 		Button closeButton = new Button();
-		closeButton.Text = "Close (E)";
+		closeButton.Text = "Close";
 		closeButton.Pressed += ClosePanel;
 		root.AddChild(closeButton);
 	}
@@ -106,7 +111,10 @@ public partial class ShelterStation : Area2D
 		playerInside = true;
 
 		if (!panelOpen)
+		{
+			UpdatePromptText();
 			promptLabel.Visible = true;
+		}
 	}
 
 	private void OnBodyExited(Node2D body)
@@ -122,12 +130,12 @@ public partial class ShelterStation : Area2D
 	{
 		if (@event is InputEventKey key && key.Pressed && !key.Echo)
 		{
-			if (panelOpen && (key.Keycode == Key.E || key.Keycode == Key.Escape))
+			if (panelOpen && (@event.IsActionPressed("interact") || key.Keycode == Key.Escape))
 			{
 				ClosePanel();
 				GetViewport().SetInputAsHandled();
 			}
-			else if (!panelOpen && playerInside && key.Keycode == Key.E)
+			else if (!panelOpen && playerInside && @event.IsActionPressed("interact"))
 			{
 				OpenPanel();
 				GetViewport().SetInputAsHandled();
@@ -318,8 +326,7 @@ public partial class ShelterStation : Area2D
 					if (index == GameDatabase.CoreCount && state.GameWon)
 					{
 						// The final core is in: the game is over.
-						GetTree().Paused = false;
-						GetTree().CallDeferred(SceneTree.MethodName.ChangeSceneToFile, "res://Scenes/Ending.tscn");
+						GameState.Instance.FlashToScene("res://Scenes/Ending.tscn");
 						return;
 					}
 

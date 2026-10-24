@@ -7,6 +7,23 @@ public partial class ShelterHud : Label
 	public override void _Ready()
 	{
 		RefreshText();
+
+		if (!GameState.Instance.IntroSeen)
+			CallDeferred(nameof(OpenIntro));
+	}
+
+	private void OpenIntro()
+	{
+		IntroScreen.Open(GetTree().CurrentScene);
+	}
+
+	public override void _UnhandledInput(InputEvent @event)
+	{
+		if (@event is InputEventKey key && key.Pressed && !key.Echo && key.Keycode == Key.H && !IntroScreen.IsOpen)
+		{
+			OpenIntro();
+			GetViewport().SetInputAsHandled();
+		}
 	}
 
 	public override void _Process(double delta)
@@ -37,6 +54,10 @@ public partial class ShelterHud : Label
 			}
 
 			quest += "\n\n";
+		}
+		else if (state.DeathCount == 0)
+		{
+			quest = "QUEST complete - follow the green line to the Expedition Gate.\n\n";
 		}
 
 		string gear = "";
