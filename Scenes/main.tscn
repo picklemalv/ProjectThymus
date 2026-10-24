@@ -1829,7 +1829,7 @@ NpcID = "Boss2"
 EnemyData = SubResource("Resource_xmw5u")
 
 [node name="BOSS3" parent="Objects" unique_id=1931164543 instance=ExtResource("15_wsu2k")]
-position = Vector2(7386, 1234)
+position = Vector2(6988, 1339)
 NpcID = "Boss3"
 EnemyData = SubResource("Resource_4amwv")
 
