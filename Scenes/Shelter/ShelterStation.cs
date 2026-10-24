@@ -199,10 +199,19 @@ public partial class ShelterStation : Area2D
 		content.AddChild(label);
 	}
 
+	// Set this right before AddRow to show an item sprite at the start of that row.
+	private string nextRowIcon = null;
+
 	private void AddRow(string text, string buttonText, bool enabled, Action onPressed)
 	{
 		HBoxContainer row = new HBoxContainer();
 		row.AddThemeConstantOverride("separation", 12);
+
+		Control icon = ItemIcons.MakeIcon(nextRowIcon, 44);
+		nextRowIcon = null;
+
+		if (icon != null)
+			row.AddChild(icon);
 
 		Label label = new Label();
 		label.Text = text;
@@ -380,15 +389,20 @@ public partial class ShelterStation : Area2D
 		{
 			int cap = GameDatabase.StorageCap(state.StorageLevel, type);
 			int bag = GameDatabase.RunCap(state.StorageLevel, type);
+			nextRowIcon = type.ToString().ToLowerInvariant();
 			AddRow($"{type}: {state.GetPermanent(type)} / {cap}    (run bag: {bag})", null, false, null);
 		}
 
+		nextRowIcon = "core_fragment";
 		AddRow($"Core Fragments: {state.PermanentCoreFragments}", null, false, null);
 
 		AddHeader("Potions in stock");
 
 		foreach (ConsumableDef def in GameDatabase.Consumables)
+		{
+			nextRowIcon = def.Id;
 			AddRow($"{def.Name}: {state.GetPermanentItemCount(def.Id)}  (carry up to {def.CarryLimit} per run)", null, false, null);
+		}
 
 		AddRow("Upgrade this facility at the Workshop.", null, false, null);
 	}
@@ -448,6 +462,7 @@ public partial class ShelterStation : Area2D
 		{
 			string id = def.Id;
 			ResourceCost cost = state.GetCost(def.Cost);
+			nextRowIcon = id;
 			string info = $"{def.Name} - {def.Description}\nIn stock: {state.GetPermanentItemCount(id)}   (carry up to {def.CarryLimit} per run)";
 
 			if (def.RequiredInfirmaryLevel > state.InfirmaryLevel)
@@ -492,6 +507,7 @@ public partial class ShelterStation : Area2D
 		GameState state = GameState.Instance;
 		string id = def.Id;
 		string text = $"{def.Name} (Lv {def.Tier})  ({def.StatText()})";
+		nextRowIcon = id;
 
 		if (state.IsEquipped(id))
 		{

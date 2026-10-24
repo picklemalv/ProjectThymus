@@ -2,11 +2,11 @@
 
 [ext_resource type="Texture2D" uid="uid://djuv3r7uo731c" path="res://Assets/ThymusAssets/Title/Echoes of Contamination.png" id="2_8saeu"]
 [ext_resource type="Texture2D" uid="uid://b5jbfos0c0axt" path="res://Assets/ThymusAssets/Map/Shelter 1.png" id="2_df05h"]
-[ext_resource type="Texture2D" path="res://Assets/ThymusAssets/Title/Continue button.png" id="3_ghw46"]
-[ext_resource type="Texture2D" path="res://Assets/ThymusAssets/Title/New Game button.png" id="6_newgame"]
+[ext_resource type="Texture2D" uid="uid://d3ee2hr027rvj" path="res://Assets/ThymusAssets/Title/Continue button.png" id="3_ghw46"]
 [ext_resource type="Texture2D" uid="uid://inlt4ets1bfh" path="res://Assets/ThymusAssets/Title/Quit button.png" id="4_df05h"]
-[ext_resource type="Texture2D" path="res://Assets/ThymusAssets/Title/Settings button.png" id="7_settings"]
 [ext_resource type="Script" uid="uid://q301enedfw5i" path="res://Scenes/MainMenu.cs" id="5_main_menu_script"]
+[ext_resource type="Texture2D" uid="uid://dljxhk5wvygyq" path="res://Assets/ThymusAssets/Title/New Game button.png" id="6_newgame"]
+[ext_resource type="Texture2D" uid="uid://botmiwimk74pp" path="res://Assets/ThymusAssets/Title/Settings button.png" id="7_settings"]
 
 [node name="MainMenu" type="Node2D" unique_id=544837988]
 script = ExtResource("5_main_menu_script")

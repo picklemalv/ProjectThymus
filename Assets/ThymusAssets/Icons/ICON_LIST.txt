@@ -1,0 +1,32 @@
+ICON LIST
+Put each sprite in the folder shown, named exactly like the file below (.png recommended, .webp/.svg also work).
+Suggested size: 32x32 or 64x64 (pixel art stays crisp). Missing sprites are simply not drawn.
+
+[Equipment]
+  knife_1.png   - Rusty Knife
+  knife_2.png   - Hunter's Knife
+  knife_3.png   - Core-Edge Knife
+  rifle_1.png   - Scrap Rifle
+  rifle_2.png   - Marksman Rifle
+  rifle_3.png   - Core Rifle
+  head_1.png   - Scrap Helmet
+  head_2.png   - Filter Mask
+  head_3.png   - Core Visor
+  body_1.png   - Scrap Vest
+  body_2.png   - Plated Armor
+  body_3.png   - Hazmat Suit
+  accessory_1.png   - Filter Charm
+  accessory_2.png   - Purifier Charm
+  accessory_3.png   - Core Talisman
+
+[Resources]
+  scrap.png   - Scrap
+  material.png   - Material
+  energy.png   - Energy
+  essence.png   - Contaminated Essence
+  core_fragment.png   - Core Fragment
+
+[Potions]
+  antidote.png   - Antidote
+  health_potion.png   - Health Potion
+  infection_reducer.png   - Infection Reducer
