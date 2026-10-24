@@ -930,7 +930,7 @@ tile_set = SubResource("TileSet_b4ovn")
 
 [node name="Sprite2D" type="Sprite2D" parent="World/Map1" unique_id=328896921]
 texture_filter = 1
-position = Vector2(1376, 768)
+position = Vector2(1380, 812)
 texture = ExtResource("4_k12tt")
 
 [node name="TileMapLayer2" type="TileMapLayer" parent="World/Map1" unique_id=1930916717]
